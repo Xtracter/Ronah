@@ -1,4 +1,4 @@
-# Ronah
-Plug And Play JAVA REST framework
+# Ronah REST 
+Plug And Play JAVA REST framework made super easy!
 
-- REST should be easy and fast to setup - Presenting Ronah.
+
