@@ -23,13 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotation for HTTP request GET.
- */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface GET {
+@Target(ElementType.TYPE)
+public @interface PATH {
     String path() default "";
-    String response() default "application/json";
-    boolean ignoreParentPath() default false;
 }

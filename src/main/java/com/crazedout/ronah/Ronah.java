@@ -18,6 +18,9 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.bagins.BaginsService;
+import com.crazedout.ronah.service.AutoRegisterService;
+import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.HttpHandler;
 
 import javax.net.ServerSocketFactory;
@@ -25,7 +28,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.net.*;
 import java.util.UUID;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  * Ronah REST Server
@@ -40,10 +43,10 @@ import java.util.logging.Logger;
 public final class Ronah  {
 
     public static final String server = "Ronah";
-    public static final String version = "0.9";
+    public static final String version = "1.0";
     private final String key;
 
-    private static final Logger logger = Logger.getLogger(Ronah.class.getName());
+    public static final Logger logger = Logger.getLogger(Ronah.class.getName());
     private boolean running=true;
     public static boolean verbose;
     private int port;
@@ -77,6 +80,7 @@ public final class Ronah  {
         try(ServerSocket serv = secure?createServerSocket():new ServerSocket(port)){
             while(running) {
                 Socket s = serv.accept();
+                s.setReuseAddress(true);
                 (new Thread(() -> new HttpHandler(s))).start();
             }
             logger.info("Ronah exiting cleanly. Bye bye..");
@@ -134,6 +138,8 @@ public final class Ronah  {
     public static void main(String[] args) {
 
         System.out.println(marquee());
+        AutoRegisterService.register(DefaultService.class);
+        AutoRegisterService.register(BaginsService.class);
 
         int port = 0;
         if(args.length>0){
@@ -151,7 +157,7 @@ public final class Ronah  {
         }
         if(port==0) {
             port = 8080;
-            logger.warning("Port not set - defaulting to 8080.");
+            logger.info("Port not set - defaulting to 8080.");
         }
         Ronah r = new Ronah();
         if (System.getProperty("javax.net.ssl.keyStore") != null) {

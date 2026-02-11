@@ -19,17 +19,21 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.annotation.GET;
+import com.crazedout.ronah.annotation.PATH;
 import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.annotation.Path;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.service.HttpRequest;
 import com.crazedout.ronah.service.Request;
 
 @SuppressWarnings("unused")
-@Path(path="/test/")
+@PATH(path="/test")
 public class TestService extends AutoRegisterService {
 
-    @GET(path="/", responseContentType="text/html", ignoreParentPath = true)
+    public TestService(){
+        super();
+    }
+
+    @GET(path="/", response="text/html", ignoreParentPath = true)
     public void getIndex(Request request){
         String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah</h1></body></html>";
         request.getResponse().ok(html).send();
@@ -56,12 +60,7 @@ public class TestService extends AutoRegisterService {
 
     @POST(path="/api/v1/post", acceptContentType = HttpRequest.X_WWW_FORM_URLENCODED)
     public void getData1(Request request){
-        String json = new String(request.getPostData());
-        request.getResponse().ok(json).send();
-    }
-
-    @POST(path="/api/v1/post", acceptContentType = HttpRequest.MULTIPART_FORM_DATA)
-    public void getData2(Request request){
+        System.out.println("Here!");
         String json = new String(request.getPostData());
         request.getResponse().ok(json).send();
     }

@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service;
+package com.crazedout.ronah.annotation;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,26 +18,15 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Abstract Service class that automatically register itself to Repository.
+ * Annotation for HTTP request GET.
  */
-public abstract class AutoRegisterService implements Service {
-
-    public AutoRegisterService() {
-        Repository.addService(this);
-    }
-
-    /**
-     * Registers a new Service to the Repository.
-     * @param c Class AutoregisterService
-     * @return Object AutoRegisterService
-     */
-    public static AutoRegisterService register(Class<? extends AutoRegisterService> c){
-        try {
-            return c.getDeclaredConstructor().newInstance();
-        }catch(Exception ex){
-            ex.printStackTrace(System.out);
-        }
-        return null;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface Param {
 }

@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service;
+package com.crazedout.ronah.bagins;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,26 +18,18 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-/**
- * Abstract Service class that automatically register itself to Repository.
- */
-public abstract class AutoRegisterService implements Service {
+import com.crazedout.ronah.annotation.GET;
+import com.crazedout.ronah.service.AutoRegisterService;
+import com.crazedout.ronah.service.DefaultService;
+import com.crazedout.ronah.service.Request;
 
-    public AutoRegisterService() {
-        Repository.addService(this);
+public class BaginsService extends AutoRegisterService {
+
+    @GET(path="/bagins", response="text/html")
+    public void getBagins(Request request){
+
+        String html = BaginsFactory.getHTML(DefaultService.class);
+        request.getResponse().ok(html).send();
     }
 
-    /**
-     * Registers a new Service to the Repository.
-     * @param c Class AutoregisterService
-     * @return Object AutoRegisterService
-     */
-    public static AutoRegisterService register(Class<? extends AutoRegisterService> c){
-        try {
-            return c.getDeclaredConstructor().newInstance();
-        }catch(Exception ex){
-            ex.printStackTrace(System.out);
-        }
-        return null;
-    }
 }

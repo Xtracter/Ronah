@@ -21,8 +21,8 @@ package com.crazedout.ronah.service;
 import com.crazedout.ronah.Ronah;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.logging.Logger;
 
 /**
@@ -40,7 +40,7 @@ public final class HttpHandler {
      */
     public HttpHandler(Socket s) {
         try {
-            parseRequest(s.getInputStream(), s.getOutputStream());
+            parseRequest(s.getInputStream(), s.getOutputStream(), s.getRemoteSocketAddress());
             s.close();
         }catch(Exception ex){
             logger.warning(ex.getMessage());
@@ -53,11 +53,8 @@ public final class HttpHandler {
      * @param in Socket Inputstream
      * @param out Sockets OutputStream
      * @throws IOException Exception
-     * @throws IllegalAccessException Exception
-     * @throws InvocationTargetException Exception
      */
-    private void parseRequest(InputStream in, OutputStream out) throws IOException, InvocationTargetException,
-            IllegalAccessException {
+    private void parseRequest(InputStream in, OutputStream out, SocketAddress sockAddr) throws IOException {
 
         HttpRequest request=null;
         StringBuilder line = new StringBuilder();
@@ -65,10 +62,10 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
-            if(Ronah.verbose) System.out.print(c);
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
+                    Ronah.logger.info("Remote:" + sockAddr + " " + line.toString());
                     request = new HttpRequest(line.toString(),out);
                 }
                 if(line.isEmpty()) break;
@@ -76,7 +73,6 @@ public final class HttpHandler {
                     String[] tokens = line.toString().split(":");
                     request.getHeaders().put(tokens[0],tokens[1].trim());
                 }
-                if(Ronah.verbose) logger.info(line.toString());
                 line = new StringBuilder();
             }else {
                 line.append(c);
@@ -86,13 +82,38 @@ public final class HttpHandler {
         if(request != null && ("POST".equals(request.getMethod())) &&
                 request.getHeaders().get("Content-Length")!=null) {
             int len = Integer.parseInt(request.getHeaders().get("Content-Length"));
-            line = new StringBuilder();
-            for (int i = 0; i < len; i++) {
-                line.append((char) in.read());
+            byte[] buffer = new byte[len];
+            for(int i = 0; i < len; i++){
+                buffer[i] = (byte)in.read();
             }
-            if (Ronah.verbose) logger.info("POST data read:" + len + " bytes");
-            request.setPostData(line.toString().getBytes());
+            request.setPostData(buffer);
+            if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeaders().get("Content-Type"))) {
+                request.setQueryString(new String(buffer));
+            }
         }
-        Repository.serv(request);
+        try {
+            Repository.serv(request);
+        }catch(Exception ex){
+            request.getResponse().error().send();
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

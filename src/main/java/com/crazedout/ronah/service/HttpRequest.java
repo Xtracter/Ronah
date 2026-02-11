@@ -17,6 +17,9 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -44,6 +47,8 @@ public class HttpRequest implements Request {
     public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String APPLICATION_JSON = "application/json";
     public static final String TEXT_PLAIN = "text/plain";
+    public static final String TEXT_HTML = "text/html";
+    public static final String OCTET_STREAM = "application/octet-stream";
 
     /**
      * Constructor.
@@ -73,6 +78,30 @@ public class HttpRequest implements Request {
         }
     }
 
+    /**
+     * Saves the posted bytes to file.
+     * @param file File output file.
+     * @throws IOException Exception.
+     */
+    public void savePostDataToFile(String file) throws IOException {
+        try(FileOutputStream fos = new FileOutputStream(file)){
+            fos.write(this.getPostData());
+        }
+    }
+
+    /**
+     * Sets the Query String
+     * @param queryString String query
+     */
+    void setQueryString(String queryString){
+        this.queryString=queryString;
+    }
+
+    /**
+     * Sets the Charset for this Request.
+     * @param charset Charset
+     */
+    @Override
     public void setCharset(Charset charset){
         this.defaultCharset=charset;
     }

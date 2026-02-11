@@ -1,4 +1,4 @@
-package com.crazedout.ronah.annotation;
+package com.crazedout.ronah.bagins;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,18 +18,16 @@ package com.crazedout.ronah.annotation;
  * mail: info@crazedout.com
  */
 
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotation for HTTP request GET.
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface GET {
-    String path() default "";
-    String response() default "application/json";
-    boolean ignoreParentPath() default false;
+public @interface Bagins {
+    String name() default "Rest Service";
+    String description() default "Rest service";
 }
+

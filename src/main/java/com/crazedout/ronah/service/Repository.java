@@ -17,17 +17,18 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
-import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.annotation.Path;
+import com.crazedout.ronah.Ronah;
+import com.crazedout.ronah.annotation.*;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 
 /**
  * Class to handle Services and dispatch requests to correct Service,
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("unused")
 public final class Repository<Service> extends ArrayList<Service> {
 
-    private final static Logger logger = Logger.getLogger(Repository.class.getName());
+    private final static Logger logger = Ronah.logger;
     private static Repository<com.crazedout.ronah.service.Service> instance;
 
     private Repository(){}
@@ -50,104 +51,131 @@ public final class Repository<Service> extends ArrayList<Service> {
     /**
      * This central function dispatches incoming calls to the correct Service's method.
      * @param request Request request.
-     * @throws InvocationTargetException bad Invocation.
-     * @throws IllegalAccessException bad access.
      */
-    static void serv(Request request) throws InvocationTargetException,
-            IllegalAccessException {
-
+    static void serv(Request request) {
         boolean sent = false;
         String parentPath = "";
+        Method catchAll=null;
+        com.crazedout.ronah.service.Service catchService=null;
         for(com.crazedout.ronah.service.Service s : getInstance()){
             if(s.getClass().getAnnotations().length>0){
-                Path path = (Path)s.getClass().getAnnotations()[0];
+                PATH path = (PATH)s.getClass().getAnnotations()[0];
                 parentPath = path.path();
                 if(parentPath.endsWith("/")) parentPath = path.path().substring(0,path.path().length()-1);
             }
             Method[] methods = s.getClass().getMethods();
-            for(Method m:methods){
-                Annotation[] annotations = m.getDeclaredAnnotations();
-                for(Annotation a:annotations){
-                    if(request.getMethod().equals("GET") && a instanceof GET g){
-                        if(getInstance().pathEquals(request,g,parentPath)){
-                            request.getResponse().setContentType(g.responseContentType());
-                            if(m.getParameterCount()>1) {
-                                parseQueryString(g,request,s,m);
-                            }else {
-                                m.invoke(s, request);
-                            }
-                            sent=true;
-                        }
-                    }else if(request.getMethod().equals("POST") && a instanceof POST p) {
-                        if(getInstance().allowContentType(request,p) && getInstance().allowContentType(request,p)){
-                            request.getResponse().setContentType(p.acceptContentType());
-                            if(p.contentType().equals("application/json")) {
-                                parseJson(p,request,s,m);
-                            }else {
-                                m.invoke(s, request);
-                            }
-                            sent=true;
-                        }
+            for(Method m:methods) {
+                try {
+                    if(m.getAnnotationsByType(CatchAll.class).length>0){
+                        catchAll = m;
+                        catchService = s;
+                        logger.info("Catch all: " + m.getName());
                     }
+                    if(parseMethods(s, request, m, parentPath)) {
+                        sent = true;
+                    }
+                }catch(IllegalAccessException|InvocationTargetException ex){
+                    ex.printStackTrace(System.out);
                 }
-                if(sent) break;
             }
         }
         if(!sent){
+            try {
+                if (catchAll != null) catchAll.invoke(catchService, request);
+            }catch(IllegalAccessException | InvocationTargetException ex){
+                ex.printStackTrace(System.out);
+                request.getResponse().notFound().send();
+            }
             request.getResponse().notFound().send();
         }
     }
 
     /**
-     * Parse Query String and try to match methods parameters.
-     * @param annotation Current annotation
-     * @param request Current Request
-     * @param s Current Service
-     * @param m Current Method
+     * Parses methods an invokes.
+     * @param s Service
+     * @param request Request
+     * @param method Http Method
+     * @param parentPath String request path
+     * @return boolean invoked or not.
+     * @throws InvocationTargetException Exception
+     * @throws IllegalAccessException Exception
      */
-    private static void parseQueryString(GET annotation, Request request, com.crazedout.ronah.service.Service s, Method m){
-        List<Object> params = new ArrayList<>();
-        params.add(request);
-        byte[] bytes = request.getPostData();
-        boolean handled = false;
-        if(annotation.params()!=null){
-            for(String param:annotation.params()) {
-                Object value;
-                if((value=request.getParameter(param))!=null) params.add(value);
+    static boolean parseMethods( com.crazedout.ronah.service.Service s, Request request, Method method, String parentPath)
+    throws InvocationTargetException, IllegalAccessException {
+
+        boolean sent=false;
+
+         for(Annotation an: method.getDeclaredAnnotations()) {
+            // GET request
+            if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
+                request.getResponse().setContentType(g.response());
+                Parameter[] params = method.getParameters();
+                List<Object> args = new ArrayList<>();
+                args.add(request);
+                for (Parameter p : params) {
+                    if (p.getAnnotationsByType(Param.class).length > 0) {
+                        String value = request.getParameter(p.getName().toLowerCase());
+                        if (value != null){
+                            addParameterByClass(args,value,p.getType());
+                        }
+                    }
+                }
+                if(!args.isEmpty() && method.getParameterCount()>1) {
+                    logger.info("Invoking method: " + method.getName());
+                    method.invoke(s, args.toArray());
+                    sent=true;
+                }else{
+                    logger.info("Invoking method: " + method.getName());
+                    method.invoke(s,request);
+                    sent=true;
+                }
+                break;
+            }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
+                    p.ignoreParentPath())){
+                request.getResponse().setContentType(p.response());
+                Parameter[] params = method.getParameters();
+                List<Object> args = new ArrayList<>();
+                args.add(request);
+                for (Parameter pa : params) {
+                    if (pa.getAnnotationsByType(Param.class).length > 0) {
+                        if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeaders().get("Content-Type"))) {
+                            String value = request.getParameter(pa.getName().toLowerCase());
+                            addParameterByClass(args, value, pa.getType());
+
+                        }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeaders().get("Content-Type"))) {
+                            String value = new String(request.getPostData());
+                            addParameterByClass(args, value, pa.getType());
+                        }
+                    }
+                }
+                if(args.size()==method.getParameterCount()) {
+                    logger.info("Invoking method: " + method.getName());
+                    method.invoke(s, args.toArray());
+                    sent=true;
+                }
+                break;
             }
-            try {
-                m.invoke(s, params.toArray());
-            }catch(IllegalAccessException  | InvocationTargetException ex){
-                logger.warning(ex.getMessage());
-            }
-        }
+         }
+        return sent;
     }
 
     /**
-     * Parse payload and try to match methods parameters.
-     * @param annotation Current annotation
-     * @param request Current Request
-     * @param s Current Service
-     * @param m Current Method
+     * Sets the correct tpe of an parameter.
+     * @param args List paramers args
+     * @param value String value as string
+     * @param type Class the type of parameter to be set.
      */
-    private static void parseJson(POST annotation, Request request, com.crazedout.ronah.service.Service s, Method m){
-
-        List<Object> params = new ArrayList<>();
-        params.add(request);
-        byte[] bytes = request.getPostData();
-        boolean handled = false;
-        if(annotation.params()!=null){
-            for(String param:annotation.params()) {
-                JSONObject jsonObject = new JSONObject(new String(bytes));
-                Object value;
-                if((value=jsonObject.get(param))!=null) params.add(value);
-            }
-            try {
-                m.invoke(s, params.toArray());
-            }catch(IllegalAccessException  | InvocationTargetException ex){
-                logger.warning(ex.getMessage());
-            }
+    private static void addParameterByClass(List<Object> args, String value, Class<?> type){
+        if(value!=null) {
+            if (type == Integer.class) args.add(Integer.parseInt(value));
+            else if (type == Double.class) args.add(Double.parseDouble(value));
+            else if (type == Float.class) args.add(Float.parseFloat(value));
+            else if (type == Long.class) args.add(Long.parseLong(value));
+            else if (type == JSONObject.class) {
+                args.add(new JSONObject(value));
+            } else args.add(value);
         }
+
     }
 
     /**
@@ -164,37 +192,37 @@ public final class Repository<Service> extends ArrayList<Service> {
     /**
      * Checks if the path of the request matches the annotations path
      * @param request Request HTTP request.
-     * @param g Annotation for Service method using GET method.
+     * @param path String path
      * @return boolean true/false.
      */
-    private boolean pathEquals(Request request, GET g, String parentPath){
+    private static boolean pathEquals(Request request, String path, String parentPath, boolean ignoreParentPath){
 
         String str1 = request.getPath();
-        String str2 = g.path();
-        if(!g.ignoreParentPath()) str2 = parentPath + str2;
+        String str2 = path;
+
+        if(!ignoreParentPath) str2 = parentPath + str2;
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
 
         return str1.equals(str2);
     }
 
-
+    /**
+     * Gets the number of Servies registered.
+     * @return int size.
+     */
     public static int getSize(){
         return getInstance().size();
     }
 
     /**
-     * Add Service.
+     * Add Service. Only one of a kind can be registered.
      * @param service Service
      */
     public static void addService(com.crazedout.ronah.service.Service service){
-        for(com.crazedout.ronah.service.Service s:getInstance()){
-            if(s.getClass()==service.getClass()){
-                logger.info("Class " + s.getClass().getName() + " already in Repository. Skipping");
-                return;
-            }
+        if(!getInstance().contains(service)) {
+            getInstance().add(service);
         }
-        getInstance().add(service);
     }
 
     /**

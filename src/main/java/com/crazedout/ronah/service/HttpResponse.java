@@ -47,7 +47,7 @@ public class HttpResponse implements Response{
     public final static String CONTENT_TYPE_GIF = "image/gif";
     public final static String CONTENT_TYPE_XML = "application/xml";
 
-    private String contentType = CONTENT_TYPE_TEXT;
+    private String contentType = CONTENT_TYPE_HTML;
 
     /**
      * Constructor.
@@ -66,7 +66,8 @@ public class HttpResponse implements Response{
      */
     public Response notFound(){
         this.builder.append("HTTP/1.1 404 Not Found\n");
-        this.data = "Resource was not found";
+        this.contentType=CONTENT_TYPE_HTML;
+        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 404 Not Found</h2>Resource was not found</body></html>";
         return this;
     }
 
@@ -75,9 +76,9 @@ public class HttpResponse implements Response{
      * @return Response
      */
     public Response error(){
-        this.data = "HTTP/1.1 500 Internal Server";
-        this.builder.append("HTTP/1.1 500 Internal Error\n");
-        this.data = "Internal Server Error";
+        this.builder.append("HTTP/1.1 500 Internal Server\n");
+        this.contentType=CONTENT_TYPE_HTML;
+        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 500 Internal Error</h2>HTTP/1.1 500 Internal Server\n";
         return this;
     }
 
@@ -87,7 +88,8 @@ public class HttpResponse implements Response{
      */
     public Response forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
-        this.data = "Resource is not allowed";
+        this.contentType=CONTENT_TYPE_HTML;
+        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 403 Forbidden</h2>HTTP/1.1 403 Forbidden\n";
         return this;
     }
 
