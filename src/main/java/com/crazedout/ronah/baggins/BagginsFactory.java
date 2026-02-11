@@ -1,4 +1,4 @@
-package com.crazedout.ronah.bagins;
+package com.crazedout.ronah.baggins;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -28,27 +28,27 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-public class BaginsFactory {
+public class BagginsFactory {
 
-    private static BaginsFactory instance;
+    private static BagginsFactory instance;
     int n = 0;
 
-    private BaginsFactory(){
+    private BagginsFactory(){
     }
 
     public static String getHTML(Class s){
         return getInstance().parse(s);
     }
 
-    private static BaginsFactory getInstance(){
-        if(instance==null) instance = new BaginsFactory();
+    private static BagginsFactory getInstance(){
+        if(instance==null) instance = new BagginsFactory();
         return instance;
     }
 
     public String parse(Class<Service> service){
         StringBuilder sb = new StringBuilder();
         for(Method method:service.getDeclaredMethods()){
-            Bagins bagins = method.getAnnotation(Bagins.class);
+            Baggins bagins = method.getAnnotation(Baggins.class);
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
             System.out.println("jan:" + g + " " + bagins);
@@ -79,17 +79,17 @@ public class BaginsFactory {
         for(Parameter p:params){
             if(c++==0) continue;
             String key = "p_" + count++;
-            sb.append(String.format("<input type='text' name='%s' id='%s' />\n", p.getName().toLowerCase(),key));
+            sb.append(String.format("%s: <input type='text' name='%s' id='%s' /><br/>\n", p.getName(),p.getName().toLowerCase(),key));
             keys.add(key);
             names.add(p.getName().toLowerCase());
-            func += uuid + "('" + path + "',";
         }
+        func = "pAjax('con_" + uuid + "','" + path + "',";
         if(params.length<2){
             String key = "q_" + count++;
-            sb.append(String.format("<input type='text' name='%s' id='%s' />\n", key, key));
+            sb.append(String.format("<input type='text' name='%s' id='%s' /><br/>\n", key, key));
             keys.add(key);
             names.add("Query:");
-            func += "q" + uuid + "('" + path + "',";
+            func = "qAjax" + "('con_" + uuid + "','" + path + "',";
         }
         for(int i = 0; i < keys.size(); i++){
             func+="'" + keys.get(i) + "',";
@@ -98,6 +98,9 @@ public class BaginsFactory {
         sb.append("</td><td>").append(response).append("</td></tr>");
         String btn = "<input type='button' value='Send' onclick=\""+func+"\"/>\n";
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
+        String console = String.format("<span id='%s'>Response:</span>", "con_" + uuid);
+        sb.append(String.format("<tr><td colspan=3>%s</td></tr>", console));
+
         sb.append("</table><br/>\n");
 
 

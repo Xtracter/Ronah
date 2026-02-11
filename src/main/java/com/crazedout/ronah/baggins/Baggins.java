@@ -1,4 +1,4 @@
-package com.crazedout.ronah.bagins;
+package com.crazedout.ronah.baggins;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Bagins {
+public @interface Baggins {
     String name() default "Rest Service";
     String description() default "Rest service";
 }
