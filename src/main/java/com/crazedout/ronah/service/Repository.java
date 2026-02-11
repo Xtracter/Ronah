@@ -53,6 +53,7 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @param request Request request.
      */
     static void serv(Request request) {
+        String errMess;
         boolean sent = false;
         String parentPath = "";
         Method catchAll=null;
@@ -138,11 +139,12 @@ public final class Repository<Service> extends ArrayList<Service> {
                 args.add(request);
                 for (Parameter pa : params) {
                     if (pa.getAnnotationsByType(Param.class).length > 0) {
-                        if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeaders().get("Content-Type"))) {
+                        if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                             String value = request.getParameter(pa.getName().toLowerCase());
-                            addParameterByClass(args, value, pa.getType());
-
-                        }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeaders().get("Content-Type"))) {
+                            if(value!=null){
+                                addParameterByClass(args, value, pa.getType());
+                            }
+                        }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                             String value = new String(request.getPostData());
                             addParameterByClass(args, value, pa.getType());
                         }
@@ -171,8 +173,7 @@ public final class Repository<Service> extends ArrayList<Service> {
             else if (type == Double.class) args.add(Double.parseDouble(value));
             else if (type == Float.class) args.add(Float.parseFloat(value));
             else if (type == Long.class) args.add(Long.parseLong(value));
-            else if (type == JSONObject.class) {
-                args.add(new JSONObject(value));
+            else if (type == JSONObject.class) {args.add(new JSONObject(value));
             } else args.add(value);
         }
 

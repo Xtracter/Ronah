@@ -29,6 +29,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface GET {
+    String acceptsContentType() default "x-www-form-urlencoded";
     String path() default "";
     String response() default "application/json";
     boolean ignoreParentPath() default false;

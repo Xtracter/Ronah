@@ -5,7 +5,6 @@ import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
 import com.crazedout.ronah.annotation.Param;
 import com.crazedout.ronah.baggins.Baggins;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,12 +41,14 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 
+    @Baggins(name="Echo Service 3",description = "Echos the given json string using name=value")
     @POST(path="/json", response="text/text", acceptContentType = "application/json", ignoreParentPath = true)
-    public void getRest2(Request request, @Param JSONObject json){
-        String html = String.format("<!DOCTYPE html><html><body><h3>Hello from JSON %s</h3></body></html>",json.get("name"));
+    public void getRest2(Request request, @Param String name, @Param Integer age){
+        String html = String.format("<!DOCTYPE html><html><body><h3>Hello from JSON %s %s</h3></body></html>", name,age);
         request.getResponse().ok(html).send();
     }
-    @POST(path="/json", response="text/text", acceptContentType = HttpRequest.OCTET_STREAM, ignoreParentPath = true)
+
+    @POST(path="/json/file", response="text/text", acceptContentType = HttpRequest.OCTET_STREAM, ignoreParentPath = true)
     public void getRest2(Request request) throws IOException {
         try(FileOutputStream fos = new FileOutputStream(new File("c:\\Users\\Admin\\restdemo\\test.pdf"))){
             fos.write(request.getPostData());

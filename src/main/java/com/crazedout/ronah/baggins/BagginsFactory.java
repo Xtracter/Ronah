@@ -28,10 +28,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
+@SuppressWarnings("all")
 public class BagginsFactory {
 
     private static BagginsFactory instance;
-    int n = 0;
 
     private BagginsFactory(){
     }
@@ -51,18 +51,22 @@ public class BagginsFactory {
             Baggins bagins = method.getAnnotation(Baggins.class);
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
-            System.out.println("jan:" + g + " " + bagins);
             if(g!=null && bagins!=null) {
-                sb.append(getHTML(method.getParameters(), bagins.name(), "GET", g.path(), g.response()));
+                sb.append(getHTML(method.getParameters(), bagins.name(), "GET", g.acceptsContentType(), g.path(), g.response()));
             }else if(p!=null && bagins!=null){
-                sb.append(getHTML(method.getParameters(), bagins.name(), "POST", p.path(), p.response()));
+                sb.append(getHTML(method.getParameters(), bagins.name(), "POST", p.acceptContentType(), p.path(), p.response()));
             }
         }
-        return getHead() + sb.toString() + getTail();
+        return getHead() + sb + "<script>document.getElementById(\"title\").innerHTML='Baggins 1.0 - "+service.getName()+"';</script>" + getTail();
+    }
+
+
+    String parseType(Class<?> c){
+        return c.toString().substring(c.toString().lastIndexOf(".")+1);
     }
 
     private int count=0;
-    String getHTML(Parameter[] params, String name, String method, String path, String response){
+    String getHTML(Parameter[] params, String name, String method, String contentType, String path, String response){
 
         String uuid = "bagins" + UUID.randomUUID().toString().replace("-","_");
         List<String> keys = new ArrayList<>();
@@ -70,35 +74,40 @@ public class BagginsFactory {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<table>\n");
-        sb.append("<tr><th>Name</th><th>Method</th><th>Path</th><th>Query</th><th>Response</th></tr>\n");
-        sb.append("<tr valign=\"top\"><td>"+name+"</td><td>"+method+"</td><td>"+path+"</td>\n");
+        sb.append("<tr><th>Name</th><th>Method</th><th>Path</th><th>"+contentType+"</th><th>Response</th></tr>\n");
+        sb.append("<tr valign=\"top\"><td>").append(name).append("</td><td>").append(method).append("</td><td>").append(path).append("</td>\n");
         sb.append("<td>\n");
 
         int c=0;
-        String func="";
+        String func;
         for(Parameter p:params){
             if(c++==0) continue;
             String key = "p_" + count++;
-            sb.append(String.format("%s: <input type='text' name='%s' id='%s' /><br/>\n", p.getName(),p.getName().toLowerCase(),key));
+            sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' /><br/>\n",
+                    p.getName(),parseType(p.getType()), p.getName().toLowerCase(),key));
             keys.add(key);
             names.add(p.getName().toLowerCase());
         }
-        func = "pAjax('con_" + uuid + "','" + path + "',";
+        if("POST".equals(method)) {
+            func = "pAjax('con_" + uuid + "','" + path + "',";
+        }else{
+            func = "gAjax('con_" + uuid + "','" + path + "',";
+        }
         if(params.length<2){
             String key = "q_" + count++;
-            sb.append(String.format("<input type='text' name='%s' id='%s' /><br/>\n", key, key));
+            sb.append(String.format("Query String:<br/><input type='text' name='%s' id='%s' /><br/>\n", key, key));
             keys.add(key);
             names.add("Query:");
             func = "qAjax" + "('con_" + uuid + "','" + path + "',";
         }
-        for(int i = 0; i < keys.size(); i++){
-            func+="'" + keys.get(i) + "',";
+        for (String key : keys) {
+            func += "'" + key + "',";
         }
         func=func.substring(0,func.length()-1) + ")";
         sb.append("</td><td>").append(response).append("</td></tr>");
         String btn = "<input type='button' value='Send' onclick=\""+func+"\"/>\n";
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
-        String console = String.format("<span id='%s'>Response:</span>", "con_" + uuid);
+        String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #f0f0f0\" id='%s'>Response:</div>", "con_" + uuid);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", console));
 
         sb.append("</table><br/>\n");

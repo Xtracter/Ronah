@@ -81,20 +81,21 @@ public final class HttpHandler {
 
         if(request != null && ("POST".equals(request.getMethod())) &&
                 request.getHeaders().get("Content-Length")!=null) {
-            int len = Integer.parseInt(request.getHeaders().get("Content-Length"));
+            int len = Integer.parseInt(request.getHeader("Content-Length"));
             byte[] buffer = new byte[len];
             for(int i = 0; i < len; i++){
                 buffer[i] = (byte)in.read();
             }
             request.setPostData(buffer);
-            if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeaders().get("Content-Type"))) {
+            if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                 request.setQueryString(new String(buffer));
             }
         }
         try {
             Repository.serv(request);
         }catch(Exception ex){
-            request.getResponse().error().send();
+            ex.printStackTrace(System.out);
+            request.getResponse().error(ex.getMessage()).send();
         }
     }
 }

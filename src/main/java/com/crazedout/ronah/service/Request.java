@@ -28,6 +28,7 @@ public interface Request {
 
     String getPath();
     Map<String,String> getHeaders();
+    String getHeader(String key);
     Response getResponse();
     String getProtocol();
     String getMethod();

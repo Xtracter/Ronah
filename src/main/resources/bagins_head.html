@@ -1,23 +1,146 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--
     <style>
-        body {	font-family: Tahoma;
+        body {
+                font-family: Tahoma;
                 font-size:10pt;
             }
-        table { width: 800px;
+        table { width: 1200px;
                 border: 1px solid gray;
             }
         th {width: 200px; text-align: left; background: #f0f0f0;}
     </style>
+    -->
+    <style>
+
+        table { width: 1200px;
+                border: 1px solid gray;
+                border-spacing: 10px;
+                border-collapse: separate;
+            }
+
+        th {width: 200px; text-align: left;}
+
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: "Inter", sans-serif;
+          background: #0f1117;
+          color: #e6edf3;
+          line-height: 1.6;
+          padding: 40px 20px;
+        }
+
+        /* Optional wrapper if you have one */
+        .container {
+          max-width: 900px;
+          margin: 0 auto; /* Only horizontal centering */
+        }
+
+        /* Headings */
+        h1, h2, h3 {
+          font-weight: 600;
+          margin-bottom: 1rem;
+          color: #58a6ff;
+        }
+
+        /* Sections spacing */
+        section, form, div {
+          margin-bottom: 2rem;
+        }
+
+        /* Labels */
+        label {
+          display: block;
+          margin-bottom: 0.4rem;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #9da5b4;
+        }
+
+        /* Inputs */
+        input,
+        select,
+        textarea {
+          width: 100%;
+          max-width: 500px;
+          padding: 0.75rem;
+          border-radius: 8px;
+          border: 1px solid #30363d;
+          background: #161b22;
+          color: #ffffff;
+          font-size: 0.95rem;
+          transition: all 0.2s ease;
+          margin-bottom: 1rem;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+          outline: none;
+          border-color: #58a6ff;
+          box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.25);
+        }
+
+        /* Buttons */
+        button,
+        input[type="submit"] {
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          border: none;
+          background: linear-gradient(135deg, #238636, #2ea043);
+          color: white;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        button:hover,
+        input[type="submit"]:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 18px rgba(46, 160, 67, 0.35);
+        }
+
+        /* Subtle tech divider */
+        hr {
+          border: none;
+          height: 1px;
+          background: #30363d;
+          margin: 2rem 0;
+        }
+
+    </style>
     <script>
-        function pAjax(){
+        function gAjax(){
             var query = arguments[1] + "?";
             for(i=2;i<arguments.length;i++){
                 query += document.getElementById(arguments[i]).name + "=" + document.getElementById(arguments[i]).value;
                 if(i<arguments.length-1) query+="&";
             }
             sendAndReceive(query, arguments[0]);
+        }
+
+        function qAjax(){
+            var query = arguments[1] + "?" + document.getElementById(arguments[2]).value;
+            sendAndReceive(query, arguments[0]);
+        }
+
+        function pAjax(){
+            var path = arguments[1];
+            var query = "";
+            for(i=2;i<arguments.length;i++){
+                query += document.getElementById(arguments[i]).name + "=" + document.getElementById(arguments[i]).value;
+                if(i<arguments.length-1) query+="&";
+            }
+            sendAndReceivePost(path, query, arguments[0]);
         }
 
         function sendAndReceive(url, cons){
@@ -44,12 +167,42 @@
                     document.getElementById(cons).innerHTML=response;
                 }
                 else {
-                    console.log('HTTP error', xmlhttp.status, xmlhttp.statusText);
+                    document.getElementById(cons).innerHTML= xmlhttp.status + "," + xmlhttp.responseText;
                 }
             };
         }
+        function sendAndReceivePost(path, query, cons){
+
+            var xmlhttp;
+                if (window.XMLHttpRequest) {
+                        xmlhttp = new XMLHttpRequest();
+                    } else {
+                        xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                    }
+                    xmlhttp.open('POST', path, true);
+                    xmlhttp.setRequestHeader('cache-control', 'no-cache');
+                    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xmlhttp.send(query);
+
+                    xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState !== 4) return;
+                    if (xmlhttp.status == 200) {
+                    let response;
+                    try {
+                        response= JSON.parse(xmlhttp.responseText);
+                    } catch (e) {
+                        response= xmlhttp.responseText;
+                    }
+                    document.getElementById(cons).innerHTML=response;
+                }
+                else {
+                    document.getElementById(cons).innerHTML="'HTTP error', " + xmlhttp.status + "," + xmlhttp.responseText;
+                }
+            };
+        }
+
     </script>
 </head>
 <body>
-<h2>Bagins</h2>
+<h2 id="title">Baggins</h2>
 <form>

@@ -67,7 +67,7 @@ public class HttpResponse implements Response{
     public Response notFound(){
         this.builder.append("HTTP/1.1 404 Not Found\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 404 Not Found</h2>Resource was not found</body></html>";
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>";
         return this;
     }
 
@@ -78,7 +78,18 @@ public class HttpResponse implements Response{
     public Response error(){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 500 Internal Error</h2>HTTP/1.1 500 Internal Server\n";
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n";
+        return this;
+    }
+
+    /**
+     * Creates an HTTP 500 response.
+     * @return Response
+     */
+    public Response error(String message){
+        this.builder.append("HTTP/1.1 500 Internal Server\n");
+        this.contentType=CONTENT_TYPE_HTML;
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n";
         return this;
     }
 
@@ -89,7 +100,7 @@ public class HttpResponse implements Response{
     public Response forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h2>HTTP/1.1 403 Forbidden</h2>HTTP/1.1 403 Forbidden\n";
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n";
         return this;
     }
 
@@ -142,6 +153,7 @@ public class HttpResponse implements Response{
             out.write(this.builder.toString().getBytes());
             this.out.write(data.getBytes());
         }catch(IOException ex){
+            ex.printStackTrace();
             internalError(ex.getMessage());
         }
     }

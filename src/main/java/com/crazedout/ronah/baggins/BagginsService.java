@@ -25,7 +25,7 @@ import com.crazedout.ronah.service.Request;
 
 public class BagginsService extends AutoRegisterService {
 
-    @GET(path="/bagins", response="text/html")
+    @GET(path="/baggins", response="text/html")
     public void getBagins(Request request){
 
         String html = BagginsFactory.getHTML(DefaultService.class);

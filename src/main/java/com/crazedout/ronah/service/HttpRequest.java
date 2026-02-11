@@ -79,6 +79,20 @@ public class HttpRequest implements Request {
     }
 
     /**
+     * Gets a Http Header value
+     * @param key String header key ignore case.
+     * @return String value
+     */
+    public String getHeader(String key) {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            if(entry.getKey().equalsIgnoreCase(key)){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Saves the posted bytes to file.
      * @param file File output file.
      * @throws IOException Exception.

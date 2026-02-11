@@ -31,6 +31,7 @@ public interface Response {
     Response ok(String data);
     Response ok(String contentType, String data);
     Response error();
+    Response error(String message);
     Response forbidden();
     Response notFound();
     void internalError(String message);
