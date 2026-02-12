@@ -19,7 +19,7 @@ package com.crazedout.ronah.service;
  */
 import com.crazedout.ronah.Ronah;
 import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.service.handler.RawMultipartParser;
+import com.crazedout.ronah.auth.BasicAuthentication;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
@@ -112,7 +112,7 @@ public final class Repository<Service> extends ArrayList<Service> {
             if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
                 if(g.useBasicAuth()){
                     User user;
-                    if((user=BasicAuthentication.authenticate(request))==null){
+                    if((user= BasicAuthentication.authenticate(request))==null){
                         request.getResponse().auth(g.basicAuthRealm()).send();
                         return true;
                     }

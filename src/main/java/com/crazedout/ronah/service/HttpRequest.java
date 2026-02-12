@@ -17,7 +17,7 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
-import com.crazedout.ronah.annotation.BasicAuthentication;
+import com.crazedout.ronah.auth.BasicAuthentication;
 import com.crazedout.ronah.service.handler.MultipartPart;
 
 import java.io.*;

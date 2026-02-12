@@ -1,4 +1,4 @@
-package com.crazedout.ronah.annotation;
+package com.crazedout.ronah.auth;
 
 import com.crazedout.ronah.service.Request;
 import com.crazedout.ronah.service.User;

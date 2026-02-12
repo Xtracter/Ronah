@@ -20,6 +20,7 @@ package com.crazedout.ronah.service;
 
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.api.API;
+import com.crazedout.ronah.auth.BasicAuthentication;
 import com.crazedout.ronah.service.handler.MultipartPart;
 
 import java.io.DataInputStream;
