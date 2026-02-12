@@ -1,4 +1,4 @@
-package com.crazedout.ronah.baggins;
+package com.crazedout.ronah.api;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -23,12 +23,12 @@ import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.Request;
 
-public class BagginsService extends AutoRegisterService {
+public class APIService extends AutoRegisterService {
 
     @GET(path="/baggins", response="text/html")
     public void getBagins(Request request){
 
-        String html = BagginsFactory.getHTML(DefaultService.class);
+        String html = APIFactory.getHTML(DefaultService.class);
         request.getResponse().ok(html).send();
     }
 

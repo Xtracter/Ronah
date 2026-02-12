@@ -1,7 +1,7 @@
 package com.crazedout.ronah.service;
 
 import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.baggins.Baggins;
+import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.service.handler.MultipartPart;
 
 import java.io.DataInputStream;
@@ -14,7 +14,7 @@ public class DefaultService extends AutoRegisterService{
 
     public DefaultService(){
         super();
-        BasicAuthentication.addUser("roos","roos");
+        BasicAuthentication.addUser("roos","roos" );
     }
 
     @CatchAll
@@ -35,7 +35,7 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(new String(buffer)).send();
     }
 
-    @Baggins(name="Echo service 1", description = "Echos query string")
+    @API(name="Echo service 1", description = "Echos query string")
     @GET(path="/", response="text/html", ignoreParentPath = true)
     public void getIndex(Request request){
         System.out.println(request.getQueryString());
@@ -43,7 +43,7 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 
-    @Baggins(name="Echo Service 2",description = "Echos the given input name and age")
+    @API(name="Echo Service 2",description = "Echos the given input name and age")
     @GET(path="/api/v1", response="text/html", ignoreParentPath = true)
     public void getIndex(Request request, @Param String name, @Param String age){
         System.out.println(request.getQueryString());
@@ -51,21 +51,21 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 
-    @Baggins(name="Echo Service 3",description = "Echos the given input name and age")
+    @API(name="Echo Service 3",description = "Echos the given input name and age")
     @POST(path="/post", acceptContentType = "application/x-www-form-urlencoded", ignoreParentPath = true)
     public void getRest(Request request, @Param String name, @Param Integer age){
         String html = String.format("<!DOCTYPE html><html><body><h3>Hello from %s %s</h3></body></html>",name,age);
         request.getResponse().ok(html).send();
     }
 
-    @Baggins(name="Echo Service 3",description = "Echos the given json string using name=value")
+    @API(name="Echo Service 3",description = "Echos the given json string using name=value")
     @POST(path="/json", response="text/text", acceptContentType = "application/json", ignoreParentPath = true)
     public void getRest2(Request request, @Param String name, @Param Integer age){
         String html = String.format("<!DOCTYPE html><html><body><h3>Hello from JSON %s %s</h3></body></html>", name,age);
         request.getResponse().ok(html).send();
     }
 
-    @Baggins
+    @API
     @POST(path="/post/file", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA, ignoreParentPath = true)
     public void getRest3(Request request)  {
         String res = "";

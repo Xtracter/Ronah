@@ -1,4 +1,4 @@
-package com.crazedout.ronah.baggins;
+package com.crazedout.ronah.api;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -29,26 +29,26 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 
 @SuppressWarnings("all")
-public class BagginsFactory {
+public class APIFactory {
 
-    private static BagginsFactory instance;
+    private static APIFactory instance;
 
-    private BagginsFactory(){
+    private APIFactory(){
     }
 
     public static String getHTML(Class s){
         return getInstance().parse(s);
     }
 
-    private static BagginsFactory getInstance(){
-        if(instance==null) instance = new BagginsFactory();
+    private static APIFactory getInstance(){
+        if(instance==null) instance = new APIFactory();
         return instance;
     }
 
     public String parse(Class<Service> service){
         StringBuilder sb = new StringBuilder();
         for(Method method:service.getDeclaredMethods()){
-            Baggins bagins = method.getAnnotation(Baggins.class);
+            API bagins = method.getAnnotation(API.class);
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
             if(g!=null && bagins!=null) {

@@ -18,7 +18,7 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.baggins.BagginsService;
+import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.HttpHandler;
@@ -139,7 +139,7 @@ public final class Ronah  {
 
         System.out.println(marquee());
         AutoRegisterService.register(DefaultService.class);
-        AutoRegisterService.register(BagginsService.class);
+        AutoRegisterService.register(APIService.class);
 
         int port = 0;
         if(args.length>0){
