@@ -32,7 +32,7 @@ public class DefaultService extends AutoRegisterService{
 
     public DefaultService(){
         super();
-        BasicAuthentication.addUser("falcon","pencil" );
+        BasicAuthentication.addUser("falcon","pencil");
     }
 
     @CatchAll
