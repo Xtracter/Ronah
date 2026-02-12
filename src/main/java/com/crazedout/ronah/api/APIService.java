@@ -25,7 +25,7 @@ import com.crazedout.ronah.service.Request;
 
 public class APIService extends AutoRegisterService {
 
-    @GET(path="/baggins", response="text/html")
+    @GET(path="/api", response="text/html")
     public void getBagins(Request request){
 
         String html = APIFactory.getHTML(DefaultService.class);

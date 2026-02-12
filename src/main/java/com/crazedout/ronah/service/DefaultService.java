@@ -1,4 +1,22 @@
 package com.crazedout.ronah.service;
+/*
+ * Ronah REST Server
+ * Copyright (c) 2026 Fredrik Roos.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * mail: info@crazedout.com
+ */
 
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.api.API;
@@ -14,7 +32,7 @@ public class DefaultService extends AutoRegisterService{
 
     public DefaultService(){
         super();
-        BasicAuthentication.addUser("roos","roos" );
+        BasicAuthentication.addUser("falcon","pencil" );
     }
 
     @CatchAll
@@ -23,7 +41,7 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 
-    @GET(path="/secret",response = "text/html", useBasicAuth = true, basicAuthRealm = "roos")
+    @GET(path="/secret",response = "text/html", useBasicAuth = true, basicAuthRealm = "california")
     public void getSecret(Request request) {
         request.getResponse().ok("OK").send();
     }
@@ -38,14 +56,13 @@ public class DefaultService extends AutoRegisterService{
     @API(name="Echo service 1", description = "Echos query string")
     @GET(path="/", response="text/html", ignoreParentPath = true)
     public void getIndex(Request request){
-        System.out.println(request.getQueryString());
         String html = "<!DOCTYPE html><html><body><h3>"+request.getQueryString()+"</h3></body></html>";
         request.getResponse().ok(html).send();
     }
 
     @API(name="Echo Service 2",description = "Echos the given input name and age")
     @GET(path="/api/v1", response="text/html", ignoreParentPath = true)
-    public void getIndex(Request request, @Param String name, @Param String age){
+    public void getIndex2(Request request, @Param String name, @Param String age){
         System.out.println(request.getQueryString());
         String html = String.format("<!DOCTYPE html><html><body><h3>Hello %s %s</h3></body></html>",name,age);
         request.getResponse().ok(html).send();

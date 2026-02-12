@@ -2,6 +2,17 @@
 
 # Ronah REST API - REST made super fast and easy
 
+Ronah REST API is a super simple and lightning-fast REST API designed to make your development workflow seamless. Built-in web tests let you verify endpoints instantly, so you can focus on building, not debugging.
+
+Key features include:
+
+Fast and lightweight – minimal setup, maximum speed.
+
+Built-in web tests – test your API directly without extra tools.
+
+Secure by default – supports basic authentication and TLS.
+
+Ronah REST API gives you everything you need for quick, reliable, and secure API development.
 
     @API(name="Name and age check", description="A GET Name and age check service")
     @GET(path="/index", response="text/text")
