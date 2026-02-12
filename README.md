@@ -44,7 +44,7 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
         AutoRegisterService.register(APIService.class);
     
         Ronah r = new Ronah();
-        r.start();
+        r.start(8080);
     }
 
 # Test Web API
