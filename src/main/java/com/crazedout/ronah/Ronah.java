@@ -18,10 +18,7 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.api.APIService;
-import com.crazedout.ronah.service.AutoRegisterService;
-import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.HttpHandler;
 
 import javax.net.ServerSocketFactory;
