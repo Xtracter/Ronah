@@ -18,6 +18,7 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.service.DefaultService;
@@ -138,8 +139,8 @@ public final class Ronah  {
     public static void main(String[] args) {
 
         System.out.println(marquee());
-        AutoRegisterService.register(DefaultService.class);
-        AutoRegisterService.register(APIService.class);
+        new MyRESTService();
+        new APIService();
 
         int port = 0;
         if(args.length>0){

@@ -57,7 +57,7 @@ public class APIFactory {
                 sb.append(getHTML(method.getParameters(), bagins.name(), "POST", p.acceptContentType(), p.path(), p.response()));
             }
         }
-        return getHead() + sb + "<script>document.getElementById(\"title\").innerHTML='Baggins 1.0 - "+service.getName()+"';</script>" + getTail();
+        return sb.toString();
     }
 
 
@@ -117,10 +117,10 @@ public class APIFactory {
     }
 
 
-    String getHead(){
+    public static String getHead(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(
-                getClass().getResourceAsStream("/bagins_head.html")))){
+                c.getResourceAsStream("/bagins_head.html")))){
             html = new String(dis.readAllBytes());
         }catch(IOException ex){
             ex.printStackTrace(System.out);
@@ -128,10 +128,10 @@ public class APIFactory {
         return html;
     }
 
-    String getTail(){
+    public static String getTail(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(
-                getClass().getResourceAsStream("/bagins_tail.html")))){
+                c.getResourceAsStream("/bagins_tail.html")))){
             html = new String(dis.readAllBytes());
         }catch(IOException ex){
             ex.printStackTrace(System.out);

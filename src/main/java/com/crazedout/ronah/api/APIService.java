@@ -18,18 +18,21 @@ package com.crazedout.ronah.api;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.MyRESTService;
 import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.service.AutoRegisterService;
-import com.crazedout.ronah.service.DefaultService;
-import com.crazedout.ronah.service.Request;
+import com.crazedout.ronah.service.*;
 
 public class APIService extends AutoRegisterService {
 
     @GET(path="/api", response="text/html")
-    public void getBagins(Request request){
+    public void getAPI(Request request){
+        String html = "";
+        for(Service s: Repository.getServices()) {
+            if(s == this) continue;
+            html+= APIFactory.getHTML(MyRESTService.class);
+        }
+        request.getResponse().ok(APIFactory.getHead(getClass())+html+APIFactory.getTail(getClass())).send();
 
-        String html = APIFactory.getHTML(DefaultService.class);
-        request.getResponse().ok(html).send();
     }
 
 }

@@ -49,6 +49,10 @@ public final class Repository<Service> extends ArrayList<Service> {
         return instance;
     }
 
+    public static List<com.crazedout.ronah.service.Service> getServices(){
+        return getInstance();
+    }
+
     /**
      * This central function dispatches incoming calls to the correct Service's method.
      * @param request Request request.
