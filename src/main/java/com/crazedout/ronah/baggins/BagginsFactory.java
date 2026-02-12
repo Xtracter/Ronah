@@ -52,7 +52,7 @@ public class BagginsFactory {
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
             if(g!=null && bagins!=null) {
-                sb.append(getHTML(method.getParameters(), bagins.name(), "GET", g.acceptsContentType(), g.path(), g.response()));
+                sb.append(getHTML(method.getParameters(), bagins.name(), "GET", g.acceptContentType(), g.path(), g.response()));
             }else if(p!=null && bagins!=null){
                 sb.append(getHTML(method.getParameters(), bagins.name(), "POST", p.acceptContentType(), p.path(), p.response()));
             }

@@ -22,8 +22,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Annotation for HTTP request POST.
@@ -35,4 +33,6 @@ public @interface POST {
     String response() default "application/json";
     String acceptContentType() default "*";
     boolean ignoreParentPath() default false;
+    boolean useBasicAuth() default false;
+    String basicAuthRealm() default "Ronah";
 }

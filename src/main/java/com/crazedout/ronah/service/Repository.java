@@ -19,6 +19,7 @@ package com.crazedout.ronah.service;
  */
 import com.crazedout.ronah.Ronah;
 import com.crazedout.ronah.annotation.*;
+import com.crazedout.ronah.service.handler.RawMultipartParser;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
@@ -109,6 +110,13 @@ public final class Repository<Service> extends ArrayList<Service> {
          for(Annotation an: method.getDeclaredAnnotations()) {
             // GET request
             if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
+                if(g.useBasicAuth()){
+                    User user;
+                    if((user=BasicAuthentication.authenticate(request))==null){
+                        request.getResponse().auth(g.basicAuthRealm()).send();
+                        return true;
+                    }
+                }
                 request.getResponse().setContentType(g.response());
                 Parameter[] params = method.getParameters();
                 List<Object> args = new ArrayList<>();
@@ -133,6 +141,13 @@ public final class Repository<Service> extends ArrayList<Service> {
                 break;
             }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
                     p.ignoreParentPath())){
+                if(p.useBasicAuth()){
+                    User user;
+                    if((user=BasicAuthentication.authenticate(request))==null){
+                        request.getResponse().auth(p.basicAuthRealm()).send();
+                        return true;
+                    }
+                }
                 request.getResponse().setContentType(p.response());
                 Parameter[] params = method.getParameters();
                 List<Object> args = new ArrayList<>();

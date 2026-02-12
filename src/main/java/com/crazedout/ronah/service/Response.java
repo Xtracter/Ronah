@@ -34,6 +34,7 @@ public interface Response {
     Response error(String message);
     Response forbidden();
     Response notFound();
+    Response auth(String realm);
     void internalError(String message);
     void setContentType(String contentType);
     void setData(String data);

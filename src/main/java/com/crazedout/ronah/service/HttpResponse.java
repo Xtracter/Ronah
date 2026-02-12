@@ -72,6 +72,18 @@ public class HttpResponse implements Response{
     }
 
     /**
+     * Creates an HTTP 404 response.
+     * @return Response
+     */
+    public Response auth(String realm){
+        userHeaders.put("WWW-Authenticate", String.format("Basic realm=\"%s\"",realm));
+        this.builder.append("HTTP/1.1 401 Unauthorized\n");
+        this.contentType=CONTENT_TYPE_TEXT;
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>";
+        return this;
+    }
+
+    /**
      * Creates an HTTP 500 response.
      * @return Response
      */

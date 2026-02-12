@@ -17,15 +17,16 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.crazedout.ronah.annotation.BasicAuthentication;
+import com.crazedout.ronah.service.handler.MultipartPart;
+
+import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +43,8 @@ public class HttpRequest implements Request {
     private final Map<String,String> headers;
     private final Response response;
     private byte[] postData;
+    private List<MultipartPart> multipartParts;
+    private BasicAuthentication.BasicUser basicUser;
 
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
     public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
@@ -55,10 +58,20 @@ public class HttpRequest implements Request {
      * @param httpLine first line of an HTTP request.
      * @param out OutputStream to write to client.
      */
-    public HttpRequest(String httpLine, OutputStream out){
+    public HttpRequest(String httpLine, InputStream in, OutputStream out){
         this.headers = new HashMap<>();
-        response = new HttpResponse(out);
+        this.response = new HttpResponse(out);
         this.parse(httpLine);
+    }
+
+    @Override
+    public void setMultiParts(List<MultipartPart> multiParts){
+        this.multipartParts=multiParts;
+    }
+
+    @Override
+    public List<MultipartPart> getMultiParts(){
+        return this.multipartParts;
     }
 
     /**
@@ -76,6 +89,15 @@ public class HttpRequest implements Request {
         }else{
             this.path = tokens[1];
         }
+    }
+
+    public void setUser(User user){
+        this.basicUser= (BasicAuthentication.BasicUser) user;
+    }
+
+    @Override
+    public User getUser(){
+        return this.basicUser;
     }
 
     /**
@@ -135,6 +157,10 @@ public class HttpRequest implements Request {
                     return URLDecoder.decode(pair[1],defaultCharset);
             }
         }
+        return null;
+    }
+
+    public List<String> getParameterArray(String key){
         return null;
     }
 

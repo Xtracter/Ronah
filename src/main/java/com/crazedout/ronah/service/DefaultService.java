@@ -1,21 +1,38 @@
 package com.crazedout.ronah.service;
 
-import com.crazedout.ronah.annotation.CatchAll;
-import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.annotation.Param;
+import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.baggins.Baggins;
+import com.crazedout.ronah.service.handler.MultipartPart;
 
-import java.io.File;
+import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class DefaultService extends AutoRegisterService{
+
+    public DefaultService(){
+        super();
+        BasicAuthentication.addUser("roos","roos");
+    }
 
     @CatchAll
     public void catchAll(Request request){
         String html = "<!DOCTYPE html><html><body><h3>Hello from Ronah Catch all</h3></body></html>";
         request.getResponse().ok(html).send();
+    }
+
+    @GET(path="/secret",response = "text/html", useBasicAuth = true, basicAuthRealm = "roos")
+    public void getSecret(Request request) {
+        request.getResponse().ok("OK").send();
+    }
+
+    @GET(path="/form",response = "text/html")
+    public void getFile(Request request) throws IOException{
+        DataInputStream dis = new DataInputStream(Objects.requireNonNull(getClass().getResourceAsStream("/form.html")));
+        byte[] buffer = dis.readAllBytes();
+        request.getResponse().ok(new String(buffer)).send();
     }
 
     @Baggins(name="Echo service 1", description = "Echos query string")
@@ -48,9 +65,19 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 
-    @POST(path="/json/file", response="text/text", acceptContentType = HttpRequest.OCTET_STREAM, ignoreParentPath = true)
+    @Baggins
+    @POST(path="/post/file", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA, ignoreParentPath = true)
+    public void getRest3(Request request)  {
+        String res = "";
+        for(MultipartPart part:request.getMultiParts()){
+            res += part.getHeader("Content-Type") + "/" + part.getHeader("Content-Disposition") + "\n";
+        }
+        request.getResponse().ok(res).send();
+    }
+
+    @POST(path="/json/upload", response="text/text", acceptContentType = HttpRequest.OCTET_STREAM, ignoreParentPath = true)
     public void getRest2(Request request) throws IOException {
-        try(FileOutputStream fos = new FileOutputStream(new File("c:\\Users\\Admin\\restdemo\\test.pdf"))){
+        try(FileOutputStream fos = new FileOutputStream("test.pdf")){
             fos.write(request.getPostData());
         }
         request.getResponse().ok("OK").send();

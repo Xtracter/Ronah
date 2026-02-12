@@ -18,7 +18,11 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.annotation.BasicAuthentication;
+import com.crazedout.ronah.service.handler.MultipartPart;
+
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +34,8 @@ public interface Request {
     Map<String,String> getHeaders();
     String getHeader(String key);
     Response getResponse();
+    List<MultipartPart> getMultiParts();
+    void setMultiParts(List<MultipartPart> multiParts);
     String getProtocol();
     String getMethod();
     String getQueryString();
@@ -38,5 +44,5 @@ public interface Request {
     String getParameter(String key, Charset charSet);
     String getParameter(String key);
     void setCharset(Charset charset);
-
+    User getUser();
     }
