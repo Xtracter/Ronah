@@ -61,8 +61,8 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
 
         public static void main(String[] args){
 
-            new MyRESTService();
-            new APIService();
+            new MyRESTService(); 
+            new APIService(); // Activate Web API Tests
 
             RonahHttpServer server = new RonahHttpServer();
             server.start(8080);
