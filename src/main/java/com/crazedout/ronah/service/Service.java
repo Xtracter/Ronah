@@ -20,6 +20,7 @@ package com.crazedout.ronah.service;
 
 /**
  * Interface of a Service.
+ * In the realm of Ronah a class needs to inherit Service to be considered for HTTP calls.
  */
 public interface Service {
 
