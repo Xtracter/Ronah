@@ -99,10 +99,11 @@ public final class HttpHandler {
             }
         }
         try {
-            Repository.serv(request);
+            if(request!=null){
+                Repository.serv(request);
+            }
         }catch(Exception ex){
             ex.printStackTrace(System.out);
-            assert request != null;
             request.getResponse().error(ex.getMessage()).send();
         }
     }

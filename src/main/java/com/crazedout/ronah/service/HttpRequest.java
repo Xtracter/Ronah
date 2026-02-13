@@ -149,13 +149,17 @@ public class HttpRequest implements Request {
      */
     @Override
     public String getParameter(String key){
-        if(queryString!=null){
-            String[] tokens = queryString.split("&");
-            for(String t:tokens){
-                String[] pair = t.split("=");
-                if(key.equals(URLEncoder.encode(pair[0],defaultCharset)))
-                    return URLDecoder.decode(pair[1],defaultCharset);
+        try {
+            if (queryString != null) {
+                String[] tokens = queryString.split("&");
+                for (String t : tokens) {
+                    String[] pair = t.split("=");
+                    if (key.equals(URLEncoder.encode(pair[0], defaultCharset)))
+                        return URLDecoder.decode(pair[1], defaultCharset);
+                }
             }
+        }catch(ArrayIndexOutOfBoundsException ex){
+            ex.printStackTrace(System.out);
         }
         return null;
     }

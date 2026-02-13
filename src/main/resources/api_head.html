@@ -208,6 +208,18 @@
             };
         }
 
+        function isJsonString(str,mess) {
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                document.getElementById(mess).innerHTML="Bad JSON String";
+                return false;
+            }
+          document.getElementById(mess).innerHTML="";
+          return true;
+        }
+
+
     </script>
 </head>
 <body>

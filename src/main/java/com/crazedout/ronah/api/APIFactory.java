@@ -20,6 +20,7 @@ package com.crazedout.ronah.api;
 
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
+import com.crazedout.ronah.service.HttpRequest;
 import com.crazedout.ronah.service.Service;
 
 import java.io.DataInputStream;
@@ -83,8 +84,20 @@ public class APIFactory {
         for(Parameter p:params){
             if(c++==0) continue;
             String key = "p_" + count++;
-            sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' /><br/>\n",
-                    p.getName(),parseType(p.getType()), p.getName().toLowerCase(),key));
+            String sid = "sp_"+ count++;
+            if(HttpRequest.APPLICATION_JSON.equals(contentType)) {
+                sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' onBlur=\"isJsonString(this.value,'%s')\"/><span style=\"color:red\" id=\"%s\"></span><br/>\n",
+                        p.getName(), parseType(p.getType()), p.getName().toLowerCase(), key,sid,sid));
+            }else{
+                if(isNumber(p.getType())) {
+                    sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' onBlur=\"if(isNaN(this.value)) {document.getElementById('%s').innerHTML='Not a Number'}else{document.getElementById('%s').innerHTML=''}\"/><span style=\"color:red\" id=\"%s\"></span><br/>\n",
+                            p.getName(), parseType(p.getType()), p.getName().toLowerCase(), key,sid,sid,sid));
+                }else{
+                    sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' /><br/>\n",
+                            p.getName(), parseType(p.getType()), p.getName().toLowerCase(), key));
+                }
+            }
+
             keys.add(key);
             names.add(p.getName().toLowerCase());
         }
@@ -105,7 +118,7 @@ public class APIFactory {
         }
         func=func.substring(0,func.length()-1) + ")";
         sb.append("</td><td>").append(response).append("</td></tr>");
-        String btn = "<input type='button' value='Send' onclick=\""+func+"\"/>\n";
+        String btn = "<input type='button' value='Send' onclick=\"" + func + "\"/>\n";
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
         String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1\" id='%s'>Response:</div>", "con_" + uuid);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", console));
@@ -116,11 +129,14 @@ public class APIFactory {
         return sb.toString();
     }
 
+    boolean isNumber(Class<?> c){
+        return c==Integer.class || c==Double.class || c == Float.class;
+    }
 
     public static String getHead(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(
-                c.getResourceAsStream("/bagins_head.html")))){
+                c.getResourceAsStream("/api_head.html")))){
             html = new String(dis.readAllBytes());
         }catch(IOException ex){
             ex.printStackTrace(System.out);
@@ -131,7 +147,7 @@ public class APIFactory {
     public static String getTail(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(
-                c.getResourceAsStream("/bagins_tail.html")))){
+                c.getResourceAsStream("/api_tail.html")))){
             html = new String(dis.readAllBytes());
         }catch(IOException ex){
             ex.printStackTrace(System.out);
