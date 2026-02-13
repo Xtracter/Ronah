@@ -5,24 +5,11 @@
     </head>
     <body>
         <h2>Test page</h2>
-        <form action="/post/file" method="post" enctype="multipart/form-data">
+        <form action="/upload" method="post" enctype="multipart/form-data">
             <input type="text" name="name"/><br>
             <input type="text" name="age"/><br>
-
             <input type="file" name="file"/>
             <input type="submit"/>
         </form>
-
-        <form action="/form" method="GET">
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-            <label for="vehicle1"> I have a bike</label><br>
-            <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-            <label for="vehicle2"> I have a car</label><br>
-            <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-            <label for="vehicle3"> I have a boat</label>
-            <input type="submit">
-        </form>
     </body>
-
-
 </html>

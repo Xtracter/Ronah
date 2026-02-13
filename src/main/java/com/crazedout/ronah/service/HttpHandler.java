@@ -19,12 +19,14 @@ package com.crazedout.ronah.service;
  */
 
 import com.crazedout.ronah.Ronah;
+import com.crazedout.ronah.service.handler.MultipartPart;
 import com.crazedout.ronah.service.handler.RawMultipartParser;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -64,6 +66,7 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
+            System.out.print(c);
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
@@ -91,8 +94,10 @@ public final class HttpHandler {
             }
             request.setPostData(buffer);
             if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)){
-                request.setMultiParts(RawMultipartParser.parse(buffer,request.getHeader("Content-Type"),len,
-                        StandardCharsets.UTF_8));
+
+                    request.setMultiParts(RawMultipartParser.parse(buffer, request.getHeader("Content-Type"),
+                            StandardCharsets.UTF_8));
+
             }
             if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                 request.setQueryString(new String(buffer));

@@ -102,16 +102,21 @@ public class APIFactory {
             names.add(p.getName().toLowerCase());
         }
         if("POST".equals(method)) {
-            func = "pAjax('con_" + uuid + "','" + path + "',";
+            func = "pAjax1('con_" + uuid + "','" + path + "',";
         }else{
             func = "gAjax('con_" + uuid + "','" + path + "',";
         }
-        if(params.length<2){
+        if(params.length<2 && !HttpRequest.MULTIPART_FORM_DATA.equals(contentType)){
             String key = "q_" + count++;
             sb.append(String.format("Query String:<br/><input type='text' name='%s' id='%s' /><br/>\n", key, key));
             keys.add(key);
             names.add("Query:");
             func = "qAjax" + "('con_" + uuid + "','" + path + "',";
+        }
+        if(HttpRequest.MULTIPART_FORM_DATA.equals(contentType)){
+            String key = "q_" + count++;
+            sb.append(String.format("<input type=\"file\" name=\"uploadFile\" id=\"%s\" />",key));
+            func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
         }
         for (String key : keys) {
             func += "'" + key + "',";
@@ -119,6 +124,7 @@ public class APIFactory {
         func=func.substring(0,func.length()-1) + ")";
         sb.append("</td><td>").append(response).append("</td></tr>");
         String btn = "<input type='button' value='Send' onclick=\"" + func + "\"/>\n";
+        System.out.println(func);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
         String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1\" id='%s'>Response:</div>", "con_" + uuid);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", console));

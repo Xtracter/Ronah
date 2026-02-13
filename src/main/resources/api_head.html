@@ -140,14 +140,55 @@
             sendAndReceive(query, arguments[0]);
         }
 
-        function pAjax(){
+        function pAjax1(){
             var path = arguments[1];
             var query = "";
             for(i=2;i<arguments.length;i++){
                 query += document.getElementById(arguments[i]).name + "=" + document.getElementById(arguments[i]).value;
                 if(i<arguments.length-1) query+="&";
             }
-            sendAndReceivePost(path, query, arguments[0]);
+            sendAndReceivePost(path, query, arguments[0],"application/x-www-form-urlencoded");
+        }
+
+        function pAjax2(){
+            var path = arguments[1];
+            var query = "";
+            for(i=2;i<arguments.length;i++){
+                query += document.getElementById(arguments[i]).name + "=" + document.getElementById(arguments[i]).value;
+                if(i<arguments.length-1) query+="&";
+            }
+            sendAndReceivePost(path, query, arguments[0],"multipart/form-data");
+        }
+
+        function postForm(path,cons,field){
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                        xmlhttp = new XMLHttpRequest();
+                    } else {
+                        xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                    }
+                    var formData = new FormData();
+                    formData.append("uploadFile", document.getElementById(field).files[0]);
+                    xmlhttp.open('POST', path, true);
+                    xmlhttp.setRequestHeader('cache-control', 'no-cache');
+                    xmlhttp.send(formData);
+
+                    xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState !== 4) return;
+                    if (xmlhttp.status == 200) {
+                    let response;
+                    try {
+                        response= JSON.parse(xmlhttp.responseText);
+                    } catch (e) {
+                        response= xmlhttp.responseText;
+                    }
+                    document.getElementById(cons).innerHTML=response;
+                }
+                else {
+                    document.getElementById(cons).innerHTML= xmlhttp.status + "," + xmlhttp.responseText;
+                }
+            };
+
         }
 
         function sendAndReceive(url, cons){
@@ -178,7 +219,7 @@
                 }
             };
         }
-        function sendAndReceivePost(path, query, cons){
+        function sendAndReceivePost(path, query, cons, type){
 
             var xmlhttp;
                 if (window.XMLHttpRequest) {
@@ -188,7 +229,7 @@
                     }
                     xmlhttp.open('POST', path, true);
                     xmlhttp.setRequestHeader('cache-control', 'no-cache');
-                    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xmlhttp.setRequestHeader("Content-type", type);
                     xmlhttp.send(query);
 
                     xmlhttp.onreadystatechange = function() {

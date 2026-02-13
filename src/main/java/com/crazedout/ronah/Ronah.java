@@ -50,6 +50,7 @@ public final class Ronah  {
     private int port;
     private volatile ServerSocketFactory serverSocketFactory;
     private volatile boolean secure;
+    private ServerSocket serverSocket;
 
     /**
      * Create an instance of Ronah on port.
@@ -61,7 +62,7 @@ public final class Ronah  {
         if(verbose) logger.info("Verbose=true");
     }
 
-    private ServerSocket createServerSocket() throws IOException {
+    private ServerSocket createServerSocket(int port) throws IOException {
         ServerSocket serv = serverSocketFactory.createServerSocket();
         serv.setReuseAddress(true);
         serv.bind(new InetSocketAddress(port));
@@ -75,9 +76,10 @@ public final class Ronah  {
     public void start(int port) {
         this.port=port;
         logger.info("Starting Ronah REST server on port:" + port);
-        try(ServerSocket serv = secure?createServerSocket():new ServerSocket(port)){
+        try{
+            serverSocket = secure?createServerSocket(port):new ServerSocket(port);
             while(running) {
-                Socket s = serv.accept();
+                Socket s = serverSocket.accept();
                 s.setReuseAddress(true);
                 (new Thread(() -> new HttpHandler(s))).start();
             }
@@ -85,6 +87,15 @@ public final class Ronah  {
         }catch(IOException ex){
             System.err.println(ex.getMessage());
         }
+    }
+
+    /**
+     * Stops the server
+     * @throws IOException Exception
+     */
+    public void stop() throws IOException {
+        running = false;
+        serverSocket.close();  // This unblocks accept()
     }
 
     /**
@@ -96,13 +107,6 @@ public final class Ronah  {
         return key;
     }
 
-    /**
-     * Requesting server to stop.
-     */
-    @SuppressWarnings("unused")
-    public void stop() {
-        this.running=false;
-    }
 
     /**
      * Setting the ServerSocketFactory used to create a ServerSocket.

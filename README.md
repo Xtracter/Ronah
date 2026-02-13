@@ -23,6 +23,14 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             BasicAuthentication.addUser("falcon","pencil");
         }
 
+        @API
+        @GET(response = "text/html", path="/form")
+        public void getFile(Request request) throws IOException {
+            DataInputStream dis = new DataInputStream(Objects.requireNonNull(getClass().getResourceAsStream("/form.html")));
+            byte[] buffer = dis.readAllBytes();
+            request.getResponse().ok(new String(buffer)).send();
+        }
+
         @API(name="Name and age check", description="A GET Name and age check service")
         @GET(path="/index", response="text/text")
         public void getIndex(Request request, @Param String name, @Param Integer age){
@@ -31,30 +39,34 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
         }
 
         @API(name="My handler of Json call", description="Handles a Json payload and returns great things")
-        @GET(path="/json", acceptContentType="application/json", useBasicAuth=true, basicAuthRealm="cars")
+        @GET(path="/json", acceptContentType="application/json")//, useBasicAuth=true, basicAuthRealm="cars")
         public void getIndex(Request request, @Param JSONObject json){
-            String response = handleRequest(json);
-            request.getResponse().ok(response).send();
+            try {
+                String response = "Hello " + json.getString("name") + " " + json.getInt("age");
+                request.getResponse().ok(response).send();
+            }catch(JSONException ex){
+                request.getResponse().error(ex.getMessage()).send();
+            }
         }
 
         @API
-        @POST(path="/post/file", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA, ignoreParentPath = true)
+        @POST(path="/upload", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA)
         public void getRest3(Request request)  {
             String res = "";
-            for(MultipartPart part:request.getMultiParts()){
+         for(MultipartPart part:request.getMultiParts()){
                 res += part.getHeader("Content-Type") + "/" + part.getHeader("Content-Disposition") + "\n";
             }
             request.getResponse().ok(res).send();
         }
-    }
 
-    public static void main(String[] args){
-        
-        new MyRESTService();
-        new APIService();
-    
-        Ronah r = new Ronah();
-        r.start(8080);
+        public static void main(String[] args){
+
+            new MyRESTService();
+            new APIService();
+
+            Ronah r = new Ronah();
+            r.start(8081);
+        }
     }
 
 # Test Web API

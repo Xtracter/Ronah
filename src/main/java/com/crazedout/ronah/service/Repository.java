@@ -20,6 +20,7 @@ package com.crazedout.ronah.service;
 import com.crazedout.ronah.Ronah;
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.BasicAuthentication;
+import com.crazedout.ronah.service.handler.MultipartPart;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
@@ -28,6 +29,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -166,14 +168,18 @@ public final class Repository<Service> extends ArrayList<Service> {
                         }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                             String value = new String(request.getPostData());
                             addParameterByClass(args, value, pa.getType());
+                        }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
+                            String value;
+                            System.out.println("Multi:" + request.getMultiParts().size());
                         }
                     }
                 }
-                if(args.size()==method.getParameterCount()) {
+                System.out.println(args.size() + " " + method.getParameterCount());
+                //if(args.size()==method.getParameterCount()) {
                     logger.info("Invoking method: " + method.getName());
                     method.invoke(s, args.toArray());
                     sent=true;
-                }
+                //}
                 break;
             }
          }

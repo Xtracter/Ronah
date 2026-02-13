@@ -9,11 +9,13 @@ public class RawMultipartParser {
     public static List<MultipartPart> parse(
             byte[] bodyBytes,
             String contentType,
-            int contentLength, Charset charset) throws IOException {
+            Charset charset) throws IOException {
+
+        List<MultipartPart> parts = new ArrayList<>();
 
         String boundary = extractBoundary(contentType);
         if (boundary == null) {
-            throw new IllegalArgumentException("No boundary found");
+            throw new IllegalArgumentException("No boundary found.");
         }
 
         //byte[] bodyBytes = readAllBytes(inputStream, contentLength);
@@ -21,8 +23,6 @@ public class RawMultipartParser {
 
         String delimiter = "--" + boundary;
         String[] rawParts = body.split(delimiter);
-
-        List<MultipartPart> parts = new ArrayList<>();
 
         for (String rawPart : rawParts) {
             if (rawPart.equals("--") || rawPart.trim().isEmpty()) {
