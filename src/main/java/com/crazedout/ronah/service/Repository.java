@@ -17,10 +17,9 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
-import com.crazedout.ronah.Ronah;
+import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.BasicAuthentication;
-import com.crazedout.ronah.service.handler.MultipartPart;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
@@ -29,7 +28,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -41,7 +39,7 @@ import java.util.logging.Logger;
 @SuppressWarnings("unused")
 public final class Repository<Service> extends ArrayList<Service> {
 
-    private final static Logger logger = Ronah.logger;
+    private final static Logger logger = RonahHttpServer.logger;
     private static Repository<com.crazedout.ronah.service.Service> instance;
 
     private Repository(){}

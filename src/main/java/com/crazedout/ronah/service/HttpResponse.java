@@ -18,7 +18,7 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.Ronah;
+import com.crazedout.ronah.RonahHttpServer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -154,7 +154,7 @@ public class HttpResponse implements Response{
      */
     public void send() {
         try {
-            this.builder.append("Server: ").append(Ronah.server).append(" ").append(Ronah.version).append("\n");
+            this.builder.append("Server: ").append(RonahHttpServer.server).append(" ").append(RonahHttpServer.version).append("\n");
             this.builder.append("Date: ").append(dateFormat.format(new Date())).append("\n");
             this.builder.append("Content-Type: ").append(this.contentType).append("\n");
             this.builder.append("Content-Length: ").append(data.length()).append("\n");

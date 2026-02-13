@@ -18,15 +18,13 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.Ronah;
-import com.crazedout.ronah.service.handler.MultipartPart;
+import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.service.handler.RawMultipartParser;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -48,7 +46,7 @@ public final class HttpHandler {
             s.close();
         }catch(Exception ex){
             logger.warning(ex.getMessage());
-            if(Ronah.verbose) ex.printStackTrace(System.err);
+            if(RonahHttpServer.verbose) ex.printStackTrace(System.err);
         }
     }
 
@@ -70,7 +68,7 @@ public final class HttpHandler {
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
-                    Ronah.logger.info("Remote:" + sockAddr + " " + line);
+                    RonahHttpServer.logger.info("Remote:" + sockAddr + " " + line);
                     request = new HttpRequest(line.toString(),in,out);
                 }
                 if(line.isEmpty()) break;

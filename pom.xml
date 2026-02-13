@@ -66,7 +66,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.crazedout.ronah.Ronah</mainClass>
+                            <mainClass>com.crazedout.ronah.RonahHttpServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

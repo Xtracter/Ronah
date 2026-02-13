@@ -64,8 +64,8 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             new MyRESTService();
             new APIService();
 
-            Ronah r = new Ronah();
-            r.start(8080);
+            RonahHttpServer server = new RonahHttpServer();
+            server.start(8080);
         }
     }
 
