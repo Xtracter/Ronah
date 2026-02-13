@@ -63,6 +63,11 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
 
             new MyRESTService(); 
             new APIService(); // Activate Web API Tests
+        
+            /*  SSL/TLS example,
+                System.setProperty("javax.net.ssl.keyStore","ronah_example.jks");
+                System.setProperty("javax.net.ssl.keyStorePassword", "mySecretPasswd");
+            */
 
             RonahHttpServer server = new RonahHttpServer();
             server.start(8080);
