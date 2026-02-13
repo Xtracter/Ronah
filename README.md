@@ -14,6 +14,9 @@ Secure by default – supports basic authentication and TLS.
 
 Ronah REST API gives you everything you need for quick, reliable, and secure API development.
 
+# <a href="http://c8soft.se/ronah/javadoc/index.html">Javadoc here..</a>
+
+
 # Example:
 
     public class MyRESTService extends AutoRegisterService {
