@@ -116,7 +116,7 @@ public final class Repository<Service> extends ArrayList<Service> {
             if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
                 if(g.useBasicAuth()){
                     User user;
-                    if((user= BasicAuthentication.authenticate(request))==null){
+                    if(BasicAuthentication.authenticate(request)==null){
                         request.getResponse().auth(g.basicAuthRealm()).send();
                         return true;
                     }
@@ -147,7 +147,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                     p.ignoreParentPath())){
                 if(p.useBasicAuth()){
                     User user;
-                    if((user=BasicAuthentication.authenticate(request))==null){
+                    if(BasicAuthentication.authenticate(request)==null){
                         request.getResponse().auth(p.basicAuthRealm()).send();
                         return true;
                     }
@@ -185,8 +185,8 @@ public final class Repository<Service> extends ArrayList<Service> {
     }
 
     /**
-     * Sets the correct tpe of an parameter.
-     * @param args List paramers args
+     * Sets the correct type of parameter.
+     * @param args List parameters args
      * @param value String value as string
      * @param type Class the type of parameter to be set.
      */
@@ -232,7 +232,7 @@ public final class Repository<Service> extends ArrayList<Service> {
     }
 
     /**
-     * Gets the number of Servies registered.
+     * Gets the number of Services registered.
      * @return int size.
      */
     public static int getSize(){

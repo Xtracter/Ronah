@@ -25,7 +25,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 /**
  * This class acts as parser for incoming HTTP calls.
@@ -33,8 +32,6 @@ import java.util.logging.Logger;
  * Calls the Repository for the correct Service to handle this Request.
  */
 public final class HttpHandler {
-
-    private final Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Constructor
@@ -45,7 +42,7 @@ public final class HttpHandler {
             parseRequest(s.getInputStream(), s.getOutputStream(), s.getRemoteSocketAddress());
             s.close();
         }catch(Exception ex){
-            logger.warning(ex.getMessage());
+            RonahHttpServer.logger.warning(ex.getMessage());
             if(RonahHttpServer.verbose) ex.printStackTrace(System.err);
         }
     }
@@ -64,7 +61,9 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
-            System.out.print(c);
+            if(System.getProperty("ronah.debug.http")!=null) {
+                System.out.print(c);
+            }
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
