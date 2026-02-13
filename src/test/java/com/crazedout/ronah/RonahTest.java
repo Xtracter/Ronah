@@ -9,7 +9,6 @@ import java.io.PrintStream;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RonahTest {
 
@@ -24,21 +23,18 @@ public class RonahTest {
             ronahHttpServer.start(port);
         });
         t.start();
-        
+
         Thread.sleep(500);
-        try(Socket s = new Socket("localhost",port)){
+        try(Socket s = new Socket("localhost",port)) {
             PrintStream ps = new PrintStream(s.getOutputStream());
             ps.println("GET /index HTTP/1.1\n\n");
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()))) {
                 String line;
-                while((line=reader.readLine())!=null && !line.isEmpty()){
-
+                while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                    // read headers.
                 }
                 assertEquals("OK", reader.readLine());
             }
-        }catch(Exception ex){
-            ex.printStackTrace(System.out);
         }
     }
-
 }
