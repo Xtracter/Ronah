@@ -53,7 +53,7 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
         @POST(path="/upload", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA)
         public void getRest3(Request request)  {
             String res = "";
-         for(MultipartPart part:request.getMultiParts()){
+            for(MultipartPart part:request.getMultiParts()){
                 res += part.getHeader("Content-Type") + "/" + part.getHeader("Content-Disposition") + "\n";
             }
             request.getResponse().ok(res).send();
