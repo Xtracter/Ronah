@@ -18,7 +18,6 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.HttpHandler;
 
 import javax.net.ServerSocketFactory;
@@ -47,7 +46,6 @@ public final class RonahHttpServer {
     public static final Logger logger = Logger.getLogger(RonahHttpServer.class.getName());
     private boolean running=true;
     public static boolean verbose;
-    private int port;
     private volatile ServerSocketFactory serverSocketFactory;
     private volatile boolean secure;
     private ServerSocket serverSocket;
@@ -74,7 +72,7 @@ public final class RonahHttpServer {
      * @param port TCP/IP port.
      */
     public void start(int port) {
-        this.port=port;
+
         logger.info("Starting Ronah REST server on port:" + port);
         try{
             serverSocket = secure?createServerSocket(port):new ServerSocket(port);
@@ -118,7 +116,3 @@ public final class RonahHttpServer {
     }
 
 }
-
-
-
-
