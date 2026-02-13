@@ -22,4 +22,5 @@ package com.crazedout.ronah.service;
  * Interface of a Service.
  */
 public interface Service {
+
 }

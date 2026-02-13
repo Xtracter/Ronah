@@ -18,8 +18,6 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.RonahHttpServer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;

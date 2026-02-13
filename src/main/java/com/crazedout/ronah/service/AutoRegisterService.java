@@ -27,6 +27,7 @@ public abstract class AutoRegisterService implements Service {
         Repository.addService(this);
     }
 
+
     /**
      * Registers a new Service to the Repository.
      * @param c Class AutoregisterService

@@ -1,4 +1,4 @@
-package com.crazedout.ronah;
+package com.crazedout.ronah.service;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -17,8 +17,6 @@ package com.crazedout.ronah;
  *
  * mail: info@crazedout.com
  */
-
-import com.crazedout.ronah.service.HttpHandler;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
