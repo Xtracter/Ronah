@@ -1,4 +1,22 @@
 package com.crazedout.ronah.service.handler;
+/*
+ * Ronah REST Server
+ * Copyright (c) 2026 Fredrik Roos.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * mail: info@crazedout.com
+ */
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -74,22 +92,5 @@ public class RawMultipartParser {
         }
 
         return headers;
-    }
-
-    private static byte[] readAllBytes(InputStream inputStream, int length)
-            throws IOException {
-
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        byte[] data = new byte[8192];
-        int totalRead = 0;
-
-        while (totalRead < length) {
-            int read = inputStream.read(data);
-            if (read == -1) break;
-            buffer.write(data, 0, read);
-            totalRead += read;
-        }
-
-        return buffer.toByteArray();
     }
 }

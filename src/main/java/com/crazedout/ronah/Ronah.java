@@ -23,7 +23,7 @@ import com.crazedout.ronah.api.APIService;
 import javax.net.ssl.SSLServerSocketFactory;
 import java.util.logging.Logger;
 
-public class Ronah {
+public final class Ronah {
 
     private final static Logger logger = Logger.getLogger(Ronah.class.getName());
 
