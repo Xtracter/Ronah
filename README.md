@@ -39,7 +39,7 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
         }
 
         @API(name="My handler of Json call", description="Handles a Json payload and returns great things")
-        @GET(path="/json", acceptContentType="application/json")//, useBasicAuth=true, basicAuthRealm="cars")
+        @GET(path="/json", acceptContentType="application/json", useBasicAuth=true, basicAuthRealm="cars")
         public void getIndex(Request request, @Param JSONObject json){
             try {
                 String response = "Hello " + json.getString("name") + " " + json.getInt("age");
