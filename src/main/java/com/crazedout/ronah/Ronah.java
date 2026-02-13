@@ -20,9 +20,7 @@ package com.crazedout.ronah;
 
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.DefaultService;
-import com.crazedout.ronah.service.Repository;
 import com.crazedout.ronah.service.RonahHttpServer;
-import com.crazedout.ronah.service.Service;
 
 import javax.net.ssl.SSLServerSocketFactory;
 import java.util.logging.Logger;
