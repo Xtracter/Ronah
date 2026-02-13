@@ -19,7 +19,10 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
+import com.crazedout.ronah.service.DefaultService;
+import com.crazedout.ronah.service.Repository;
 import com.crazedout.ronah.service.RonahHttpServer;
+import com.crazedout.ronah.service.Service;
 
 import javax.net.ssl.SSLServerSocketFactory;
 import java.util.logging.Logger;
@@ -48,9 +51,15 @@ public final class Ronah {
      * Application start point.
      * @param args command line arguments (i.e. port).
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         System.out.println(marquee());
+        /*
+            VM Option: -Dronah.service.class=org.user.ronah.MyService
+         */
+        String service = System.getProperty("ronah.service.class");
+        if(service==null) new DefaultService();
+        else Class.forName(service).getDeclaredConstructor().newInstance();
         new APIService();
 
         int port = 0;

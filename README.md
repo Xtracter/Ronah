@@ -26,6 +26,16 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             BasicAuthentication.addUser("falcon","pencil");
         }
 
+        /**
+        * Catch all if match not found. 
+        * If omittet HTTP codes will be returned.
+        */
+        @CatchAll
+        public void catchAll(Request request){
+            String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1>Register services: "+Repository.getSize()+"</body></html>";
+            request.getResponse().ok(html).send();
+        }
+
         @API(name="Name and age check", description="A GET Name and age check service")
         @GET(path="/index", response="text/text")
         public void getIndex(Request request, @Param String name, @Param Integer age){
