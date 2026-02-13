@@ -35,7 +35,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class HttpRequest implements Request {
 
-    private Charset defaultCharset = StandardCharsets.UTF_8;
+    Charset defaultCharset = StandardCharsets.UTF_8;
     private String protocol;
     private String method;
     private String path;
@@ -91,6 +91,10 @@ public class HttpRequest implements Request {
         }
     }
 
+    /**
+     * Sets the User for this Request.
+     * @param user User.
+     */
     public void setUser(User user){
         this.basicUser= (BasicAuthentication.BasicUser) user;
     }

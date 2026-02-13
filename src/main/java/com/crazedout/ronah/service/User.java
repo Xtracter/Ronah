@@ -2,6 +2,6 @@ package com.crazedout.ronah.service;
 
 public interface User {
 
-    String getUser();
+    String getUserName();
 
 }

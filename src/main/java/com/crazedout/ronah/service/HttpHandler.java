@@ -92,7 +92,7 @@ public final class HttpHandler {
             if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)){
 
                     request.setMultiParts(RawMultipartParser.parse(buffer, request.getHeader("Content-Type"),
-                            StandardCharsets.UTF_8));
+                            request.defaultCharset));
 
             }
             if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {

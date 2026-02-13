@@ -23,10 +23,11 @@ public class BasicAuthentication {
         }
 
         @Override
-        public String getUser(){
+        public String getUserName(){
             return this.user;
         }
 
+        @SuppressWarnings("unused")
         public String getEncoded(){
             return this.enc;
         }
