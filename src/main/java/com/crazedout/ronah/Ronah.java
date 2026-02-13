@@ -51,7 +51,6 @@ public final class Ronah {
     public static void main(String[] args) {
 
         System.out.println(marquee());
-        new MyRESTService();
         new APIService();
 
         int port = 0;
