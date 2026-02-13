@@ -23,14 +23,6 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             BasicAuthentication.addUser("falcon","pencil");
         }
 
-        @API
-        @GET(response = "text/html", path="/form")
-        public void getFile(Request request) throws IOException {
-            DataInputStream dis = new DataInputStream(Objects.requireNonNull(getClass().getResourceAsStream("/form.html")));
-            byte[] buffer = dis.readAllBytes();
-            request.getResponse().ok(new String(buffer)).send();
-        }
-
         @API(name="Name and age check", description="A GET Name and age check service")
         @GET(path="/index", response="text/text")
         public void getIndex(Request request, @Param String name, @Param Integer age){
