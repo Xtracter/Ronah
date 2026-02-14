@@ -6,10 +6,9 @@ import com.crazedout.ronah.annotation.Param;
 import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
-import com.crazedout.ronah.service.HttpRequest;
-import com.crazedout.ronah.service.Request;
-import com.crazedout.ronah.service.RonahHttpServer;
-import com.crazedout.ronah.service.handler.MultipartPart;
+import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.handler.MultipartPart;
 import org.json.JSONObject;
 
 import java.util.List;

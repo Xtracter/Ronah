@@ -19,7 +19,6 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
-import com.crazedout.ronah.service.RonahHttpServer;
 
 import javax.net.ssl.SSLServerSocketFactory;
 import java.lang.reflect.InvocationTargetException;

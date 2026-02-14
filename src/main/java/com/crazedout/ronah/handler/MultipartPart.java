@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service.handler;
+package com.crazedout.ronah.handler;
 
 /*
  * Ronah REST Server
@@ -19,7 +19,7 @@ package com.crazedout.ronah.service.handler;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.service.Request;
+import com.crazedout.ronah.request.Request;
 
 import java.util.HashMap;
 import java.util.List;

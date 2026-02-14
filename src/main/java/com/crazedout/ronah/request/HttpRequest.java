@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service;
+package com.crazedout.ronah.request;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,7 +18,8 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 import com.crazedout.ronah.auth.BasicAuthentication;
-import com.crazedout.ronah.service.handler.MultipartPart;
+import com.crazedout.ronah.auth.User;
+import com.crazedout.ronah.handler.MultipartPart;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -35,7 +36,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class HttpRequest implements Request {
 
-    Charset defaultCharset = StandardCharsets.UTF_8;
+    public Charset defaultCharset = StandardCharsets.UTF_8;
     private String protocol;
     private String method;
     private String path;
@@ -133,7 +134,7 @@ public class HttpRequest implements Request {
      * Sets the Query String
      * @param queryString String query
      */
-    void setQueryString(String queryString){
+    public void setQueryString(String queryString){
         this.queryString=queryString;
     }
 

@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service;
+package com.crazedout.ronah.handler;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -17,9 +17,12 @@ package com.crazedout.ronah.service;
  *
  * mail: info@crazedout.com
  */
+import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.BasicAuthentication;
-import com.crazedout.ronah.service.handler.MultipartPart;
+import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.auth.User;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -31,7 +34,6 @@ import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 

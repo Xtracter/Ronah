@@ -20,7 +20,7 @@ package com.crazedout.ronah.api;
 
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.service.HttpRequest;
+import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.Service;
 
 import java.io.DataInputStream;

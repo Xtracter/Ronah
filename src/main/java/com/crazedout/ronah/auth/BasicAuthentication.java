@@ -1,7 +1,6 @@
 package com.crazedout.ronah.auth;
 
-import com.crazedout.ronah.service.Request;
-import com.crazedout.ronah.service.User;
+import com.crazedout.ronah.request.Request;
 
 import java.util.ArrayList;
 import java.util.Base64;

@@ -1,7 +1,6 @@
 package com.crazedout.ronah;
 
-import com.crazedout.ronah.service.HttpRequest;
-import com.crazedout.ronah.service.RonahHttpServer;
+import com.crazedout.ronah.request.HttpRequest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

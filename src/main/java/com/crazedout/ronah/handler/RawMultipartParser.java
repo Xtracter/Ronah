@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service.handler;
+package com.crazedout.ronah.handler;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.

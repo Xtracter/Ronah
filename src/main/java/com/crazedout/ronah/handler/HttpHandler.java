@@ -1,4 +1,4 @@
-package com.crazedout.ronah.service;
+package com.crazedout.ronah.handler;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,12 +18,12 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.service.handler.RawMultipartParser;
+import com.crazedout.ronah.RonahHttpServer;
+import com.crazedout.ronah.request.HttpRequest;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
 
 /**
  * This class acts as parser for incoming HTTP calls.
