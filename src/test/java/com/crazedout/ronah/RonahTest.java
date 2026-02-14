@@ -1,44 +1,15 @@
 package com.crazedout.ronah;
 
-import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.HttpRequest;
 import com.crazedout.ronah.service.RonahHttpServer;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RonahTest {
+public class RonahTest extends TestUtils {
 
-    int port = 8083;
-    String connect(String http) throws IOException {
-        return connect(http,null,null);
-    }
-    String connect(String http, String type, String payload) throws IOException {
-        try(Socket s = new Socket("localhost",port)) {
-            PrintStream ps = new PrintStream(s.getOutputStream());
-            if(payload==null) {
-                ps.println(http + "\n");
-            }else{
-                ps.println(http);
-                ps.println("Content-Type: " + type);
-                ps.println("Content-Length: " + payload.length() + "\n");
-                ps.print(payload);
-            }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                    // read headers.
-                }
-                return reader.readLine();
-            }
-        }
-    }
 
     @Test
     public void test1() throws Exception {

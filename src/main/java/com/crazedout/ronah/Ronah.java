@@ -19,10 +19,11 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
-import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.RonahHttpServer;
 
 import javax.net.ssl.SSLServerSocketFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public final class Ronah {
@@ -45,39 +46,66 @@ public final class Ronah {
                         """;
     }
 
+    private static void usage(){
+
+        System.out.println("Ronah REST " + RonahHttpServer.version);
+        System.out.println("Usage:\n");
+        System.out.println("-p:<port> (optional default 8080)");
+        System.out.println("-s:<service> comma separated list of Services.");
+        System.out.println("-Dronah.services=<services> comma separated list of Services.");
+        System.out.println("-Dronah.port=<port> (optional default 8080)");
+        System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
+        System.out.println("-Djavax.net.ssl.keyStorePassword=<password>");
+
+    }
+
+    private static void addServices(String serv) throws
+            ClassNotFoundException,
+            NoSuchMethodException,
+            InvocationTargetException,
+            InstantiationException,
+            IllegalAccessException {
+
+        if (serv.contains(",")) {
+            Arrays.stream(serv.split(",")).forEach(e -> {
+                try {
+                    Class.forName(e).getDeclaredConstructor().newInstance();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+        } else Class.forName(serv).getDeclaredConstructor().newInstance();
+    }
+
     /**
      * Application start point.
      * @param args command line arguments (i.e. port).
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  throws ClassNotFoundException,
+        NoSuchMethodException,
+        InvocationTargetException,
+        InstantiationException,
+        IllegalAccessException {
 
         System.out.println(marquee());
-        /*
-            VM Option: -Dronah.service.class=org.user.ronah.MyService
-         */
-        String service = System.getProperty("ronah.service.class");
-        if(service==null) new DefaultService();
-        else Class.forName(service).getDeclaredConstructor().newInstance();
-        new APIService();
-
-        int port = 0;
-        if(args.length>0){
-            try{
-                port = Integer.parseInt(args[0]);
-            }catch(NumberFormatException ex){
-                try {
-                    port = System.getProperty("ronah.port") != null ? Integer.parseInt(System.getProperty("ronah.port")) : 8080;
-                }catch(NumberFormatException e){
-                    port = 8080;
-                    logger.info(String.format("Bad VM Option -Dronah.port=%s Defaulting to port: 8080",
-                            System.getProperty("ronah.port")));
-                }
+        int port = 8080;
+        for(String s:args){
+            if(s.startsWith("-p:")) port = Integer.parseInt(s.substring(3));
+            else if(s.equals("-help")) {
+                usage();
+                return;
+            }else if(s.startsWith("-s:")){
+                String serv = s.substring(3);
+                addServices(serv);
             }
         }
-        if(port==0) {
-            port = 8080;
-            logger.info("Port not set - defaulting to 8080.");
-        }
+        new APIService();
+
+        String vm = System.getProperty("ronah.services");
+        if(vm!=null) addServices(vm);
+        vm = System.getProperty("ronah.port");
+        if(vm!=null) port = Integer.parseInt(vm);
+
         RonahHttpServer r = new RonahHttpServer();
         if (System.getProperty("javax.net.ssl.keyStore") != null) {
             r.setServerSocketFactory(SSLServerSocketFactory.getDefault());
