@@ -19,6 +19,7 @@ package com.crazedout.ronah.service;
  */
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.BasicAuthentication;
+import com.crazedout.ronah.service.handler.MultipartPart;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -30,6 +31,7 @@ import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -185,14 +187,22 @@ public final class Repository<Service> extends ArrayList<Service> {
                             JSONObject jsonObject = getJSONObject(args);
                             if(jsonObject==null) {
                                 addParameterByClass(args, value, pa.getType());
+                            }else{
+                                String val = jsonObject.getString(pa.getName());
+                                addParameterByClass(args, val, pa.getType());
                             }
                         }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
-                            String value;
-                            System.out.println("Multi:" + request.getMultiParts().size());
+                            for(MultipartPart part:request.getMultiParts()) {
+                                if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
+                                    addParameterByClass(args, new String(part.body), pa.getType());
+                                }
+                            }
                         }
                     }
                 }
-                //System.out.println(args.size() + " " + method.getParameterCount());
+                if(System.getProperty("ronah.debug")!=null){
+                    System.out.println(args.size() + " " + method.getParameterCount());
+                }
                 //if(args.size()==method.getParameterCount()) {
                     logger.info("Invoking method: " + method.getName());
                     method.invoke(s, args.toArray());

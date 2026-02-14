@@ -49,13 +49,13 @@ public class APIFactory {
     public String parse(Class<Service> service){
         StringBuilder sb = new StringBuilder();
         for(Method method:service.getDeclaredMethods()){
-            API bagins = method.getAnnotation(API.class);
+            API api = method.getAnnotation(API.class);
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
-            if(g!=null && bagins!=null) {
-                sb.append(getHTML(method.getParameters(), bagins.name(), "GET", g.acceptContentType(), g.path(), g.response()));
-            }else if(p!=null && bagins!=null){
-                sb.append(getHTML(method.getParameters(), bagins.name(), "POST", p.acceptContentType(), p.path(), p.response()));
+            if(g!=null && api!=null) {
+                sb.append(getHTML(method.getParameters(), api, "GET", g.acceptContentType(), g.path(), g.response()));
+            }else if(p!=null && api!=null){
+                sb.append(getHTML(method.getParameters(), api, "POST", p.acceptContentType(), p.path(), p.response()));
             }
         }
         return sb.toString();
@@ -67,7 +67,7 @@ public class APIFactory {
     }
 
     private int count=0;
-    String getHTML(Parameter[] params, String name, String method, String contentType, String path, String response){
+    String getHTML(Parameter[] params, API api, String method, String contentType, String path, String response){
 
         String uuid = "bagins" + UUID.randomUUID().toString().replace("-","_");
         List<String> keys = new ArrayList<>();
@@ -76,13 +76,14 @@ public class APIFactory {
 
         sb.append("<table>\n");
         sb.append("<tr><th>Name</th><th>Method</th><th>Path</th><th>"+contentType+"</th><th>Response</th></tr>\n");
-        sb.append("<tr valign=\"top\"><td>").append(name).append("</td><td>").append(method).append("</td><td>").append(path).append("</td>\n");
+        sb.append("<tr valign=\"top\"><td>").append(api.name()).append("</td><td>").append(method).append("</td><td>").append(path).append("</td>\n");
         sb.append("<td>\n");
 
         int c=0;
         String func;
         boolean add=true;
         for(Parameter p:params){
+            if(supress(api,p.getName()))  continue;
             if(c++==0) continue;
             String key = "p_" + count++;
             String sid = "sp_"+ count++;
@@ -135,13 +136,20 @@ public class APIFactory {
         String btn = "<input type='button' value='Send' onclick=\"" + func + "\"/>\n";
         System.out.println(func);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
-        String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1\" id='%s'>Response:</div>", "con_" + uuid);
-        sb.append(String.format("<tr><td colspan=3>%s</td></tr>", console));
+        String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1;border-radius: 8px;\" id='%s'></div>", "con_" + uuid);
+        sb.append(String.format("<tr><td colspan=3>Response:<br/>%s</td></tr>", console));
 
         sb.append("</table><br/>\n");
 
 
         return sb.toString();
+    }
+
+    boolean supress(API api, String param){
+        for(String s:api.suppressParams()){
+            if(s.equals(param)) return true;
+        }
+        return false;
     }
 
     boolean isNumber(Class<?> c){

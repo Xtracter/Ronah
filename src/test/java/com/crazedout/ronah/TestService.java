@@ -6,9 +6,13 @@ import com.crazedout.ronah.annotation.Param;
 import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
+import com.crazedout.ronah.service.HttpRequest;
 import com.crazedout.ronah.service.Request;
 import com.crazedout.ronah.service.RonahHttpServer;
+import com.crazedout.ronah.service.handler.MultipartPart;
 import org.json.JSONObject;
+
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class TestService extends AutoRegisterService {
@@ -27,9 +31,17 @@ public class TestService extends AutoRegisterService {
 
     @API
     @POST(path="/post", response = "text/text", acceptContentType = "application/json")
-    public static void test3(Request request, @Param JSONObject json) {
+    public static void test3(Request request, @Param JSONObject json, @Param String name, @Param String band) {
         request.getResponse().ok(json.getString("name") + " plays in " + json.getString("band")).send();
     }
+
+    @API
+    @POST(path="/upload", response="text/text", acceptContentType = HttpRequest.MULTIPART_FORM_DATA)
+    public void getRest3(Request request, @Param String name, @Param String email)  {
+        List<MultipartPart> filesPart = request.getMultiParts().stream().filter(MultipartPart::isFile).toList();
+        request.getResponse().ok("OK").send();
+    }
+
 
     public static void main(String[] args){
         new TestService();

@@ -173,6 +173,10 @@
                     }
                     var formData = new FormData();
                     formData.append("uploadFile", document.getElementById(field).files[0]);
+                    for(i=3;i<arguments.length;i++){
+                        formData.append( document.getElementById(arguments[i]).name,
+                        document.getElementById(arguments[i]).value);
+                    }
                     xmlhttp.open('POST', path, true);
                     xmlhttp.setRequestHeader('cache-control', 'no-cache');
                     xmlhttp.send(formData);

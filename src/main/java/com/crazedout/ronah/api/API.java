@@ -29,5 +29,6 @@ import java.lang.annotation.Target;
 public @interface API {
     String name() default "Rest Service";
     String description() default "Rest service";
+    String[] suppressParams() default {};
 }
 

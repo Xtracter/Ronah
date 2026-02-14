@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MainTest extends TestUtils {
 
-
     @Test
     public void mainTest(){
         Thread t = new Thread(()->{
