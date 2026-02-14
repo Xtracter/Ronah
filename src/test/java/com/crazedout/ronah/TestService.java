@@ -29,7 +29,7 @@ public class TestService extends AutoRegisterService {
         request.getResponse().ok(name+"="+age).send();
     }
 
-    @API
+    @API(suppressParams = {"name","band"})
     @POST(path="/post", response = "text/text", acceptContentType = "application/json")
     public static void test3(Request request, @Param JSONObject json, @Param String name, @Param String band) {
         request.getResponse().ok(json.getString("name") + " plays in " + json.getString("band")).send();
