@@ -105,7 +105,11 @@ public final class HttpHandler {
             }
         }catch(Exception ex){
             ex.printStackTrace(System.out);
-            request.getResponse().error(ex.getMessage()).send();
+            String err = Repository.printToString(ex);
+            if("application/json".equals(request.getHeader("Content-Type"))){
+                err+="\napplication/json method should only have HttpRequest and JSONObject as parameters.";
+            }
+            request.getResponse().error(err).send();
         }
     }
 }

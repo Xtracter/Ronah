@@ -23,7 +23,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -85,7 +84,11 @@ public final class Repository<Service> extends ArrayList<Service> {
                     }
                 }catch(IllegalAccessException|InvocationTargetException ex){
                     ex.printStackTrace(System.out);
-                    request.getResponse().error(instance.printToString(ex)).send();
+                    String err = printToString(ex);
+                    if("application/json".equals(request.getHeader("Content-Type"))){
+                        err+="\napplication/json method should only have HttpRequest and JSONObject as parameters.";
+                    }
+                    request.getResponse().error(err).send();
                     sent=true;
                 }
             }
@@ -101,7 +104,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         }
     }
 
-    String printToString(Exception ex)  {
+    static String printToString(Exception ex)  {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String utf8 = StandardCharsets.UTF_8.name();
         try (PrintStream ps = new PrintStream(baos, true)) {
@@ -180,10 +183,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                         }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                             String value = new String(request.getPostData());
                             JSONObject jsonObject = getJSONObject(args);
-                            String val;
-                            if(jsonObject!=null && (val=jsonObject.getString(pa.getName()))!=null){
-                                addParameterByClass(args, val, pa.getType());
-                            }else{
+                            if(jsonObject==null) {
                                 addParameterByClass(args, value, pa.getType());
                             }
                         }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
@@ -192,12 +192,12 @@ public final class Repository<Service> extends ArrayList<Service> {
                         }
                     }
                 }
-                System.out.println(args.size() + " " + method.getParameterCount());
-                if(args.size()==method.getParameterCount()) {
+                //System.out.println(args.size() + " " + method.getParameterCount());
+                //if(args.size()==method.getParameterCount()) {
                     logger.info("Invoking method: " + method.getName());
                     method.invoke(s, args.toArray());
                     sent=true;
-                }
+                //}
                 break;
             }
          }

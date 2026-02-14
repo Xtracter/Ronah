@@ -6,11 +6,11 @@ import com.crazedout.ronah.annotation.Param;
 import com.crazedout.ronah.api.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
-import com.crazedout.ronah.service.DefaultService;
 import com.crazedout.ronah.service.Request;
 import com.crazedout.ronah.service.RonahHttpServer;
 import org.json.JSONObject;
 
+@SuppressWarnings("unused")
 public class TestService extends AutoRegisterService {
 
     @API
@@ -26,9 +26,9 @@ public class TestService extends AutoRegisterService {
     }
 
     @API
-    @POST(path="/post", response = "text/text")
-    public static void test3(Request request, @Param JSONObject json, @Param String name, @Param Integer age) {
-        request.getResponse().ok(name + " " + age).send();
+    @POST(path="/post", response = "text/text", acceptContentType = "application/json")
+    public static void test3(Request request, @Param JSONObject json) {
+        request.getResponse().ok(json.getString("name") + " plays in " + json.getString("band")).send();
     }
 
     public static void main(String[] args){

@@ -81,6 +81,7 @@ public class APIFactory {
 
         int c=0;
         String func;
+        boolean add=true;
         for(Parameter p:params){
             if(c++==0) continue;
             String key = "p_" + count++;
@@ -118,8 +119,16 @@ public class APIFactory {
             sb.append(String.format("<input type=\"file\" name=\"uploadFile\" id=\"%s\" />",key));
             func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
         }
-        for (String key : keys) {
-            func += "'" + key + "',";
+        if(HttpRequest.APPLICATION_JSON.equals(contentType)){
+            String key = "q_" + count++;
+            func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
+            func = String.format("sendAndReceivePost('%s', %s, '%s', 'application/json')",path,"document.getElementById('" + keys.get(0) + "').value" ,"con_" + uuid);
+            add=false;
+        }
+        if(add) {
+            for (String key : keys) {
+                func += "'" + key + "',";
+            }
         }
         func=func.substring(0,func.length()-1) + ")";
         sb.append("</td><td>").append(response).append("</td></tr>");
