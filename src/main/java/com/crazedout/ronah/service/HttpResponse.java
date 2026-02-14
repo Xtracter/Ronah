@@ -163,7 +163,7 @@ public class HttpResponse implements Response{
             out.write(this.builder.toString().getBytes());
             this.out.write(data.getBytes());
         }catch(IOException ex){
-            ex.printStackTrace();
+            ex.printStackTrace(System.out);
             internalError(ex.getMessage());
         }
     }

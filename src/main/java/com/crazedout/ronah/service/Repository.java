@@ -21,10 +21,14 @@ import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.BasicAuthentication;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -81,6 +85,8 @@ public final class Repository<Service> extends ArrayList<Service> {
                     }
                 }catch(IllegalAccessException|InvocationTargetException ex){
                     ex.printStackTrace(System.out);
+                    request.getResponse().error(instance.printToString(ex)).send();
+                    sent=true;
                 }
             }
         }
@@ -93,6 +99,15 @@ public final class Repository<Service> extends ArrayList<Service> {
             }
             request.getResponse().notFound().send();
         }
+    }
+
+    String printToString(Exception ex)  {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final String utf8 = StandardCharsets.UTF_8.name();
+        try (PrintStream ps = new PrintStream(baos, true)) {
+            ex.printStackTrace(ps);
+        }
+        return baos.toString();
     }
 
     /**
@@ -177,7 +192,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                         }
                     }
                 }
-                //System.out.println(args.size() + " " + method.getParameterCount());
+                System.out.println(args.size() + " " + method.getParameterCount());
                 if(args.size()==method.getParameterCount()) {
                     logger.info("Invoking method: " + method.getName());
                     method.invoke(s, args.toArray());
