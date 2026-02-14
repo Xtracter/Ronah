@@ -27,7 +27,12 @@ import java.util.Map;
 
 /**
  * Interface of a Request.
+ * A Request object MUST ALWAYS be the first parameter in a Service method.
+ * <code>
+ *     public void getRest(<b>Request request</b>, @Param name, @Param value){}
+ * </code>
  */
+@SuppressWarnings("unused")
 public interface Request {
 
     String getPath();
