@@ -29,10 +29,39 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface POST {
+    /**
+     * Http request endpoint e.e path.
+     * @return String path
+     */
     String path() default "";
+
+    /**
+     * The Content-Type of this HTTP Response.
+     * @return String content type
+     */
     String response() default "application/json";
+
+    /**
+     * Content type that this method accepts or * for all.
+     * @return String content type.
+     */
     String acceptContentType() default "*";
+
+    /**
+     * Ignore parent path if set by @PATH.
+     * @return boolean true/false.
+     */
     boolean ignoreParentPath() default false;
+
+    /**
+     * These methods REST will be protected by Basic Authentication.
+     * @return boolean true/false.
+     */
     boolean useBasicAuth() default false;
+
+    /**
+     * The Realm of a Basic Authentication.
+     * @return String realm.
+     */
     String basicAuthRealm() default "Ronah";
 }

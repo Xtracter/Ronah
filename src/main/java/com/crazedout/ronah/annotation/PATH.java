@@ -30,5 +30,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PATH {
+    /**
+     * Endpoint e.i path for all methods in this Service.
+     * @return String content type.
+     */
     String path() default "";
 }
