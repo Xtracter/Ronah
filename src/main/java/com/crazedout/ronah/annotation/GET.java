@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface GET {
-    String path() default "";
+    String path() default "/";
     String response() default "application/json";
     String acceptContentType() default "*";
     boolean ignoreParentPath() default false;

@@ -30,8 +30,22 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface API {
+    /**
+     * Name of this Service endpoint
+     * @return String name
+     */
     String name() default "Rest Service";
+
+    /**
+     * Description of this Service endpoint
+     * @return String description
+     */
     String description() default "Rest service";
+
+    /**
+     * Parameters that will not show in Web API.
+     * @return Array parameters names
+     */
     String[] suppressParams() default {};
 }
 
