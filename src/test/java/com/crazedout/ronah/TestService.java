@@ -20,7 +20,7 @@ public class TestService extends AutoRegisterService {
     }
 
     @POST(path="/post", response = "text/text")
-    public static void test3(Request request, @Param JSONObject json) {
+    public static void test3(Request request, @Param JSONObject json, @Param String name, @Param String band) {
         request.getResponse().ok(json.get("name") + " plays in " + json.get("band")).send();
     }
 

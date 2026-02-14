@@ -164,23 +164,36 @@ public final class Repository<Service> extends ArrayList<Service> {
                             }
                         }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                             String value = new String(request.getPostData());
-                            addParameterByClass(args, value, pa.getType());
+                            JSONObject jsonObject = getJSONObject(args);
+                            String val = null;
+                            if(jsonObject!=null && (val=jsonObject.getString(pa.getName()))!=null){
+                                addParameterByClass(args, val, pa.getType());
+                            }else{
+                                addParameterByClass(args, value, pa.getType());
+                            }
                         }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
                             String value;
                             System.out.println("Multi:" + request.getMultiParts().size());
                         }
                     }
                 }
-                System.out.println(args.size() + " " + method.getParameterCount());
-                //if(args.size()==method.getParameterCount()) {
+                //System.out.println(args.size() + " " + method.getParameterCount());
+                if(args.size()==method.getParameterCount()) {
                     logger.info("Invoking method: " + method.getName());
                     method.invoke(s, args.toArray());
                     sent=true;
-                //}
+                }
                 break;
             }
          }
         return sent;
+    }
+
+    static JSONObject getJSONObject(List<Object> args){
+        for(Object o:args){
+            if(o instanceof JSONObject) return (JSONObject) o;
+        }
+        return null;
     }
 
     /**
@@ -198,7 +211,6 @@ public final class Repository<Service> extends ArrayList<Service> {
             else if (type == JSONObject.class) {args.add(new JSONObject(value));
             } else args.add(value);
         }
-
     }
 
     /**
