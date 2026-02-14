@@ -3,7 +3,7 @@ package com.crazedout.ronah;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
 import com.crazedout.ronah.annotation.Param;
-import com.crazedout.ronah.api.API;
+import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.request.HttpRequest;

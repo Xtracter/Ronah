@@ -18,6 +18,7 @@ package com.crazedout.ronah.api;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
 import com.crazedout.ronah.request.HttpRequest;

@@ -1,4 +1,4 @@
-package com.crazedout.ronah.api;
+package com.crazedout.ronah.annotation;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -24,6 +24,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation to mark a method to be visible in Ronah Web API.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface API {

@@ -41,14 +41,11 @@ public final class Ronah {
                         *     RONAH REST SERVER 1.0   *
                         *       c8Soft 2026 (c)       *
                         *******************************
-                        
                         """;
     }
 
     private static void usage(){
-
-        System.out.println("Ronah REST " + RonahHttpServer.version);
-        System.out.println("Usage:\n");
+        System.out.println("Usage:");
         System.out.println("-p:<port> (optional default 8080)");
         System.out.println("-s:<service> comma separated list of Services.");
         System.out.println("-Dronah.services=<services> comma separated list of Services.");
@@ -86,7 +83,7 @@ public final class Ronah {
         InstantiationException,
         IllegalAccessException {
 
-        System.out.println(marquee());
+        System.out.print(marquee());
         int port = 8080;
         for(String s:args){
             if(s.startsWith("-p:")) port = Integer.parseInt(s.substring(3));
