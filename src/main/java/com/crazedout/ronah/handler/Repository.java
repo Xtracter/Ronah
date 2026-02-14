@@ -17,12 +17,12 @@ package com.crazedout.ronah.handler;
  *
  * mail: info@crazedout.com
  */
+
 import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.auth.BasicAuthentication;
+import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.Request;
-import com.crazedout.ronah.auth.User;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -35,6 +35,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static com.crazedout.ronah.auth.BasicAuthentication.authenticate;
 
 
 /**
@@ -131,88 +133,98 @@ public final class Repository<Service> extends ArrayList<Service> {
     throws InvocationTargetException, IllegalAccessException {
 
         boolean sent=false;
-
          for(Annotation an: method.getDeclaredAnnotations()) {
-            // GET request
             if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
-                if(g.useBasicAuth()){
-                    User user;
-                    if(BasicAuthentication.authenticate(request)==null){
-                        request.getResponse().auth(g.basicAuthRealm()).send();
-                        return true;
-                    }
-                }
-                request.getResponse().setContentType(g.response());
-                Parameter[] params = method.getParameters();
-                List<Object> args = new ArrayList<>();
-                args.add(request);
-                for (Parameter p : params) {
-                    if (p.getAnnotationsByType(Param.class).length > 0) {
-                        String value = request.getParameter(p.getName().toLowerCase());
-                        if (value != null){
-                            addParameterByClass(args,value,p.getType());
-                        }
-                    }
-                }
-                if(!args.isEmpty() && method.getParameterCount()>1) {
-                    logger.info("Invoking method: " + method.getName());
-                    method.invoke(s, args.toArray());
-                    sent=true;
-                }else{
-                    logger.info("Invoking method: " + method.getName());
-                    method.invoke(s,request);
-                    sent=true;
-                }
-                break;
+                sent = handleGET(s,request,g,method);
             }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
-                    p.ignoreParentPath())){
-                if(p.useBasicAuth()){
-                    User user;
-                    if(BasicAuthentication.authenticate(request)==null){
-                        request.getResponse().auth(p.basicAuthRealm()).send();
-                        return true;
-                    }
-                }
-                request.getResponse().setContentType(p.response());
-                Parameter[] params = method.getParameters();
-                List<Object> args = new ArrayList<>();
-                args.add(request);
-                for (Parameter pa : params) {
-                    if (pa.getAnnotationsByType(Param.class).length > 0) {
-                        if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
-                            String value = request.getParameter(pa.getName().toLowerCase());
-                            if(value!=null){
-                                addParameterByClass(args, value, pa.getType());
-                            }
-                        }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
-                            String value = new String(request.getPostData());
-                            JSONObject jsonObject = getJSONObject(args);
-                            if(jsonObject==null) {
-                                addParameterByClass(args, value, pa.getType());
-                            }else{
-                                String val = jsonObject.getString(pa.getName());
-                                addParameterByClass(args, val, pa.getType());
-                            }
-                        }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
-                            for(MultipartPart part:request.getMultiParts()) {
-                                if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
-                                    addParameterByClass(args, new String(part.body), pa.getType());
-                                }
-                            }
-                        }
-                    }
-                }
-                if(System.getProperty("ronah.debug")!=null){
-                    System.out.println(args.size() + " " + method.getParameterCount());
-                }
-                //if(args.size()==method.getParameterCount()) {
-                    logger.info("Invoking method: " + method.getName());
-                    method.invoke(s, args.toArray());
-                    sent=true;
-                //}
-                break;
+                    p.ignoreParentPath())) {
+                sent = handlePOST(s,request,p,method);
             }
          }
+        return sent;
+    }
+
+    static boolean handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
+            throws InvocationTargetException, IllegalAccessException{
+        boolean sent;
+        if(p.useBasicAuth()){
+            User user;
+            if(authenticate(request)==null){
+                request.getResponse().auth(p.basicAuthRealm()).send();
+                return true;
+            }
+        }
+        request.getResponse().setContentType(p.response());
+        Parameter[] params = method.getParameters();
+        List<Object> args = new ArrayList<>();
+        args.add(request);
+        for (Parameter pa : params) {
+            if (pa.getAnnotationsByType(Param.class).length > 0) {
+                if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
+                    String value = request.getParameter(pa.getName().toLowerCase());
+                    if(value!=null){
+                        addParameterByClass(args, value, pa.getType());
+                    }
+                }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
+                    String value = new String(request.getPostData());
+                    JSONObject jsonObject = getJSONObject(args);
+                    if(jsonObject==null) {
+                        addParameterByClass(args, value, pa.getType());
+                    }else{
+                        String val = jsonObject.getString(pa.getName());
+                        addParameterByClass(args, val, pa.getType());
+                    }
+                }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
+                    for(MultipartPart part:request.getMultiParts()) {
+                        if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
+                            addParameterByClass(args, new String(part.body), pa.getType());
+                        }
+                    }
+                }
+            }
+        }
+        if(System.getProperty("ronah.debug")!=null){
+            System.out.println(args.size() + " " + method.getParameterCount());
+        }
+        //if(args.size()==method.getParameterCount()) {
+        logger.info("Invoking method: " + method.getName());
+        method.invoke(s, args.toArray());
+        sent=true;
+        //}
+        return sent;
+    }
+
+    static boolean handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
+            InvocationTargetException, IllegalAccessException {
+        boolean sent;
+        if(g.useBasicAuth()){
+            User user;
+            if(authenticate(request)==null){
+                request.getResponse().auth(g.basicAuthRealm()).send();
+                return true;
+            }
+        }
+        request.getResponse().setContentType(g.response());
+        Parameter[] params = method.getParameters();
+        List<Object> args = new ArrayList<>();
+        args.add(request);
+        for (Parameter p : params) {
+            if (p.getAnnotationsByType(Param.class).length > 0) {
+                String value = request.getParameter(p.getName().toLowerCase());
+                if (value != null){
+                    addParameterByClass(args,value,p.getType());
+                }
+            }
+        }
+        if(!args.isEmpty() && method.getParameterCount()>1) {
+            logger.info("Invoking method: " + method.getName());
+            method.invoke(s, args.toArray());
+            sent=true;
+        }else{
+            logger.info("Invoking method: " + method.getName());
+            method.invoke(s,request);
+            sent=true;
+        }
         return sent;
     }
 
