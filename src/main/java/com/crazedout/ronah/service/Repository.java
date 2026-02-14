@@ -165,7 +165,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                         }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                             String value = new String(request.getPostData());
                             JSONObject jsonObject = getJSONObject(args);
-                            String val = null;
+                            String val;
                             if(jsonObject!=null && (val=jsonObject.getString(pa.getName()))!=null){
                                 addParameterByClass(args, val, pa.getType());
                             }else{
