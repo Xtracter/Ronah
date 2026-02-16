@@ -35,7 +35,7 @@ public class HttpResponse implements Response{
 
     private final OutputStream out;
     private final StringBuilder builder;
-    private String data;
+    private byte[] data;
     private final SimpleDateFormat dateFormat;
     private final Map<String, String> userHeaders;
 
@@ -67,7 +67,8 @@ public class HttpResponse implements Response{
     public Response notFound(){
         this.builder.append("HTTP/1.1 404 Not Found\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>";
+        this.data =
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>".getBytes();
         return this;
     }
 
@@ -79,7 +80,8 @@ public class HttpResponse implements Response{
         userHeaders.put("WWW-Authenticate", String.format("Basic realm=\"%s\"",realm));
         this.builder.append("HTTP/1.1 401 Unauthorized\n");
         this.contentType=CONTENT_TYPE_TEXT;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>";
+        this.data =
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>".getBytes();
         return this;
     }
 
@@ -90,7 +92,8 @@ public class HttpResponse implements Response{
     public Response error(){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n";
+        this.data =
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n".getBytes();
         return this;
     }
 
@@ -101,7 +104,8 @@ public class HttpResponse implements Response{
     public Response error(String message){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n";
+        this.data =
+                String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n").getBytes();
         return this;
     }
 
@@ -112,7 +116,7 @@ public class HttpResponse implements Response{
     public Response forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n";
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n".getBytes();
         return this;
     }
 
@@ -123,20 +127,28 @@ public class HttpResponse implements Response{
      */
     public Response ok(String data){
         this.builder.append("HTTP/1.1 200 OK\n");
-        this.data = data;
+        this.data = data.getBytes();
         return this;
     }
 
     /**
      * Creates an HTTP 200 OK response.
-     * @param contentType String content type of response.
-     * @param data String response content.
+     * @param data byte[] response content.
      * @return Response
      */
-    public Response ok(String contentType, String data){
-        this.contentType = contentType;
-        this.data=data;
+    public Response ok(byte[] data){
         this.builder.append("HTTP/1.1 200 OK\n");
+        this.data = data;
+        return this;
+    }
+
+    /** Sets the Content-Type header for this Response.
+     * @param contentType String Content type.
+     * @return Response
+     */
+    @Override
+    public Response contentType(String contentType){
+        this.contentType = contentType;
         return this;
     }
 
@@ -157,13 +169,13 @@ public class HttpResponse implements Response{
             this.builder.append("Server: ").append(RonahHttpServer.server).append(" ").append(RonahHttpServer.version).append("\n");
             this.builder.append("Date: ").append(dateFormat.format(new Date())).append("\n");
             this.builder.append("Content-Type: ").append(this.contentType).append("\n");
-            this.builder.append("Content-Length: ").append(data.length()).append("\n");
+            this.builder.append("Content-Length: ").append(data.length).append("\n");
             for (Map.Entry<String, String> entry : userHeaders.entrySet()) {
                 this.builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
             this.builder.append("Connection: close\n\n");
             out.write(this.builder.toString().getBytes());
-            this.out.write(data.getBytes());
+            this.out.write(data);
         }catch(IOException ex){
             ex.printStackTrace(System.out);
             internalError(ex.getMessage());
@@ -188,6 +200,7 @@ public class HttpResponse implements Response{
 
     /**
      * Sets the content type for this response.
+     * Automatically set by according to @POST or @GET response value.
      * @param contentType String content type.
      */
     @Override
@@ -197,10 +210,10 @@ public class HttpResponse implements Response{
 
     /**
      * Sets the POST data for this response if viable.
-     * @param data String data.
+     * @param data byte[] data.
      */
     @Override
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
 

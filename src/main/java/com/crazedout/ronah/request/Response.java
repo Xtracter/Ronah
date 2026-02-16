@@ -29,7 +29,7 @@ public interface Response {
 
     OutputStream getOutputStream();
     Response ok(String data);
-    Response ok(String contentType, String data);
+    Response contentType(String contentType);
     Response error();
     Response error(String message);
     Response forbidden();
@@ -37,7 +37,7 @@ public interface Response {
     Response auth(String realm);
     void internalError(String message);
     void setContentType(String contentType);
-    void setData(String data);
+    void setData(byte[] data);
     void send();
     void addHeader(String key, String value);
 
