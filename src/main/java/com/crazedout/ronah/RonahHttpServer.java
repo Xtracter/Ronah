@@ -52,7 +52,7 @@ public final class RonahHttpServer {
 
     /**
      * Create an instance of Ronah on port.
-     * For TLS set VM options: -Djavax.net.ssl.keyStore=<server.jks> -Djavax.net.ssl.keyStorePassword=<passwd>
+     * For TLS set VM options: -Djavax.net.ssl.keyStore=server.jks -Djavax.net.ssl.keyStorePassword=passwd
      */
     public RonahHttpServer(){
         key = UUID.randomUUID().toString();

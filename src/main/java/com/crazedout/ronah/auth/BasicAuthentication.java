@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Handling of HTTP Basic Authentication.
- * <b><WARNING: Not safe unless Secure Sockets is used.</b>
+ * WARNING: Not safe unless Secure Sockets is used.
  */
 @SuppressWarnings("unused")
 public class BasicAuthentication {

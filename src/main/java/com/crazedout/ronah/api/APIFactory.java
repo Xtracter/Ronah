@@ -31,6 +31,9 @@ import java.lang.reflect.Parameter;
 import java.util.*;
 
 @SuppressWarnings("all")
+/**
+ * Class to create Web API Tests.
+ */
 public class APIFactory {
 
     private static APIFactory instance;
@@ -47,6 +50,11 @@ public class APIFactory {
         return instance;
     }
 
+    /**
+     * Parses Services to create Web API HTML page.
+     * @param service Service
+     * @return HTML content
+     */
     public String parse(Class<Service> service){
         StringBuilder sb = new StringBuilder();
         for(Method method:service.getDeclaredMethods()){
@@ -157,6 +165,11 @@ public class APIFactory {
         return c==Integer.class || c==Double.class || c == Float.class;
     }
 
+    /**
+     * Gets the HTML head for the web page
+     * @param c Class
+     * @return String html
+     */
     public static String getHead(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(
@@ -168,6 +181,11 @@ public class APIFactory {
         return html;
     }
 
+    /**
+     * Gets the tail of HTML.
+     * @param c Class
+     * @return String html
+     */
     public static String getTail(Class<?> c){
         String html = "Fail";
         try(DataInputStream dis = new DataInputStream(Objects.requireNonNull(

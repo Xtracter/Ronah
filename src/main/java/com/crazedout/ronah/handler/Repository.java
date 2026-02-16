@@ -41,7 +41,6 @@ import static com.crazedout.ronah.auth.BasicAuthentication.authenticate;
 
 /**
  * Class to handle Services and dispatch requests to correct Service,
- * @param <Service>
  */
 
 @SuppressWarnings("unused")

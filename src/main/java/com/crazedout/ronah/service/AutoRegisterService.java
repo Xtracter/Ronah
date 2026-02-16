@@ -25,6 +25,9 @@ import com.crazedout.ronah.handler.Repository;
  */
 public abstract class AutoRegisterService implements Service {
 
+    /**
+     * Creates a AutoRegisterService
+     */
     public AutoRegisterService() {
         Repository.addService(this);
     }
