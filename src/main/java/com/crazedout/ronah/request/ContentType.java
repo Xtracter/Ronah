@@ -1,5 +1,6 @@
 package com.crazedout.ronah.request;
 
+@SuppressWarnings("unused")
 public class ContentType {
 
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
