@@ -21,7 +21,7 @@ public class TestUtils {
                 ps.println(http + "\n");
             }else{
                 ps.println(http);
-                ps.println("Content-Type: " + type);
+                ps.println("Content-Type: " + type + "; Charset=UTF-8");
                 ps.println("Content-Length: " + payload.length()+"\n");
                 ps.print(payload);
             }
