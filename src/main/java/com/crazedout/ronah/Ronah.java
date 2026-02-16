@@ -25,6 +25,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+/**
+ * Ronah default application
+ */
 public final class Ronah {
 
     private final static Logger logger = Logger.getLogger(Ronah.class.getName());
