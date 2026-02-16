@@ -31,7 +31,7 @@ public class RonahTest extends TestUtils {
     }
 
     @Test
-    public void test1() throws Exception, InterruptedException  {
+    public void test1() throws Exception {
 
         String res = connect("GET /index HTTP/1.1");
         assertEquals("OK", res);
@@ -41,14 +41,14 @@ public class RonahTest extends TestUtils {
     }
 
     @Test
-    public void test2() throws IOException, InterruptedException {
+    public void test2() throws IOException {
 
         String res = connect("GET /param?name=ronah&age=1 HTTP/1.1");
         assertEquals("ronah=1", res);
     }
 
     @Test
-    public void test3() throws IOException, InterruptedException {
+    public void test3() throws IOException {
 
         String json = "{\"name\":\"ringo\",\"band\":\"the beatles\"}";
         String res = connect("POST /post HTTP/1.1", ContentType.APPLICATION_JSON,json);
@@ -56,7 +56,7 @@ public class RonahTest extends TestUtils {
     }
 
     @Test
-    public void test4() throws IOException, InterruptedException {
+    public void test4() throws IOException {
         String res = connect("POST /not_existing HTTP/1.1");
         assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>",res);
     }
@@ -67,6 +67,12 @@ public class RonahTest extends TestUtils {
         String res = connect("POST /not_existing HTTP/1.1");
         assertEquals("<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>",res);
     }
+
+    @Test
+    void testJson1() throws IOException{
+        String res = connect("GET /json HTTP/1.1");
+    }
+
 
 
     // TODO: More tests...

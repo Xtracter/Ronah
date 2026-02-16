@@ -9,6 +9,7 @@ import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.handler.MultipartPart;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -40,6 +41,28 @@ public class TestService extends AutoRegisterService {
         System.out.println("Here");
         List<MultipartPart> filesPart = request.getMultiParts().stream().filter(MultipartPart::isFile).toList();
         request.getResponse().ok("OK").send();
+    }
+
+    @API
+    @POST(path="/json", acceptContentType="application/json")
+    public void getJson(Request request, @Param JSONObject json){
+        try {
+            String response = "Hello " + json.toString();
+            request.getResponse().ok(response).send();
+        }catch(JSONException ex){
+            request.getResponse().error(ex.getMessage()).send();
+        }
+    }
+
+    @API
+    @GET(path="/json", acceptContentType="application/json")
+    public void getJson2(Request request, @Param JSONObject json){
+        try {
+            String response = "Hello " + json.toString();
+            request.getResponse().ok(response).send();
+        }catch(JSONException ex){
+            request.getResponse().error(ex.getMessage()).send();
+        }
     }
 
     public static void main(String[] args){

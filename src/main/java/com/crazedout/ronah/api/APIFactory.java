@@ -121,7 +121,7 @@ public class APIFactory {
             sb.append(String.format("<input type=\"file\" name=\"uploadFile\" id=\"%s\" />",key));
             func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
         }
-        if(ContentType.APPLICATION_JSON.equals(contentType)){
+        if(ContentType.APPLICATION_JSON.equals(contentType) && "POST".equals(method)){
             String key = "q_" + count++;
             func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
             func = String.format("sendAndReceivePost('%s', %s, '%s', 'application/json')",path,"document.getElementById('" + keys.get(0) + "').value" ,"con_" + uuid);

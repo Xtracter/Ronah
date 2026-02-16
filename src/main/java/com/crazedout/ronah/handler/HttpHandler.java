@@ -63,7 +63,7 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
-            if(System.getProperty("ronah.debug.http")!=null) {
+            if(System.getProperty("ronah.debug")!=null) {
                 System.out.print(c);
             }
             if(c=='\r') continue;
@@ -120,7 +120,9 @@ public final class HttpHandler {
                 Repository.serv(request);
             }
         }catch(Exception ex){
-            ex.printStackTrace(System.out);
+            if("true".equals(System.getProperty("ronah.debug"))) {
+                ex.printStackTrace(System.out);
+            }
             //String err = Repository.printToString(ex);
             request.getResponse().error(ex.getMessage()).send();
         }

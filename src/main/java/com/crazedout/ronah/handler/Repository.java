@@ -174,7 +174,8 @@ public final class Repository<Service> extends ArrayList<Service> {
                         String val = jsonObject.getString(pa.getName());
                         addParameterByClass(args, val, pa.getType());
                     }
-                }else if(request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)) {
+                }else if(request.getHeader("Content-Type")!=null &&
+                        request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)) {
                     for(MultipartPart part:request.getMultiParts()) {
                         if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
                             addParameterByClass(args, new String(part.body), pa.getType());
@@ -210,21 +211,28 @@ public final class Repository<Service> extends ArrayList<Service> {
         args.add(request);
         for (Parameter p : params) {
             if (p.getAnnotationsByType(Param.class).length > 0) {
-                String value = request.getParameter(p.getName().toLowerCase());
-                if (value != null){
-                    addParameterByClass(args,value,p.getType());
+                if(ContentType.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
+                    String value = new String(request.getPostData());
+                    JSONObject jsonObject = getJSONObject(args);
+                    if(jsonObject==null) {
+                        addParameterByClass(args, value, p.getType());
+                    }else{
+                        String val = jsonObject.getString(p.getName());
+                        addParameterByClass(args, val, p.getType());
+                    }
+                }else {
+                    String value = request.getParameter(p.getName().toLowerCase());
+                    if (value != null) {
+                        addParameterByClass(args, value, p.getType());
+                    }
                 }
             }
         }
-        if(!args.isEmpty() && method.getParameterCount()>1) {
+        //if(!args.isEmpty() && method.getParameterCount()>1) {
             logger.info("Invoking method: " + method.getName());
             method.invoke(s, args.toArray());
             sent=true;
-        }else{
-            logger.info("Invoking method: " + method.getName());
-            method.invoke(s,request);
-            sent=true;
-        }
+        //}else{
         return sent;
     }
 
