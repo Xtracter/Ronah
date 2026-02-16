@@ -46,6 +46,7 @@ public class HttpRequest implements Request {
     private byte[] postData;
     private List<MultipartPart> multipartParts;
     private BasicAuthentication.BasicUser basicUser;
+    private Charset charset;
 
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
     public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";

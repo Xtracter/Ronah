@@ -22,6 +22,8 @@ import com.crazedout.ronah.RonahHttpServer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ public class HttpResponse implements Response{
     private byte[] data;
     private final SimpleDateFormat dateFormat;
     private final Map<String, String> userHeaders;
+    private Charset charset = StandardCharsets.UTF_8;
 
     public final static String CONTENT_TYPE_JSON = "application/json";
     public final static String CONTENT_TYPE_HTML = "text/html";
@@ -68,7 +71,7 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 404 Not Found\n");
         this.contentType=CONTENT_TYPE_HTML;
         this.data =
-                "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>".getBytes();
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>".getBytes(charset);
         return this;
     }
 
@@ -81,7 +84,7 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 401 Unauthorized\n");
         this.contentType=CONTENT_TYPE_TEXT;
         this.data =
-                "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>".getBytes();
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>".getBytes(charset);
         return this;
     }
 
@@ -93,7 +96,7 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=CONTENT_TYPE_HTML;
         this.data =
-                "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n".getBytes();
+                "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n".getBytes(charset);
         return this;
     }
 
@@ -105,7 +108,7 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=CONTENT_TYPE_HTML;
         this.data =
-                String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n").getBytes();
+                String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n").getBytes(charset);
         return this;
     }
 
@@ -116,7 +119,16 @@ public class HttpResponse implements Response{
     public Response forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
         this.contentType=CONTENT_TYPE_HTML;
-        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n".getBytes();
+        this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n".getBytes(charset);
+        return this;
+    }
+
+    /**
+     * Sets the char set for this response.
+     * @param charset Charset
+     */
+    public Response charset(Charset charset){
+        this.charset = charset;
         return this;
     }
 
@@ -127,7 +139,7 @@ public class HttpResponse implements Response{
      */
     public Response ok(String data){
         this.builder.append("HTTP/1.1 200 OK\n");
-        this.data = data.getBytes();
+        this.data = data.getBytes(charset);
         return this;
     }
 
@@ -168,13 +180,13 @@ public class HttpResponse implements Response{
         try {
             this.builder.append("Server: ").append(RonahHttpServer.server).append(" ").append(RonahHttpServer.version).append("\n");
             this.builder.append("Date: ").append(dateFormat.format(new Date())).append("\n");
-            this.builder.append("Content-Type: ").append(this.contentType).append("\n");
+            this.builder.append("Content-Type: ").append(this.contentType).append("; Charset=").append(charset).append("\n");
             this.builder.append("Content-Length: ").append(data.length).append("\n");
             for (Map.Entry<String, String> entry : userHeaders.entrySet()) {
                 this.builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
             this.builder.append("Connection: close\n\n");
-            out.write(this.builder.toString().getBytes());
+            out.write(this.builder.toString().getBytes(charset));
             this.out.write(data);
         }catch(IOException ex){
             ex.printStackTrace(System.out);
@@ -188,9 +200,9 @@ public class HttpResponse implements Response{
      */
     public void internalError(String message) {
         try {
-            out.write(("HTTP/1.1 500 Internal Error\n").getBytes());
-            out.write(("Content-Type: text/text\n").getBytes());
-            out.write(("Content-Length: " + message.length() + "\n").getBytes());
+            out.write(("HTTP/1.1 500 Internal Error\n").getBytes(charset));
+            out.write(("Content-Type: text/text ;Charset=" + charset + "\n").getBytes(charset));
+            out.write(("Content-Length: " + message.length() + "\n").getBytes(charset));
             out.write("\n".getBytes());
             out.write(message.getBytes());
         }catch(IOException ex){
@@ -206,6 +218,15 @@ public class HttpResponse implements Response{
     @Override
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    /**
+     * Sets the char set for this response.
+     * @param charset Charset
+     */
+    @Override
+    public void setCharset(Charset charset){
+        this.charset=charset;
     }
 
     /**

@@ -24,6 +24,8 @@ import com.crazedout.ronah.request.HttpRequest;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * This class acts as parser for incoming HTTP calls.
@@ -72,7 +74,18 @@ public final class HttpHandler {
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){
                     String[] tokens = line.toString().split(":");
-                    request.getHeaders().put(tokens[0],tokens[1].trim());
+                    if(tokens[0].equalsIgnoreCase("content-type") && tokens[1].contains(";")){
+                        String[] dev = tokens[1].split(";");
+                        request.getHeaders().put(tokens[0],dev[0].trim());
+                        String ct = dev[1].split("=")[1].trim();
+                        try {
+                            request.setCharset(Charset.forName(ct));
+                        }catch (UnsupportedCharsetException ex){
+                            RonahHttpServer.logger.warning("Bas Charset in Content-Type:" + ct);
+                        }
+                    }else {
+                        request.getHeaders().put(tokens[0], tokens[1].trim());
+                    }
                 }
                 line = new StringBuilder();
             }else {
@@ -106,10 +119,6 @@ public final class HttpHandler {
         }catch(Exception ex){
             ex.printStackTrace(System.out);
             String err = Repository.printToString(ex);
-            /*
-            if("application/json".equals(request.getHeader("Content-Type"))){
-                err+="\napplication/json method should only have HttpRequest and JSONObject as parameters.";
-            }*/
             request.getResponse().error(err).send();
         }
     }

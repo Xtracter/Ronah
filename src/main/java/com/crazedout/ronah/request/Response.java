@@ -19,7 +19,7 @@ package com.crazedout.ronah.request;
  */
 
 import java.io.OutputStream;
-
+import java.nio.charset.Charset;
 
 /**
  * Interface of a Response.
@@ -28,6 +28,7 @@ import java.io.OutputStream;
 public interface Response {
 
     OutputStream getOutputStream();
+    Response charset(Charset charset);
     Response ok(String data);
     Response contentType(String contentType);
     Response error();
@@ -37,6 +38,7 @@ public interface Response {
     Response auth(String realm);
     void internalError(String message);
     void setContentType(String contentType);
+    void setCharset(Charset charset);
     void setData(byte[] data);
     void send();
     void addHeader(String key, String value);
