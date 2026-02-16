@@ -20,7 +20,6 @@ package com.crazedout.ronah.service;
 
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.request.Request;
-import com.crazedout.ronah.handler.Repository;
 
 @SuppressWarnings("unused")
 public class DefaultService extends AutoRegisterService{
