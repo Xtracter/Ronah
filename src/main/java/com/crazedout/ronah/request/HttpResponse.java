@@ -69,7 +69,7 @@ public class HttpResponse implements Response{
     }
 
     /**
-     * Creates an HTTP 404 response.
+     * Creates an HTTP 401 response.
      * @return Response
      */
     public Response auth(String realm){

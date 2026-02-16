@@ -7,12 +7,10 @@ import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.AutoRegisterService;
-import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.handler.MultipartPart;
 import org.json.JSONObject;
 
-import javax.swing.text.AbstractDocument;
 import java.util.List;
 
 @SuppressWarnings("unused")

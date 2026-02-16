@@ -81,10 +81,10 @@ public final class RonahHttpServer {
                 s.setReuseAddress(true);
                 (new Thread(() -> new HttpHandler(s))).start();
             }
-            logger.info("Ronah exiting cleanly. Bye bye..");
         }catch(IOException ex){
             System.err.println(ex.getMessage());
         }
+        logger.info("Ronah exiting cleanly..");
     }
 
     /**
