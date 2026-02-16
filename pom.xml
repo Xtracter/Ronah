@@ -5,7 +5,24 @@
   <artifactId>Ronah</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>Ronah REST</name>
-  <url>http://creazedout.com/ronah</url>
+    <description>Short useful description</description>
+  <url>http://c8soft.se/ronah</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License</name>
+            <url>http://www.gnu.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>Xtracter</id>
+            <name>Fredrik Roos</name>
+            <email>fredrik@crazedout.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.target>17</maven.compiler.target>
