@@ -19,83 +19,81 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
 
 # Example:
 
-package com.crazedout.ronah;
+    import com.crazedout.ronah.annotation.*;
+    import com.crazedout.ronah.api.APIService;
+    import com.crazedout.ronah.handler.MultipartPart;
+    import com.crazedout.ronah.handler.Repository;
+    import com.crazedout.ronah.request.ContentType;
+    import com.crazedout.ronah.request.Request;
+    import com.crazedout.ronah.service.AutoRegisterService;
+    import org.json.JSONException;
+    import org.json.JSONObject;
 
-import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.api.APIService;
-import com.crazedout.ronah.handler.MultipartPart;
-import com.crazedout.ronah.handler.Repository;
-import com.crazedout.ronah.request.ContentType;
-import com.crazedout.ronah.request.Request;
-import com.crazedout.ronah.service.AutoRegisterService;
-import org.json.JSONException;
-import org.json.JSONObject;
+    import static com.crazedout.ronah.auth.BasicAuthentication.addUser;
 
-import static com.crazedout.ronah.auth.BasicAuthentication.addUser;
+    @SuppressWarnings("unused")
+    public class MyRESTService extends AutoRegisterService {
 
-@SuppressWarnings("unused")
-public class MyRESTService extends AutoRegisterService {
-
-    public MyRESTService(){
-        super();
-        addUser("falcon","pencil");
-    }
-
-    /**
-     * Catch all if match not found.
-     * If omittet HTTP codes will be returned.
-     */
-    @CatchAll
-    public void catchAll(Request request){
-        String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1>Register services: "+ Repository.getSize()+"</body></html>";
-        request.getResponse().ok(html).send();
-    }
-
-    @API(name="Name and age check", description="A GET Name and age check service")
-    @GET(path="/index", response="text/text")
-    public void getIndex(Request request, @Param String name, @Param Integer age){
-        String response = String.format("Hello %s %s",name,age);
-        request.getResponse().ok(response).send();
-    }
-
-    @API(name="My handler of Json call", description="Handles a Json payload and returns great things")
-    @POST(path="/json", acceptContentType="application/json", useBasicAuth=true, basicAuthRealm="cars")
-    public void getIndex(Request request, @Param JSONObject json){
-        try {
-            String response = "Hello " + json.toString();
-            request.getResponse().ok(response).send();
-        }catch(JSONException ex){
-            request.getResponse().error(ex.getMessage()).send();
+        public MyRESTService(){
+            super();
+            addUser("falcon","pencil");
         }
-    }
 
-    @API
-    @POST(path="/upload", response="text/text", acceptContentType = ContentType.MULTIPART_FORM_DATA)
-    public void getRest3(Request request)  {
-        StringBuilder res = new StringBuilder();
-        for(MultipartPart part:request.getMultiParts()){
-            res.append(part.getHeader("Content-Type")).append("/").
-                    append(part.getHeader("Content-Disposition")).append("\n");
-        }
-        request.getResponse().ok(res.toString()).send();
-    }
-
-    public static void main(String[] args){
-
-        System.setProperty("ronah.debug","true");
-        new MyRESTService();
-        new APIService(); // Activate Web API Tests
-
-        /*
-            SSL/TLS example,
-            System.setProperty("javax.net.ssl.keyStore","ronah_example.jks");
-            System.setProperty("javax.net.ssl.keyStorePassword", "mySecretPasswd");
+        /**
+        * Catch all if match not found.
+        * If omittet HTTP codes will be returned.
         */
+        @CatchAll
+        public void catchAll(Request request){
+            String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1>Register services: "+ Repository.getSize()+"</body></html>";
+            request.getResponse().ok(html).send();
+        }
 
-        RonahHttpServer server = new RonahHttpServer();
-        server.start(8080);
+        @API(name="Name and age check", description="A GET Name and age check service")
+        @GET(path="/index", response="text/text")
+        public void getIndex(Request request, @Param String name, @Param Integer age){
+            String response = String.format("Hello %s %s",name,age);
+            request.getResponse().ok(response).send();
+        }
+
+        @API(name="My handler of Json call", description="Handles a Json payload and returns great things")
+        @POST(path="/json", acceptContentType="application/json", useBasicAuth=true, basicAuthRealm="cars")
+        public void getIndex(Request request, @Param JSONObject json){
+            try {
+                String response = "Hello " + json.toString();
+                request.getResponse().ok(response).send();
+            }catch(JSONException ex){
+                request.getResponse().error(ex.getMessage()).send();
+            }
+        }
+
+        @API
+        @POST(path="/upload", response="text/text", acceptContentType = ContentType.MULTIPART_FORM_DATA)
+        public void getRest3(Request request)  {
+            StringBuilder res = new StringBuilder();
+            for(MultipartPart part:request.getMultiParts()){
+                res.append(part.getHeader("Content-Type")).append("/").
+                        append(part.getHeader("Content-Disposition")).append("\n");
+            }
+            request.getResponse().ok(res.toString()).send();
+        }
+
+        public static void main(String[] args){
+
+            System.setProperty("ronah.debug","true");
+            new MyRESTService();
+            new APIService(); // Activate Web API Tests
+
+            /*
+                SSL/TLS example,
+                System.setProperty("javax.net.ssl.keyStore","ronah_example.jks");
+                System.setProperty("javax.net.ssl.keyStorePassword", "mySecretPasswd");
+            */
+
+            RonahHttpServer server = new RonahHttpServer();
+            server.start(8080);
+        }
     }
-}
 
 # Test Web API
 http://localhost:8080/api 
