@@ -21,7 +21,7 @@ package com.crazedout.ronah.api;
 import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.Service;
 
 import java.io.DataInputStream;
@@ -88,7 +88,7 @@ public class APIFactory {
             if(c++==0) continue;
             String key = "p_" + count++;
             String sid = "sp_"+ count++;
-            if(HttpRequest.APPLICATION_JSON.equals(contentType)) {
+            if(ContentType.APPLICATION_JSON.equals(contentType)) {
                 sb.append(String.format("%s (%s):<br/> <input type='text' name='%s' id='%s' onBlur=\"isJsonString(this.value,'%s')\"/><span style=\"color:red\" id=\"%s\"></span><br/>\n",
                         p.getName(), parseType(p.getType()), p.getName().toLowerCase(), key,sid,sid));
             }else{
@@ -109,19 +109,19 @@ public class APIFactory {
         }else{
             func = "gAjax('con_" + uuid + "','" + path + "',";
         }
-        if(params.length<2 && !HttpRequest.MULTIPART_FORM_DATA.equals(contentType)){
+        if(params.length<2 && !ContentType.MULTIPART_FORM_DATA.equals(contentType)){
             String key = "q_" + count++;
             sb.append(String.format("Query String:<br/><input type='text' name='%s' id='%s' /><br/>\n", key, key));
             keys.add(key);
             names.add("Query:");
             func = "qAjax" + "('con_" + uuid + "','" + path + "',";
         }
-        if(HttpRequest.MULTIPART_FORM_DATA.equals(contentType)){
+        if(ContentType.MULTIPART_FORM_DATA.equals(contentType)){
             String key = "q_" + count++;
             sb.append(String.format("<input type=\"file\" name=\"uploadFile\" id=\"%s\" />",key));
             func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
         }
-        if(HttpRequest.APPLICATION_JSON.equals(contentType)){
+        if(ContentType.APPLICATION_JSON.equals(contentType)){
             String key = "q_" + count++;
             func = String.format("postForm('%s','%s','%s',",path,"con_" + uuid,key);
             func = String.format("sendAndReceivePost('%s', %s, '%s', 'application/json')",path,"document.getElementById('" + keys.get(0) + "').value" ,"con_" + uuid);

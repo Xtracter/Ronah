@@ -42,15 +42,8 @@ public class HttpResponse implements Response{
     private final Map<String, String> userHeaders;
     private Charset charset = StandardCharsets.UTF_8;
 
-    public final static String CONTENT_TYPE_JSON = "application/json";
-    public final static String CONTENT_TYPE_HTML = "text/html";
-    public final static String CONTENT_TYPE_TEXT = "text/text";
-    public final static String CONTENT_TYPE_PNG = "image/png";
-    public final static String CONTENT_TYPE_JPG = "image/jpeg";
-    public final static String CONTENT_TYPE_GIF = "image/gif";
-    public final static String CONTENT_TYPE_XML = "application/xml";
 
-    private String contentType = CONTENT_TYPE_HTML;
+    private String contentType = ContentType.TEXT_HTML;
 
     /**
      * Constructor.
@@ -69,7 +62,7 @@ public class HttpResponse implements Response{
      */
     public Response notFound(){
         this.builder.append("HTTP/1.1 404 Not Found\n");
-        this.contentType=CONTENT_TYPE_HTML;
+        this.contentType=ContentType.TEXT_HTML;
         this.data =
                 "<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>".getBytes(charset);
         return this;
@@ -82,7 +75,7 @@ public class HttpResponse implements Response{
     public Response auth(String realm){
         userHeaders.put("WWW-Authenticate", String.format("Basic realm=\"%s\"",realm));
         this.builder.append("HTTP/1.1 401 Unauthorized\n");
-        this.contentType=CONTENT_TYPE_TEXT;
+        this.contentType=ContentType.TEXT_TEXT;
         this.data =
                 "<!DOCTYPE html><html><body><h3>HTTP/1.1 401 Unauthorized</h2>Authentication required</h3></body></html>".getBytes(charset);
         return this;
@@ -94,7 +87,7 @@ public class HttpResponse implements Response{
      */
     public Response error(){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
-        this.contentType=CONTENT_TYPE_HTML;
+        this.contentType=ContentType.TEXT_HTML;
         this.data =
                 "<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3></body></html>\n".getBytes(charset);
         return this;
@@ -106,7 +99,7 @@ public class HttpResponse implements Response{
      */
     public Response error(String message){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
-        this.contentType=CONTENT_TYPE_HTML;
+        this.contentType=ContentType.TEXT_HTML;
         this.data =
                 String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n").getBytes(charset);
         return this;
@@ -118,7 +111,7 @@ public class HttpResponse implements Response{
      */
     public Response forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
-        this.contentType=CONTENT_TYPE_HTML;
+        this.contentType=ContentType.TEXT_HTML;
         this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n".getBytes(charset);
         return this;
     }

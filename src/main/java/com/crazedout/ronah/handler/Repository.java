@@ -21,7 +21,7 @@ package com.crazedout.ronah.handler;
 import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.User;
-import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.Request;
 import org.json.JSONObject;
 
@@ -141,6 +141,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                 sent = handlePOST(s,request,p,method);
             }
          }
+         // TODO: Really bad pattern with boolean return here. Fix it soon.
         return sent;
     }
 
@@ -160,12 +161,12 @@ public final class Repository<Service> extends ArrayList<Service> {
         args.add(request);
         for (Parameter pa : params) {
             if (pa.getAnnotationsByType(Param.class).length > 0) {
-                if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
+                if(ContentType.APPLICATION_X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                     String value = request.getParameter(pa.getName().toLowerCase());
                     if(value!=null){
                         addParameterByClass(args, value, pa.getType());
                     }
-                }else if(HttpRequest.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
+                }else if(ContentType.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                     String value = new String(request.getPostData());
                     JSONObject jsonObject = getJSONObject(args);
                     if(jsonObject==null) {
@@ -174,7 +175,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                         String val = jsonObject.getString(pa.getName());
                         addParameterByClass(args, val, pa.getType());
                     }
-                }else if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)) {
+                }else if(request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)) {
                     for(MultipartPart part:request.getMultiParts()) {
                         if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
                             addParameterByClass(args, new String(part.body), pa.getType());
@@ -247,8 +248,7 @@ public final class Repository<Service> extends ArrayList<Service> {
             else if (type == Double.class) args.add(Double.parseDouble(value));
             else if (type == Float.class) args.add(Float.parseFloat(value));
             else if (type == Long.class) args.add(Long.parseLong(value));
-            else if (type == JSONObject.class) {args.add(new JSONObject(value));
-            } else args.add(value);
+            else if (type == JSONObject.class) {args.add(new JSONObject(value));} else args.add(value);
         }
     }
 

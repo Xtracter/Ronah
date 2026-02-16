@@ -1,6 +1,6 @@
 package com.crazedout.ronah;
 
-import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.ContentType;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class RonahTest extends TestUtils {
     @Test
     public void test3() throws IOException{
         String json = "{\"name\":\"ringo\",\"band\":\"the beatles\"}";
-        String res = connect("POST /post HTTP/1.1", HttpRequest.APPLICATION_JSON,json);
+        String res = connect("POST /post HTTP/1.1", ContentType.APPLICATION_JSON,json);
         assertEquals("ringo plays in the beatles",res);
     }
     // TODO: More tests...

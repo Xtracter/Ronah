@@ -49,5 +49,6 @@ public interface Request {
     String getParameter(String key, Charset charSet);
     String getParameter(String key);
     void setCharset(Charset charset);
+    Charset getCharset();
     User getUser();
     }

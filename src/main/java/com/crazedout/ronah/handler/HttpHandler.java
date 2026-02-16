@@ -19,6 +19,7 @@ package com.crazedout.ronah.handler;
  */
 
 import com.crazedout.ronah.RonahHttpServer;
+import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.HttpRequest;
 
 import java.io.*;
@@ -102,13 +103,13 @@ public final class HttpHandler {
                 buffer[i] = (byte) in.read();
             }
             request.setPostData(buffer);
-            if(request.getHeader("Content-Type").startsWith(HttpRequest.MULTIPART_FORM_DATA)){
+            if(request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)){
 
                     request.setMultiParts(RawMultipartParser.parse(buffer, request.getHeader("Content-Type"),
-                            request.defaultCharset));
+                            request.getCharset()));
 
             }
-            if(HttpRequest.X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
+            if(ContentType.APPLICATION_X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                 request.setQueryString(new String(buffer));
             }
         }

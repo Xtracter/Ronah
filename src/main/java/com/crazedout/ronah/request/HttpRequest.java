@@ -36,7 +36,6 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class HttpRequest implements Request {
 
-    public Charset defaultCharset = StandardCharsets.UTF_8;
     private String protocol;
     private String method;
     private String path;
@@ -46,14 +45,7 @@ public class HttpRequest implements Request {
     private byte[] postData;
     private List<MultipartPart> multipartParts;
     private BasicAuthentication.BasicUser basicUser;
-    private Charset charset;
-
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
-    public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
-    public static final String APPLICATION_JSON = "application/json";
-    public static final String TEXT_PLAIN = "text/plain";
-    public static final String TEXT_HTML = "text/html";
-    public static final String OCTET_STREAM = "application/octet-stream";
+    private Charset charset = StandardCharsets.UTF_8;
 
     /**
      * Constructor.
@@ -145,7 +137,12 @@ public class HttpRequest implements Request {
      */
     @Override
     public void setCharset(Charset charset){
-        this.defaultCharset=charset;
+        this.charset=charset;
+    }
+
+    @Override
+    public Charset getCharset(){
+        return this.charset;
     }
 
     /**
@@ -160,8 +157,8 @@ public class HttpRequest implements Request {
                 String[] tokens = queryString.split("&");
                 for (String t : tokens) {
                     String[] pair = t.split("=");
-                    if (key.equals(URLEncoder.encode(pair[0], defaultCharset)))
-                        return URLDecoder.decode(pair[1], defaultCharset);
+                    if (key.equals(URLEncoder.encode(pair[0], charset)))
+                        return URLDecoder.decode(pair[1], charset);
                 }
             }
         }catch(ArrayIndexOutOfBoundsException ex){
@@ -247,7 +244,7 @@ public class HttpRequest implements Request {
     }
 
     /**
-     * Gets the Response onbject of this HttpRequest.
+     * Gets the Response object of this HttpRequest.
      * @return Response.
      */
     @Override
