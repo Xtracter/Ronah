@@ -76,7 +76,7 @@ public class APIFactory {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<table>\n");
-        sb.append("<tr><th>Name</th><th>Method</th><th>Path</th><th>"+contentType+"</th><th>Response</th></tr>\n");
+        sb.append("<tr><th style=\"width: 80; text-align=left>\">Name</th><th width='60'>Method</th><th>Path</th><th width=\"500\">"+contentType+"</th><th>Response</th></tr>\n");
         sb.append("<tr valign=\"top\"><td>").append(api.name()).append("</td><td>").append(method).append("</td><td>").append(path).append("</td>\n");
         sb.append("<td>\n");
 
@@ -138,7 +138,7 @@ public class APIFactory {
         System.out.println(func);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
         String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1;border-radius: 8px;\" id='%s'></div>", "con_" + uuid);
-        sb.append(String.format("<tr><td colspan=3>Response:<br/>%s</td></tr>", console));
+        sb.append(String.format("<tr><td colspan=4>Response:<br/>%s</td></tr>", console));
 
         sb.append("</table><br/>\n");
 
