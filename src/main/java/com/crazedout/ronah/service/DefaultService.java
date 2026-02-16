@@ -31,7 +31,7 @@ public class DefaultService extends AutoRegisterService{
 
     @CatchAll
     public void catchAll(Request request){
-        String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1>Register services: "+ Repository.getSize()+"</body></html>";
+        String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>";
         request.getResponse().ok(html).send();
     }
 }

@@ -37,10 +37,10 @@ public class TestService extends AutoRegisterService {
     @API
     @POST(path="/upload", response="text/text", acceptContentType = ContentType.MULTIPART_FORM_DATA)
     public void getRest3(Request request, @Param String name, @Param String email)  {
+        System.out.println("Here");
         List<MultipartPart> filesPart = request.getMultiParts().stream().filter(MultipartPart::isFile).toList();
         request.getResponse().ok("OK").send();
     }
-
 
     public static void main(String[] args){
         new TestService();

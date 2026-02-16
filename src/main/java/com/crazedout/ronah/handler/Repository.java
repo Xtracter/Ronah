@@ -83,7 +83,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                     if(m.getAnnotationsByType(CatchAll.class).length>0){
                         catchAll = m;
                         catchService = s;
-                        logger.info("Catch all: " + m.getName());
+                        logger.info("Catch all: " + s.getClass().getName() + " " + m.getName());
                     }
                     if(parseMethods(s, request, m, parentPath)) {
                         sent = true;
@@ -102,11 +102,10 @@ public final class Repository<Service> extends ArrayList<Service> {
         if(!sent){
             try {
                 if (catchAll != null) catchAll.invoke(catchService, request);
+                else request.getResponse().notFound().send();
             }catch(IllegalAccessException | InvocationTargetException ex){
                 ex.printStackTrace(System.out);
-                request.getResponse().notFound().send();
             }
-            request.getResponse().notFound().send();
         }
     }
 

@@ -101,7 +101,7 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data =
-                String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3><br>"+message+"</body></html>\n").getBytes(charset);
+                String.format("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>"+message+"</body></html>\n").getBytes(charset);
         return this;
     }
 

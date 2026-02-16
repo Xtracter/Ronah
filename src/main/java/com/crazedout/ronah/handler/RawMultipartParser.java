@@ -29,8 +29,8 @@ public class RawMultipartParser {
             String contentType,
             Charset charset) throws IOException {
 
+        System.out.println(">" + contentType);
         List<MultipartPart> parts = new ArrayList<>();
-
         String boundary = extractBoundary(contentType);
         if (boundary == null) {
             throw new IllegalArgumentException("No boundary found.");

@@ -15,7 +15,7 @@ public class TestUtils {
     }
 
     protected String connect(String http, String type, String payload) throws IOException {
-        try(Socket s = new Socket("localhost",port)) {
+        try(Socket s = new Socket("localhost", port)) {
             PrintStream ps = new PrintStream(s.getOutputStream());
             if(payload==null) {
                 ps.println(http + "\n");

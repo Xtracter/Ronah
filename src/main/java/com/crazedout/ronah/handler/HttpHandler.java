@@ -44,7 +44,7 @@ public final class HttpHandler {
             parseRequest(s.getInputStream(), s.getOutputStream(), s.getRemoteSocketAddress());
             s.close();
         }catch(Exception ex){
-            RonahHttpServer.logger.warning(ex.getMessage());
+            RonahHttpServer.logger.warning("Global: " + ex.getMessage());
             if(RonahHttpServer.verbose) ex.printStackTrace(System.err);
         }
     }
@@ -75,14 +75,16 @@ public final class HttpHandler {
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){
                     String[] tokens = line.toString().split(":");
-                    if(tokens[0].equalsIgnoreCase("content-type") && tokens[1].contains(";")){
+                    if(tokens[0].equalsIgnoreCase("content-type") && tokens[1].contains("; Charset=")){
                         String[] dev = tokens[1].split(";");
                         request.getHeaders().put(tokens[0],dev[0].trim());
                         String ct = dev[1].split("=")[1].trim();
-                        try {
-                            request.setCharset(Charset.forName(ct));
-                        }catch (UnsupportedCharsetException ex){
-                            RonahHttpServer.logger.warning("Bas Charset in Content-Type:" + ct);
+                        if(dev[0].equalsIgnoreCase("charset")) {
+                            try {
+                                request.setCharset(Charset.forName(ct));
+                            }catch (UnsupportedCharsetException ex){
+                                RonahHttpServer.logger.warning("Bas Charset in Content-Type:" + ct);
+                            }
                         }
                     }else {
                         request.getHeaders().put(tokens[0], tokens[1].trim());
@@ -119,8 +121,8 @@ public final class HttpHandler {
             }
         }catch(Exception ex){
             ex.printStackTrace(System.out);
-            String err = Repository.printToString(ex);
-            request.getResponse().error(err).send();
+            //String err = Repository.printToString(ex);
+            request.getResponse().error(ex.getMessage()).send();
         }
     }
 }
