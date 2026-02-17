@@ -35,20 +35,21 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public interface Request {
 
-    String getPath();
-    Map<String,String> getHeaders();
-    String getHeader(String key);
-    Response getResponse();
-    List<MultipartPart> getMultiParts();
-    void setMultiParts(List<MultipartPart> multiParts);
-    String getProtocol();
-    String getMethod();
-    String getQueryString();
-    void setPostData(byte[] data);
-    byte[] getPostData();
-    String getParameter(String key, Charset charSet);
-    String getParameter(String key);
-    void setCharset(Charset charset);
-    Charset getCharset();
-    User getUser();
+        String getPath();
+        Map<String,String> getHeaders();
+        String getHeader(String key);
+        Response getResponse();
+        List<MultipartPart> getMultiParts();
+        void setMultiParts(List<MultipartPart> multiParts);
+        String getProtocol();
+        String getMethod();
+        String getQueryString();
+        void setPostData(byte[] data);
+        byte[] getPostData();
+        String getParameter(String key, Charset charSet);
+        String getParameter(String key);
+        User getUser();
+        void parseHeader(String key, String value);
+        ContentType getContentType();
+
     }

@@ -18,6 +18,9 @@ package com.crazedout.ronah.request;
  * mail: info@crazedout.com
  */
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 @SuppressWarnings("unused")
 public class ContentType {
 
@@ -32,5 +35,28 @@ public class ContentType {
     public static final String IMAGE_JPEG = "image/jpeg";
     public static final String IMAGE_GIF = "image/gif";
     public static final String IMAGE_PNG = "image/png";
+    protected String type;
+    protected Charset charset = StandardCharsets.UTF_8;
+
+    public ContentType(String type){
+        this.type=type;
+    }
+
+    public ContentType(String type, Charset charset){
+        this.type=type;
+        this.charset=charset;
+    }
+
+    public void setType(String type){
+        this.type = type;
+    }
+
+    public void setCharset(Charset charset){
+        this.charset=charset;
+    }
+
+    public Charset getCharset(){
+        return this.charset;
+    }
 
 }

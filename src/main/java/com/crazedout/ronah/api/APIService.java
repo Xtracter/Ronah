@@ -33,7 +33,6 @@ public class APIService extends AutoRegisterService {
             html+= APIFactory.getHTML(s.getClass());
         }
         request.getResponse().ok(APIFactory.getHead(getClass())+html+APIFactory.getTail(getClass())).send();
-
     }
 
 }

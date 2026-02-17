@@ -18,6 +18,9 @@ package com.crazedout.ronah.handler;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.request.ContentType;
+import com.crazedout.ronah.request.MultipartContentType;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -26,18 +29,16 @@ public class RawMultipartParser {
 
     public static List<MultipartPart> parse(
             byte[] bodyBytes,
-            String contentType,
-            Charset charset) throws IOException {
+            MultipartContentType contentType) throws IOException {
 
-        System.out.println(">" + contentType);
         List<MultipartPart> parts = new ArrayList<>();
-        String boundary = extractBoundary(contentType);
+        String boundary = extractBoundary(contentType.getHeader());
         if (boundary == null) {
             throw new IllegalArgumentException("No boundary found.");
         }
 
         //byte[] bodyBytes = readAllBytes(inputStream, contentLength);
-        String body = new String(bodyBytes, charset);
+        String body = new String(bodyBytes, contentType.getCharset());
 
         String delimiter = "--" + boundary;
         String[] rawParts = body.split(delimiter);
@@ -58,7 +59,7 @@ public class RawMultipartParser {
             // Remove trailing CRLF
             byte[] partBody = bodySection
                     .replaceFirst("\r\n$", "")
-                    .getBytes(charset);
+                    .getBytes(contentType.getCharset());
 
             parts.add(new MultipartPart(headers, partBody));
         }

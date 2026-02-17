@@ -21,12 +21,11 @@ package com.crazedout.ronah.handler;
 import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.HttpRequest;
+import com.crazedout.ronah.request.MultipartContentType;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * This class acts as parser for incoming HTTP calls.
@@ -75,20 +74,7 @@ public final class HttpHandler {
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){
                     String[] tokens = line.toString().split(":");
-                    if(tokens[0].equalsIgnoreCase("content-type") && tokens[1].contains("; Charset=")){
-                        String[] dev = tokens[1].split(";");
-                        request.getHeaders().put(tokens[0],dev[0].trim());
-                        String ct = dev[1].split("=")[1].trim();
-                        if(dev[0].equalsIgnoreCase("charset")) {
-                            try {
-                                request.setCharset(Charset.forName(ct));
-                            }catch (UnsupportedCharsetException ex){
-                                RonahHttpServer.logger.warning("Bas Charset in Content-Type:" + ct);
-                            }
-                        }
-                    }else {
-                        request.getHeaders().put(tokens[0], tokens[1].trim());
-                    }
+                    request.parseHeader(tokens[0], tokens[1].trim());
                 }
                 line = new StringBuilder();
             }else {
@@ -106,10 +92,7 @@ public final class HttpHandler {
             }
             request.setPostData(buffer);
             if(request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)){
-
-                    request.setMultiParts(RawMultipartParser.parse(buffer, request.getHeader("Content-Type"),
-                            request.getCharset()));
-
+                request.setMultiParts(RawMultipartParser.parse(buffer, (MultipartContentType) request.getContentType()));
             }
             if(ContentType.APPLICATION_X_WWW_FORM_URLENCODED.equals(request.getHeader("Content-Type"))) {
                 request.setQueryString(new String(buffer));

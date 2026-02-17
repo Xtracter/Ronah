@@ -17,6 +17,7 @@ package com.crazedout.ronah.request;
  *
  * mail: info@crazedout.com
  */
+import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.auth.BasicAuthentication;
 import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.handler.MultipartPart;
@@ -26,6 +27,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class HttpRequest implements Request {
     private List<MultipartPart> multipartParts;
     private BasicAuthentication.BasicUser basicUser;
     private Charset charset = StandardCharsets.UTF_8;
+    private ContentType contentType;
 
     /**
      * Constructor.
@@ -82,6 +85,31 @@ public class HttpRequest implements Request {
             this.queryString = split[1];
         }else{
             this.path = tokens[1];
+        }
+    }
+
+    public ContentType getContentType(){
+        return this.contentType;
+    }
+
+    public void parseHeader(String key, String value){
+        if(value.contains(";")){
+            String[] vp = value.split(";");
+            if(vp.length>0 && key.equalsIgnoreCase("content-type")){
+                this.headers.put(key,vp[0].trim());
+                if(vp[1].toLowerCase().contains("charset=")){
+                    String[] cs = vp[1].split("=");
+                    try {
+                        this.contentType = new ContentType(vp[0], Charset.forName(cs[1]));
+                    }catch (UnsupportedCharsetException ex){
+                        RonahHttpServer.logger.warning("Bad Charset in Content-Type:" + cs[1]);
+                    }
+                }else {
+                    this.contentType = new MultipartContentType(vp[1].trim());
+                }
+            }
+        }else{
+            this.headers.put(key,value);
         }
     }
 
@@ -129,20 +157,6 @@ public class HttpRequest implements Request {
      */
     public void setQueryString(String queryString){
         this.queryString=queryString;
-    }
-
-    /**
-     * Sets the Charset for this Request.
-     * @param charset Charset
-     */
-    @Override
-    public void setCharset(Charset charset){
-        this.charset=charset;
-    }
-
-    @Override
-    public Charset getCharset(){
-        return this.charset;
     }
 
     /**

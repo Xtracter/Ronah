@@ -143,7 +143,6 @@ public class APIFactory {
         func=func.substring(0,func.length()-1) + ")";
         sb.append("</td><td>").append(response).append("</td></tr>");
         String btn = "<input type='button' value='Send' onclick=\"" + func + "\"/>\n";
-        System.out.println(func);
         sb.append(String.format("<tr><td colspan=3>%s</td></tr>", btn));
         String console = String.format("<div style=\"border:1px solid gray; height: 100px; background: #d1d1d1;border-radius: 8px;\" id='%s'></div>", "con_" + uuid);
         sb.append(String.format("<tr><td colspan=4>Response:<br/>%s</td></tr>", console));
