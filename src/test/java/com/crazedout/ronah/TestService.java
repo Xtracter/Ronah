@@ -18,6 +18,12 @@ import java.util.List;
 public class TestService extends AutoRegisterService {
 
     @API
+    @GET(path="/index/*", response = "text/text")
+    public static void test(Request request){
+        request.getResponse().ok("OK").send();
+    }
+
+    @API
     @GET(path="/index", response = "text/text")
     public static void test1(Request request){
         request.getResponse().ok("OK").send();

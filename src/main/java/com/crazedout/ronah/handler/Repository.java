@@ -23,6 +23,7 @@ import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.util.WildcardMatcher;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -284,7 +285,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
 
-        return str1.equals(str2);
+        return WildcardMatcher.matches(str1,str2);
     }
 
     /**

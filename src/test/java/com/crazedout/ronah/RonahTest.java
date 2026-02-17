@@ -33,7 +33,7 @@ public class RonahTest extends TestUtils {
     @Test
     public void test1() throws Exception {
 
-        String res = connect("GET /index HTTP/1.1");
+        String res = connect("GET /index/tests HTTP/1.1");
         assertEquals("OK", res);
 
         res = connect("GET /param?name=ronah&age=1 HTTP/1.1");
@@ -71,6 +71,7 @@ public class RonahTest extends TestUtils {
     @Test
     void testJson1() throws IOException{
         String res = connect("GET /json HTTP/1.1");
+        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>wrong number of arguments</body></html>",res);
     }
 
 
