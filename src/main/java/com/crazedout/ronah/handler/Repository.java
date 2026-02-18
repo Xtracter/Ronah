@@ -32,8 +32,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -73,11 +76,16 @@ public final class Repository<Service> extends ArrayList<Service> {
         com.crazedout.ronah.service.Service catchService=null;
         for(com.crazedout.ronah.service.Service s : getInstance()){
             if(s.getClass().getAnnotations().length>0){
-                PATH path = (PATH)s.getClass().getAnnotations()[0];
+                Parent path = (Parent)s.getClass().getAnnotations()[0];
                 parentPath = path.path();
                 if(parentPath.endsWith("/")) parentPath = path.path().substring(0,path.path().length()-1);
+                if(!allowClientIP(request.getSocketAddress(),path)) {
+                    request.getResponse().forbidden().send();
+                    return;
+                }
             }
             Method[] methods = s.getClass().getMethods();
+            Arrays.sort(methods, Comparator.comparing(Method::getName));
             for(Method m:methods) {
                 try {
                     if(m.getAnnotationsByType(CatchAll.class).length>0){
@@ -107,6 +115,16 @@ public final class Repository<Service> extends ArrayList<Service> {
                 ex.printStackTrace(System.out);
             }
         }
+    }
+
+    static boolean allowClientIP(InetSocketAddress sockAddr, Parent p){
+        if(p.allowClientIP().length==0) return true;
+        for(String s:p.allowClientIP()){
+            if(sockAddr.getAddress().toString().substring(1).equalsIgnoreCase(s)){
+                return true;
+            }
+        }
+        return false;
     }
 
     static String printToString(Exception ex)  {

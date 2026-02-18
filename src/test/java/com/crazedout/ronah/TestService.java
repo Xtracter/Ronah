@@ -1,9 +1,6 @@
 package com.crazedout.ronah;
 
-import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.annotation.Param;
-import com.crazedout.ronah.annotation.API;
+import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.AutoRegisterService;
@@ -14,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+@Parent(allowClientIP = {"192.168.0.1","127.0.0.1"})
 public class TestService extends AutoRegisterService {
 
     @API

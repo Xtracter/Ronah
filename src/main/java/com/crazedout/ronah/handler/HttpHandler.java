@@ -24,6 +24,7 @@ import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.MultipartContentType;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -40,7 +41,7 @@ public final class HttpHandler {
      */
     public HttpHandler(Socket s) {
         try {
-            parseRequest(s.getInputStream(), s.getOutputStream(), s.getRemoteSocketAddress());
+            parseRequest(s.getInputStream(), s.getOutputStream(), (InetSocketAddress) s.getRemoteSocketAddress());
             s.close();
         }catch(Exception ex){
             RonahHttpServer.logger.warning("Global: " + ex.getMessage());
@@ -54,7 +55,7 @@ public final class HttpHandler {
      * @param out Sockets OutputStream
      * @throws IOException Exception
      */
-    private void parseRequest(InputStream in, OutputStream out, SocketAddress sockAddr) throws IOException {
+    private void parseRequest(InputStream in, OutputStream out, InetSocketAddress sockAddr) throws IOException {
 
         HttpRequest request=null;
         StringBuilder line = new StringBuilder();
@@ -68,8 +69,8 @@ public final class HttpHandler {
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
-                    RonahHttpServer.logger.info("Remote:" + sockAddr + " " + line);
-                    request = new HttpRequest(line.toString(),in,out);
+                    RonahHttpServer.logger.info(sockAddr + " " + line);
+                    request = new HttpRequest(sockAddr,line.toString(),in,out);
                 }
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){

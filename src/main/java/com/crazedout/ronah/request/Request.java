@@ -21,6 +21,8 @@ package com.crazedout.ronah.request;
 import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.handler.MultipartPart;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -51,5 +53,6 @@ public interface Request {
         User getUser();
         void parseHeader(String key, String value);
         ContentType getContentType();
+        InetSocketAddress getSocketAddress();
 
     }

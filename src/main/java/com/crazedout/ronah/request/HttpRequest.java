@@ -23,6 +23,8 @@ import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.handler.MultipartPart;
 
 import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -47,19 +49,27 @@ public class HttpRequest implements Request {
     private byte[] postData;
     private List<MultipartPart> multipartParts;
     private BasicAuthentication.BasicUser basicUser;
-    private Charset charset = StandardCharsets.UTF_8;
+    private final Charset charset = StandardCharsets.UTF_8;
     private ContentType contentType;
+    private final InetSocketAddress socketAddress;
 
     /**
      * Constructor.
      * @param httpLine first line of an HTTP request.
      * @param out OutputStream to write to client.
      */
-    public HttpRequest(String httpLine, InputStream in, OutputStream out){
+    public HttpRequest(InetSocketAddress socketAddress, String httpLine, InputStream in, OutputStream out){
         this.headers = new HashMap<>();
         this.response = new HttpResponse(out);
+        this.socketAddress = socketAddress;
         this.parse(httpLine);
     }
+
+    @Override
+    public InetSocketAddress getSocketAddress(){
+        return this.socketAddress;
+    }
+
 
     @Override
     public void setMultiParts(List<MultipartPart> multiParts){
