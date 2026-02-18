@@ -26,7 +26,6 @@ import com.crazedout.ronah.request.MultipartContentType;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 /**
  * This class acts as parser for incoming HTTP calls.

@@ -37,7 +37,8 @@ public @interface Parent {
     String path() default "";
 
     /**
-     * Allows traffic only from ip addresses.
+     * Allows traffic only from ip given addresses.
+     * This value can be a "wildcard" pattern as "127.*" etc.
      * @return String[] allowed addresses or empty for all.
      */
     String[] allowClientIP() default {};

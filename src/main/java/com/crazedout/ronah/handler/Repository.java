@@ -120,9 +120,7 @@ public final class Repository<Service> extends ArrayList<Service> {
     static boolean allowClientIP(InetSocketAddress sockAddr, Parent p){
         if(p.allowClientIP().length==0) return true;
         for(String s:p.allowClientIP()){
-            if(sockAddr.getAddress().toString().substring(1).equalsIgnoreCase(s)){
-                return true;
-            }
+            if(WildcardMatcher.matches(sockAddr.toString().substring(1),s)) return true;
         }
         return false;
     }

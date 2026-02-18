@@ -30,7 +30,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface POST {
     /**
-     * Http request endpoint e.e path.
+     * Http request endpoint e.i path.
+     * Can be expressed in a wild cart pattern as /mypath/* etc.
      * @return String path
      */
     String path() default "";

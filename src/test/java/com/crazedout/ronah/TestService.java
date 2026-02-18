@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-@Parent(allowClientIP = {"192.168.0.1","127.0.0.1"})
+@Parent(allowClientIP = {"127.*"})
 public class TestService extends AutoRegisterService {
 
     @API

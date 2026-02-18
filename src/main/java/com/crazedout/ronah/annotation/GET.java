@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
 public @interface GET {
     /**
      * Http request endpoint e.e path.
+     * Can be expressed in a wild cart pattern as /mypath/* etc.
      * @return String path
      */
     String path() default "/";
