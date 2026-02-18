@@ -19,6 +19,7 @@ package com.crazedout.ronah.handler;
  */
 
 import com.crazedout.ronah.RonahHttpServer;
+import com.crazedout.ronah.request.multipart.RawMultipartParser;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.MultipartContentType;

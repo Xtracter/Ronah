@@ -5,7 +5,7 @@ import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.AutoRegisterService;
 import com.crazedout.ronah.request.Request;
-import com.crazedout.ronah.handler.MultipartPart;
+import com.crazedout.ronah.request.multipart.MultipartPart;
 import org.json.JSONException;
 import org.json.JSONObject;
 

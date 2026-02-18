@@ -1,4 +1,4 @@
-package com.crazedout.ronah.handler;
+package com.crazedout.ronah.request.multipart;
 /*
  * Ronah REST Server
  * Copyright (c) 2026 Fredrik Roos.
@@ -18,11 +18,9 @@ package com.crazedout.ronah.handler;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.MultipartContentType;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public class RawMultipartParser {

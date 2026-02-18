@@ -20,11 +20,10 @@ package com.crazedout.ronah.request;
 import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.auth.BasicAuthentication;
 import com.crazedout.ronah.auth.User;
-import com.crazedout.ronah.handler.MultipartPart;
+import com.crazedout.ronah.request.multipart.MultipartPart;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;

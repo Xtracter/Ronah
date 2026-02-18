@@ -19,10 +19,9 @@ package com.crazedout.ronah.request;
  */
 
 import com.crazedout.ronah.auth.User;
-import com.crazedout.ronah.handler.MultipartPart;
+import com.crazedout.ronah.request.multipart.MultipartPart;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
