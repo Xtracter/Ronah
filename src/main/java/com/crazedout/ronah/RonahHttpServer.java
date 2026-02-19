@@ -18,7 +18,9 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
+import com.crazedout.ronah.api.APIService;
 import com.crazedout.ronah.handler.HttpHandler;
+import com.crazedout.ronah.handler.Repository;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
@@ -49,15 +51,26 @@ public final class RonahHttpServer {
     private volatile ServerSocketFactory serverSocketFactory;
     private volatile boolean secure;
     private ServerSocket serverSocket;
+    private APIService apiService;
 
     /**
      * Create an instance of Ronah on port.
      * For TLS set VM options: -Djavax.net.ssl.keyStore=server.jks -Djavax.net.ssl.keyStorePassword=passwd
+     * APIService is added by default.
      */
     public RonahHttpServer(){
         key = UUID.randomUUID().toString();
         verbose = System.getProperty("ronah.verbose") != null && "true".equals(System.getProperty("ronah.verbose"));
         if(verbose) logger.info("Verbose=true");
+        apiService = new APIService();
+    }
+
+    /**
+     * Removes the APIService for Web API.
+     */
+    public APIService removeAPIService(){
+        Repository.removeService(apiService);
+        return apiService;
     }
 
     private ServerSocket createServerSocket(int port) throws IOException {

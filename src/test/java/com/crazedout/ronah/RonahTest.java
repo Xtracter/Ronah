@@ -88,5 +88,15 @@ public class RonahTest extends TestUtils {
         Repository.removeService(df);
     }
 
+    @Test
+    public void testApi() throws IOException {
+        res = connect("GET /api HTTP/1.1");
+        assertEquals("</html>",res.get(res.size()-1));
+        ronahHttpServer.removeAPIService();
+        res = connect("GET /api HTTP/1.1");
+        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>",
+                res.get(res.size()-1));
+    }
+
     // TODO: More tests...
 }
