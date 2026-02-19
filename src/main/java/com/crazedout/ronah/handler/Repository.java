@@ -99,6 +99,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                     }
                     if(parseMethods(s, request, m, parentPath)) {
                         sent = true;
+                        break;
                     }
                 }catch(IllegalAccessException|InvocationTargetException ex){
                     ex.printStackTrace(System.out);
@@ -154,9 +155,8 @@ public final class Repository<Service> extends ArrayList<Service> {
         boolean sent=false;
          for(Annotation an: method.getDeclaredAnnotations()) {
              if((an instanceof OPTIONS o) && Repository.pathEquals(request, o.path(), parentPath, o.ignoreParentPath())) {
-                sent = handleOptions(s,request,o,method);
-             }
-             else if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
+                 sent = handleOptions(s,request,o,method);
+             }else if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
                  sent = handleGET(s,request,g,method);
              }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
                      p.ignoreParentPath())) {

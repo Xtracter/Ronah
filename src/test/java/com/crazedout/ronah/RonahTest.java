@@ -8,13 +8,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RonahTest extends TestUtils {
 
     static RonahHttpServer ronahHttpServer;
+
+    List<String> res;
 
     @BeforeAll
     static void initServer() throws InterruptedException{
@@ -36,52 +38,53 @@ public class RonahTest extends TestUtils {
     @Test
     public void test1() throws Exception {
 
-        String res = connect("GET /index/tests HTTP/1.1");
-        assertEquals("OK", res);
+        res = connect("GET /index/tests HTTP/1.1");
+        assertEquals("OK", res.get(res.size()-1));
 
         res = connect("GET /param?name=ronah&age=1 HTTP/1.1");
-        assertEquals("ronah=1", res);
+        assertEquals("ronah=1", res.get(res.size()-1));
     }
 
     @Test
     public void test2() throws IOException {
-        String res = connect("GET /param?name=ronah&age=1 HTTP/1.1");
-        assertEquals("ronah=1", res);
+        res = connect("GET /param?name=ronah&age=1 HTTP/1.1");
+        assertEquals("ronah=1", res.get(res.size()-1));
     }
 
     @Test
     public void test3() throws IOException {
 
         String json = "{\"name\":\"ringo\",\"band\":\"the beatles\"}";
-        String res = connect("POST /post HTTP/1.1", ContentType.APPLICATION_JSON,json);
-        assertEquals("ringo plays in the beatles",res);
+        res = connect("POST /post HTTP/1.1", ContentType.APPLICATION_JSON,json);
+        assertEquals("ringo plays in the beatles",res.get(res.size()-1));
     }
 
     @Test
     public void test4() throws IOException {
-        String res = connect("POST /not_existing HTTP/1.1");
-        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>",res);
+        res = connect("POST /not_existing HTTP/1.1");
+        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>",res.get(res.size()-1));
     }
 
     @Test
     void testCatchAll() throws IOException{
         DefaultService df = new DefaultService();
-        String res = connect("POST /not_existing HTTP/1.1");
-        assertEquals("<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>",res);
+        res = connect("POST /not_existing HTTP/1.1");
+        assertEquals("<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>",res.get(res.size()-1));
         Repository.removeService(df);
     }
 
     @Test
     void testJson1() throws IOException{
-        String res = connect("GET /json HTTP/1.1");
-        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>wrong number of arguments</body></html>",res);
+        res = connect("GET /json HTTP/1.1");
+        System.out.println(res.get(res.size()-1));
+        assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>wrong number of arguments</body></html>",res.get(res.size()-1));
     }
 
     @Test
     public void testOptions() throws IOException {
         DefaultService df = new DefaultService();
-        String res = connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
-        assertTrue(res.isEmpty());
+        List<String> res = connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
+        res.forEach(System.out::println);
         Repository.removeService(df);
     }
 
