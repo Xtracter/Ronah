@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,9 +17,13 @@ public class TestWebServer extends TestUtils{
 
     @BeforeAll
     static void initServer() throws InterruptedException{
+        String basePath =  System.getProperty("user.dir") + File.separatorChar + "src"  +File.separatorChar + "test" +
+                File.separatorChar + "web";
+
+        new WebServer(basePath);
         Thread t = new Thread(()->{
             System.getProperty("ronah.debug","true");
-            new WebServer();
+            new WebServer(basePath);
             ronahHttpServer = new RonahHttpServer();
             ronahHttpServer.start(8083);
         });

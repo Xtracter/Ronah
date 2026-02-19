@@ -1,6 +1,5 @@
 package com.crazedout.ronah.service;
 
-import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.annotation.POST;
 import com.crazedout.ronah.request.Request;
@@ -9,14 +8,18 @@ import java.io.*;
 
 public class WebServer extends AutoRegisterService{
 
-    String basePath = System.getProperty("user.dir") + "\\src\\test\\web";
+    String basePath;
+
+    public WebServer(String baseBath){
+        this.basePath = baseBath;
+    }
 
     String readFile(File file) throws IOException {
         try(BufferedReader r = new BufferedReader(new FileReader(file))){
             String line;
             StringBuilder sb = new StringBuilder();
             while((line=r.readLine())!=null){
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
             return sb.toString();
         }
@@ -45,13 +48,4 @@ public class WebServer extends AutoRegisterService{
             request.getResponse().notFound().send();
         }
     }
-
-    public static void main(String[] args) {
-
-        new WebServer();
-        RonahHttpServer r = new RonahHttpServer();
-        r.start(8080);
-
-    }
-
 }
