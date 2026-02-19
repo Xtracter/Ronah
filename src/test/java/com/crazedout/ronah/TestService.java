@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Parent(allowClientIP = {"127.*"})
 public class TestService extends AutoRegisterService {
 
@@ -60,6 +61,17 @@ public class TestService extends AutoRegisterService {
     @API
     @GET(path="/json", acceptContentType="application/json")
     public void getJson2(Request request, @Param JSONObject json){
+        try {
+            String response = "Hello " + json.toString();
+            request.getResponse().ok(response).send();
+        }catch(JSONException ex){
+            request.getResponse().error(ex.getMessage()).send();
+        }
+    }
+
+    @API
+    @POST(path="/cors", acceptContentType="application/json", allowCORSOrigins = {"http://mytest.org"})
+    public void getCORS(Request request, @Param JSONObject json){
         try {
             String response = "Hello " + json.toString();
             request.getResponse().ok(response).send();

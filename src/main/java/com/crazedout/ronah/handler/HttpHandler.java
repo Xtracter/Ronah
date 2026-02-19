@@ -27,6 +27,7 @@ import com.crazedout.ronah.request.MultipartContentType;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 /**
  * This class acts as parser for incoming HTTP calls.
@@ -74,8 +75,14 @@ public final class HttpHandler {
                 }
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){
-                    String[] tokens = line.toString().split(":");
-                    request.parseHeader(tokens[0], tokens[1].trim());
+                    StringTokenizer t = new StringTokenizer(line.toString(),":");
+                    String key = t.nextToken();
+                    StringBuilder val = new StringBuilder();
+                    while(t.hasMoreTokens()) val.append(t.nextToken());
+                    if(System.getProperty("ronah.debug")!=null){
+                        System.out.println(key+"="+val);
+                    }
+                    request.parseHeader(key, val.toString().trim());
                 }
                 line = new StringBuilder();
             }else {

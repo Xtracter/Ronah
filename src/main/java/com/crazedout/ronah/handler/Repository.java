@@ -171,6 +171,9 @@ public final class Repository<Service> extends ArrayList<Service> {
                 return true;
             }
         }
+        if(p.allowCORSOrigins().length>0){
+            request.getResponse().applyCORSHeaders(request,Arrays.asList(p.allowCORSOrigins()));
+        }
         request.getResponse().setContentType(p.response());
         Parameter[] params = method.getParameters();
         List<Object> args = new ArrayList<>();
@@ -221,6 +224,9 @@ public final class Repository<Service> extends ArrayList<Service> {
                 request.getResponse().auth(g.basicAuthRealm()).send();
                 return true;
             }
+        }
+        if(g.allowCORSOrigins().length>0){
+            request.getResponse().applyCORSHeaders(request,Arrays.asList(g.allowCORSOrigins()));
         }
         request.getResponse().setContentType(g.response());
         Parameter[] params = method.getParameters();
