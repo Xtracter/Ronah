@@ -22,7 +22,7 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
     import com.crazedout.ronah.annotation.*;
     import com.crazedout.ronah.api.APIService;
     import com.crazedout.ronah.multipart.MultipartPart;
-    import com.crazedout.ronah.handler.Repository;
+    import com.crazedout.ronah.Repository;
     import com.crazedout.ronah.request.ContentType;
     import com.crazedout.ronah.request.Request;
     import com.crazedout.ronah.service.AutoRegisterService;

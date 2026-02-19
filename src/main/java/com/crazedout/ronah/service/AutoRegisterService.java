@@ -18,7 +18,7 @@ package com.crazedout.ronah.service;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.handler.Repository;
+import com.crazedout.ronah.Repository;
 
 /**
  * Abstract Service class that automatically register itself to Repository.

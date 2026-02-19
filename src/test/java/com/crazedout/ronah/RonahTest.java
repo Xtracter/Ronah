@@ -1,6 +1,5 @@
 package com.crazedout.ronah;
 
-import com.crazedout.ronah.handler.Repository;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.DefaultService;
 import org.junit.jupiter.api.AfterAll;

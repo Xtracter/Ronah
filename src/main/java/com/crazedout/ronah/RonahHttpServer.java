@@ -19,8 +19,6 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
-import com.crazedout.ronah.handler.HttpHandler;
-import com.crazedout.ronah.handler.Repository;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;

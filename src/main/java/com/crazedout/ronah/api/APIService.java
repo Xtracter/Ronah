@@ -21,7 +21,7 @@ package com.crazedout.ronah.api;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.service.*;
-import com.crazedout.ronah.handler.Repository;
+import com.crazedout.ronah.Repository;
 
 public class APIService extends AutoRegisterService {
 
