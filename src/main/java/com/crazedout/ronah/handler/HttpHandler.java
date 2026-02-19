@@ -45,6 +45,7 @@ public final class HttpHandler {
             parseRequest(s.getInputStream(), s.getOutputStream(), (InetSocketAddress) s.getRemoteSocketAddress());
             s.close();
         }catch(Exception ex){
+            ex.printStackTrace(System.out);
             RonahHttpServer.logger.warning("Global: " + ex.getMessage());
             if(RonahHttpServer.verbose) ex.printStackTrace(System.err);
         }
@@ -75,12 +76,11 @@ public final class HttpHandler {
                 }
                 if(line.isEmpty()) break;
                 if(line.toString().contains(":")){
-                    StringTokenizer t = new StringTokenizer(line.toString(),":");
+                    StringTokenizer t = new StringTokenizer(line.toString(),":", false);
                     String key = t.nextToken();
                     StringBuilder val = new StringBuilder();
-                    while(t.hasMoreTokens()) val.append(t.nextToken());
-                    if(System.getProperty("ronah.debug")!=null){
-                        System.out.println(key+"="+val);
+                    while(t.hasMoreTokens()) {
+                        val.append(t.nextToken().trim());
                     }
                     request.parseHeader(key, val.toString().trim());
                 }

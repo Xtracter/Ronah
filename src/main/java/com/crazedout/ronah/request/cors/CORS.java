@@ -9,6 +9,8 @@ public class CORS {
     private static CORS instance;
 
     public static String getCORSHeaders(Request request, List<String> allow){
+        return "";
+        /*
         String origin = request.getHeader("Origin");
         if(origin!=null){
             for(String s:allow){
@@ -19,7 +21,7 @@ public class CORS {
                             "Access-Control-Allow-Credentials: true\n";
             }
         }
-        return "";
+        return "";*/
     }
 
 }

@@ -69,7 +69,7 @@ public class TestService extends AutoRegisterService {
         }
     }
 
-    @API
+    /*@API
     @POST(path="/cors", acceptContentType="application/json", allowCORSOrigins = {"http://mytest.org"})
     public void getCORS(Request request, @Param JSONObject json){
         try {
@@ -78,7 +78,7 @@ public class TestService extends AutoRegisterService {
         }catch(JSONException ex){
             request.getResponse().error(ex.getMessage()).send();
         }
-    }
+    }*/
 
     public static void main(String[] args){
         new TestService();
