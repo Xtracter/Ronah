@@ -20,6 +20,7 @@ package com.crazedout.ronah.request;
 
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Interface of a Response.
@@ -42,5 +43,6 @@ public interface Response {
     void setData(byte[] data);
     void send();
     void addHeader(String key, String value);
+    void applyCORSHeaders(Request request, List<String> allow);
 
 }

@@ -39,7 +39,7 @@ public @interface Parent {
     /**
      * Allows traffic only from ip given addresses.
      * This value can be a "wildcard" pattern as "127.*" etc.
-     * @return String[] allowed addresses or empty for all.
+     * @return String[] allowed addresses or empty for all access.
      */
     String[] allowClientIP() default {};
 }

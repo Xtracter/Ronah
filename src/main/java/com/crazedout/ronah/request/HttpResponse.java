@@ -19,15 +19,14 @@ package com.crazedout.ronah.request;
  */
 
 import com.crazedout.ronah.RonahHttpServer;
+import com.crazedout.ronah.request.cors.CORS;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class to handle an HTTP response.
@@ -145,6 +144,14 @@ public class HttpResponse implements Response{
         this.builder.append("HTTP/1.1 200 OK\n");
         this.data = data;
         return this;
+    }
+
+    /**
+     * Adding default CORS headers.
+     * @param allow clients to allow.
+     */
+    public void applyCORSHeaders(Request request, List<String> allow){
+        this.builder.append(CORS.getCORSHeaders(request,allow));
     }
 
     /** Sets the Content-Type header for this Response.
