@@ -39,4 +39,22 @@ public class TestUtils {
         }
     }
 
+    protected String connectOptions(String http, String host, String origin) throws IOException {
+        try(Socket s = new Socket("localhost", port)) {
+            PrintStream ps = new PrintStream(s.getOutputStream());
+            ps.println(http);
+            ps.println("Origin: " + origin);
+            ps.println("Host: " + host);
+            ps.println();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                    System.out.println(line);
+                }
+                return line;
+            }
+        }
+    }
+
+
 }

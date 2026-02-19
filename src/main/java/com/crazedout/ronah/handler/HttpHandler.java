@@ -65,9 +65,9 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
-            //if(System.getProperty("ronah.debug")!=null) {
+            if(System.getProperty("ronah.debug")!=null) {
                 System.out.print(c);
-            //}
+            }
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
@@ -116,7 +116,6 @@ public final class HttpHandler {
             if("true".equals(System.getProperty("ronah.debug"))) {
                 ex.printStackTrace(System.out);
             }
-            //String err = Repository.printToString(ex);
             request.getResponse().error(ex.getMessage()).send();
         }
     }

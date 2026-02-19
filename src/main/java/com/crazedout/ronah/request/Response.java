@@ -42,7 +42,8 @@ public interface Response {
     void setCharset(Charset charset);
     void setData(byte[] data);
     void send();
+    void sendOptions();
     void addHeader(String key, String value);
-    void applyCORSHeaders(Request request, List<String> allow);
+    void applyCORSHeaders(Request request, String... allow);
 
 }

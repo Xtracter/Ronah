@@ -41,7 +41,6 @@ public class HttpResponse implements Response{
     private final Map<String, String> userHeaders;
     private Charset charset = StandardCharsets.UTF_8;
 
-
     private String contentType = ContentType.TEXT_HTML;
 
     /**
@@ -150,7 +149,7 @@ public class HttpResponse implements Response{
      * Adding default CORS headers.
      * @param allow clients to allow.
      */
-    public void applyCORSHeaders(Request request, List<String> allow){
+    public void applyCORSHeaders(Request request, String... allow){
         CORS.getCORSHeaders(request,allow);
     }
 
@@ -173,6 +172,22 @@ public class HttpResponse implements Response{
         return this.out;
     }
 
+    public void sendOptions(){
+        try {
+            this.builder.append("Server: ").append(RonahHttpServer.server).append(" ").append(RonahHttpServer.version).append("\n");
+            this.builder.append("Date: ").append(dateFormat.format(new Date())).append("\n");
+            this.builder.append("Allow: GET,POST,OPTIONS\n");
+            for (Map.Entry<String, String> entry : userHeaders.entrySet()) {
+                this.builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+            }
+            this.builder.append("Connection: close\n\n");
+            out.write(this.builder.toString().getBytes(charset));
+        }catch(IOException ex){
+            ex.printStackTrace(System.out);
+            internalError(ex.getMessage());
+        }
+    }
+
     /**
      * Sends the response.
      */
@@ -180,6 +195,7 @@ public class HttpResponse implements Response{
         try {
             this.builder.append("Server: ").append(RonahHttpServer.server).append(" ").append(RonahHttpServer.version).append("\n");
             this.builder.append("Date: ").append(dateFormat.format(new Date())).append("\n");
+            this.builder.append("Allow: GET,POST,OPTIONS\n");
             this.builder.append("Content-Type: ").append(this.contentType).append("; Charset=").append(charset).append("\n");
             this.builder.append("Content-Length: ").append(data.length).append("\n");
             for (Map.Entry<String, String> entry : userHeaders.entrySet()) {

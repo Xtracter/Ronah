@@ -13,7 +13,7 @@ public class CORS {
      * @param request request http request
      * @param allow List origins allowed.
      */
-    public static void getCORSHeaders(Request request, List<String> allow) {
+    public static void getCORSHeaders(Request request, String... allow) {
         String origin = request.getHeader("Origin");
         if (origin != null) {
             for (String s : allow) {

@@ -85,7 +85,7 @@ public final class Repository<Service> extends ArrayList<Service> {
                     return;
                 }
                 if(request.getHeader("Origin")!=null && parent.allowCORSOrigins().length>0){
-                    request.getResponse().applyCORSHeaders(request,Arrays.asList(parent.allowCORSOrigins()));
+                    request.getResponse().applyCORSHeaders(request,parent.allowCORSOrigins());
                 }
             }
             Method[] methods = s.getClass().getMethods();
@@ -153,12 +153,15 @@ public final class Repository<Service> extends ArrayList<Service> {
 
         boolean sent=false;
          for(Annotation an: method.getDeclaredAnnotations()) {
-            if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
-                sent = handleGET(s,request,g,method);
-            }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
-                    p.ignoreParentPath())) {
-                sent = handlePOST(s,request,p,method);
-            }
+             if((an instanceof OPTIONS o) && Repository.pathEquals(request, o.path(), parentPath, o.ignoreParentPath())) {
+                sent = handleOptions(s,request,o,method);
+             }
+             else if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
+                 sent = handleGET(s,request,g,method);
+             }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
+                     p.ignoreParentPath())) {
+                 sent = handlePOST(s,request,p,method);
+             }
          }
          // TODO: Really bad pattern with boolean return here. Fix it soon.
         return sent;
@@ -213,6 +216,12 @@ public final class Repository<Service> extends ArrayList<Service> {
         sent=true;
         //}
         return sent;
+    }
+
+    static boolean handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
+    InvocationTargetException, IllegalAccessException{
+        method.invoke(s,request);
+        return true;
     }
 
     static boolean handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws

@@ -21,11 +21,18 @@ package com.crazedout.ronah.service;
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.request.Request;
 
+
 @SuppressWarnings("unused")
-public class DefaultService extends AutoRegisterService{
+public class DefaultService extends AutoRegisterService {
 
     public DefaultService(){
         super();
+    }
+
+    @OPTIONS(path="/options")
+    public void options(Request request){
+        request.getResponse().applyCORSHeaders(request, "http://localhost:8080");
+        request.getResponse().sendOptions();
     }
 
     @CatchAll
@@ -34,3 +41,16 @@ public class DefaultService extends AutoRegisterService{
         request.getResponse().ok(html).send();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

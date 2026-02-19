@@ -1,5 +1,6 @@
 package com.crazedout.ronah;
 
+import com.crazedout.ronah.handler.Repository;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.DefaultService;
 import org.junit.jupiter.api.AfterAll;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RonahTest extends TestUtils {
 
@@ -63,9 +65,10 @@ public class RonahTest extends TestUtils {
 
     @Test
     void testCatchAll() throws IOException{
-        new DefaultService();
+        DefaultService df = new DefaultService();
         String res = connect("POST /not_existing HTTP/1.1");
         assertEquals("<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>",res);
+        Repository.removeService(df);
     }
 
     @Test
@@ -74,13 +77,13 @@ public class RonahTest extends TestUtils {
         assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>wrong number of arguments</body></html>",res);
     }
 
-    //@Test
-    /*
-    public void testCORS() throws IOException {
-        String json = "{\"name\":\"ringo\",\"band\":\"the beatles\"}";
-        String res = connect("POST /cors HTTP/1.1", ContentType.APPLICATION_JSON,json, "http://mytest.org");
-        assertEquals("Hello {\"name\":\"ringo\",\"band\":\"the beatles\"}",res);
-    }*/
+    @Test
+    public void testOptions() throws IOException {
+        DefaultService df = new DefaultService();
+        String res = connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
+        assertTrue(res.isEmpty());
+        Repository.removeService(df);
+    }
 
     // TODO: More tests...
 }
