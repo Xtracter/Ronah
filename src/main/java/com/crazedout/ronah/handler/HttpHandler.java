@@ -65,9 +65,9 @@ public final class HttpHandler {
         int r;
         while((r=in.read())>-1){
             char c = (char)r;
-            if(System.getProperty("ronah.debug")!=null) {
+            //if(System.getProperty("ronah.debug")!=null) {
                 System.out.print(c);
-            }
+            //}
             if(c=='\r') continue;
             if(c=='\n'){
                 if(request==null) {
@@ -78,11 +78,13 @@ public final class HttpHandler {
                 if(line.toString().contains(":")){
                     StringTokenizer t = new StringTokenizer(line.toString(),":", false);
                     String key = t.nextToken();
-                    StringBuilder val = new StringBuilder();
+                    String val = "";
                     while(t.hasMoreTokens()) {
-                        val.append(t.nextToken().trim());
+                        val+=t.nextToken().trim() + ":";
                     }
-                    request.parseHeader(key, val.toString().trim());
+
+                    val = val.substring(0,val.length()-1);
+                    request.parseHeader(key, val.trim());
                 }
                 line = new StringBuilder();
             }else {

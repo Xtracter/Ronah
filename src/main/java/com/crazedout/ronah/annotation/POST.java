@@ -48,13 +48,6 @@ public @interface POST {
      */
     String acceptContentType() default "*";
 
-
-    /**
-     * CORS Origins that are allowed.
-     * @return String[] CORS origins
-     */
-    String[] allowCORSOrigins() default "";
-
     /**
      * Ignore parent path if set by @PATH.
      * @return boolean true/false.

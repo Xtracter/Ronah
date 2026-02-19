@@ -151,7 +151,7 @@ public class HttpResponse implements Response{
      * @param allow clients to allow.
      */
     public void applyCORSHeaders(Request request, List<String> allow){
-        this.builder.append(CORS.getCORSHeaders(request,allow));
+        CORS.getCORSHeaders(request,allow);
     }
 
     /** Sets the Content-Type header for this Response.

@@ -55,12 +55,6 @@ public @interface GET {
     boolean ignoreParentPath() default false;
 
     /**
-     * CORS Origins that are allowed.
-     * @return String[] CORS origins
-     */
-    String[] allowCORSOrigins() default "";
-
-    /**
      * These methods REST will be protected by Basic Authentication.
      * @return boolean true/false.
      */

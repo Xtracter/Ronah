@@ -42,4 +42,11 @@ public @interface Parent {
      * @return String[] allowed addresses or empty for all access.
      */
     String[] allowClientIP() default {};
+
+    /**
+     * CORS Origins that are allowed.
+     * @return String[] CORS origins
+     */
+    String[] allowCORSOrigins() default "";
+
 }

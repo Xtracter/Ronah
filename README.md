@@ -78,17 +78,6 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             request.getResponse().ok(res.toString()).send();
         }
 
-        @API()
-        @POST(path="/cors", acceptContentType="application/json", allowCORSOrigins = {"http://localhost","127.0.0.1"})
-        public void getCORS(Request request, @Param JSONObject json){
-            try {
-                String response = "Hello " + json.toString();
-                request.getResponse().ok(response).send();
-            }catch(JSONException ex){
-                request.getResponse().error(ex.getMessage()).send();
-            }
-        }
-
         public static void main(String[] args){
 
             System.setProperty("ronah.debug","true");

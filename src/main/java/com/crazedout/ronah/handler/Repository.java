@@ -77,12 +77,15 @@ public final class Repository<Service> extends ArrayList<Service> {
         com.crazedout.ronah.service.Service catchService=null;
         for(com.crazedout.ronah.service.Service s : getInstance()){
             if(s.getClass().getAnnotations().length>0){
-                Parent path = (Parent)s.getClass().getAnnotations()[0];
-                parentPath = path.path();
-                if(parentPath.endsWith("/")) parentPath = path.path().substring(0,path.path().length()-1);
-                if(!allowClientIP(request.getSocketAddress(),path)) {
+                Parent parent = (Parent)s.getClass().getAnnotations()[0];
+                parentPath = parent.path();
+                if(parentPath.endsWith("/")) parentPath = parent.path().substring(0,parent.path().length()-1);
+                if(!allowClientIP(request.getSocketAddress(),parent)) {
                     request.getResponse().forbidden().send();
                     return;
+                }
+                if(request.getHeader("Origin")!=null && parent.allowCORSOrigins().length>0){
+                    request.getResponse().applyCORSHeaders(request,Arrays.asList(parent.allowCORSOrigins()));
                 }
             }
             Method[] methods = s.getClass().getMethods();
@@ -171,9 +174,6 @@ public final class Repository<Service> extends ArrayList<Service> {
                 return true;
             }
         }
-        if(p.allowCORSOrigins().length>0){
-            request.getResponse().applyCORSHeaders(request,Arrays.asList(p.allowCORSOrigins()));
-        }
         request.getResponse().setContentType(p.response());
         Parameter[] params = method.getParameters();
         List<Object> args = new ArrayList<>();
@@ -224,9 +224,6 @@ public final class Repository<Service> extends ArrayList<Service> {
                 request.getResponse().auth(g.basicAuthRealm()).send();
                 return true;
             }
-        }
-        if(g.allowCORSOrigins().length>0){
-            request.getResponse().applyCORSHeaders(request,Arrays.asList(g.allowCORSOrigins()));
         }
         request.getResponse().setContentType(g.response());
         Parameter[] params = method.getParameters();
