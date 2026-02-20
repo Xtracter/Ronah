@@ -23,7 +23,7 @@ import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.service.*;
 import com.crazedout.ronah.Repository;
 
-public class APIService extends AutoRegisterService {
+public final class APIService extends AutoRegisterService {
 
     @GET(path="/api", response="text/html")
     public void getAPI(Request request){
