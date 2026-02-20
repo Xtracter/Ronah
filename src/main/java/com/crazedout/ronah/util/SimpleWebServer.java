@@ -1,6 +1,7 @@
 package com.crazedout.ronah.util;
 
 import com.crazedout.ronah.request.ContentType;
+import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.service.AutoRegisterService;
 
@@ -8,15 +9,27 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
+/**
+ * Class to support implementation of Web Server functionality.
+ * Service should inherit this class and use its doGET() or doPOST() functions.
+ */
 public abstract class SimpleWebServer extends AutoRegisterService {
 
     private final String basePath;
 
+    /**
+     * Creates a SimpleWebServer with basePath to file www area.
+     * @param basePath String file path
+     */
     public SimpleWebServer(String basePath){
         super();
         this.basePath = basePath;
     }
 
+    /**
+     * Creates a SimpleWebServer with basePath to file www area.
+     * Base path is System.getProperty("user.dir")
+     */
     public SimpleWebServer(){
         super();
         this.basePath = System.getProperty("user.dir");
@@ -24,7 +37,11 @@ public abstract class SimpleWebServer extends AutoRegisterService {
 
     protected String[] defaultPage = {"index.html","index.htm","index.php"};
 
-    public void doGet(Request request){
+    /**
+     * Handle a GET HTTP request
+     * @param request HttpRequest request
+     */
+    public void doGet(HttpRequest request){
 
         String contextPath = request.getPath().substring("/web".length());
 
