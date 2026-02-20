@@ -67,6 +67,19 @@ public class HttpResponse implements Response{
     }
 
     /**
+     * Creates an HTTP 404 response.
+     * @param message String message,
+     * @return Response
+     */
+    public Response notFound(String message){
+        this.builder.append("HTTP/1.1 404 Not Found\n");
+        this.contentType=ContentType.TEXT_HTML;
+        this.data =
+                ("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3><br/>"+message+"</body></html>").getBytes(charset);
+        return this;
+    }
+
+    /**
      * Creates an HTTP 401 response.
      * @return Response
      */

@@ -333,8 +333,9 @@ public final class Repository<Service> extends ArrayList<Service> {
         if(!ignoreParentPath) str2 = parentPath + str2;
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
-
-        return WildcardMatcher.matches(str1,str2);
+        boolean res = WildcardMatcher.matches(str1,str2) || (str1+"*/").equals(str2);
+        //System.out.println(request.getPath() + "=" + path + " " + res + " " + (str1+"*/") + " " + str2);
+        return res;
     }
 
     /**

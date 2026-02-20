@@ -30,12 +30,14 @@ public interface Response {
 
     OutputStream getOutputStream();
     Response charset(Charset charset);
+    Response ok(byte[] data);
     Response ok(String data);
     Response contentType(String contentType);
     Response error();
     Response error(String message);
     Response forbidden();
     Response notFound();
+    Response notFound(String message);
     Response auth(String realm);
     void internalError(String message);
     void setContentType(String contentType);

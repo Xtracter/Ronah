@@ -44,6 +44,7 @@ public class TestUtils {
                 while ((line = reader.readLine()) != null && !line.isEmpty()) {
                     response.add(line);
                 }
+                response.add(line);
                 while ((line = reader.readLine()) != null) {
                     response.add(line);
                 }

@@ -2,6 +2,7 @@ package com.crazedout.ronah;
 
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.service.DefaultService;
+import com.crazedout.ronah.util.SimpleWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -81,8 +82,7 @@ public class RonahTest extends TestUtils {
     @Test
     public void testOptions() throws IOException {
         DefaultService df = new DefaultService();
-        List<String> res = connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
-        //res.forEach(System.out::println);
+        connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
         Repository.removeService(df);
     }
 
@@ -100,6 +100,16 @@ public class RonahTest extends TestUtils {
     @Test
     void testPath() throws IOException{
         res = connect("GET /person/Fredrik/710518/3037 HTTP/1.1");
+    }
+
+    @Test
+    void testWebServer() throws IOException {
+        TestWebServer s = new TestWebServer("src/test/web");
+        res = connect("GET /web/ HTTP/1.1");
+        assertEquals("</html>",res.get(res.size()-1));
+        res = connect("GET /web/index.html HTTP/1.1");
+        Repository.removeService(s);
+        assertEquals("</html>",res.get(res.size()-1));
     }
 
     // TODO: More tests...
