@@ -43,6 +43,12 @@ public @interface POST {
     String response() default "application/json";
 
     /**
+     * Enforce that all declared parameters are present in query.
+     * @return true/false
+     */
+    boolean enforceParams() default false;
+
+    /**
      * Content type that this method accepts or * for all.
      * @return String content type.
      */

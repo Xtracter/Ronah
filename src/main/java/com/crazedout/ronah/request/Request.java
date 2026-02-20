@@ -49,6 +49,7 @@ public interface Request {
         byte[] getPostData();
         String getParameter(String key, Charset charSet);
         String getParameter(String key);
+        void addParameter(String key, String value);
         User getUser();
         void parseHeader(String key, String value);
         ContentType getContentType();

@@ -37,6 +37,12 @@ public @interface GET {
     String path() default "/";
 
     /**
+     * Enforce that all declared parameters are present in query.
+     * @return true/false
+     */
+    boolean enforceParams() default false;
+
+    /**
      * The Content-Type of this HTTP Response.
      * @return String content type
      */

@@ -24,6 +24,7 @@ import com.crazedout.ronah.request.multipart.MultipartPart;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.util.WildcardMatcher;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -150,30 +151,32 @@ public final class Repository<Service> extends ArrayList<Service> {
      */
     static boolean parseMethods( com.crazedout.ronah.service.Service s, Request request, Method method, String parentPath)
     throws InvocationTargetException, IllegalAccessException {
-
         boolean sent=false;
          for(Annotation an: method.getDeclaredAnnotations()) {
              if((an instanceof OPTIONS o) && Repository.pathEquals(request, o.path(), parentPath, o.ignoreParentPath())) {
-                 sent = handleOptions(s,request,o,method);
+                 handleOptions(s,request,o,method);
+                 sent=true;
              }else if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
-                 sent = handleGET(s,request,g,method);
+                 handleGET(s,request,g,method);
+                 sent = true;
              }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
                      p.ignoreParentPath())) {
-                 sent = handlePOST(s,request,p,method);
+                 handlePOST(s,request,p,method);
+                 sent=true;
              }
          }
          // TODO: Really bad pattern with boolean return here. Fix it soon.
         return sent;
     }
 
-    static boolean handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
+    static void handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
             throws InvocationTargetException, IllegalAccessException{
-        boolean sent;
+
         if(p.useBasicAuth()){
             User user;
             if(authenticate(request)==null){
                 request.getResponse().auth(p.basicAuthRealm()).send();
-                return true;
+                return;
             }
         }
         request.getResponse().setContentType(p.response());
@@ -186,6 +189,8 @@ public final class Repository<Service> extends ArrayList<Service> {
                     String value = request.getParameter(pa.getName().toLowerCase());
                     if(value!=null){
                         addParameterByClass(args, value, pa.getType());
+                    }else if(p.enforceParams()){
+                        args.add(null);
                     }
                 }else if(ContentType.APPLICATION_JSON.equals(request.getHeader("Content-Type"))) {
                     String value = new String(request.getPostData());
@@ -193,14 +198,22 @@ public final class Repository<Service> extends ArrayList<Service> {
                     if(jsonObject==null) {
                         addParameterByClass(args, value, pa.getType());
                     }else{
-                        String val = jsonObject.getString(pa.getName());
-                        addParameterByClass(args, val, pa.getType());
+                        try {
+                            String val = jsonObject.getString(pa.getName());
+                            addParameterByClass(args, val, pa.getType());
+                        }catch(JSONException ex){
+                            if(!p.enforceParams()) {
+                                args.add(null);
+                            }
+                        }
                     }
                 }else if(request.getHeader("Content-Type")!=null &&
                         request.getHeader("Content-Type").startsWith(ContentType.MULTIPART_FORM_DATA)) {
                     for(MultipartPart part:request.getMultiParts()) {
                         if(pa.getName().equalsIgnoreCase(part.fields.get("name"))){
                             addParameterByClass(args, new String(part.body), pa.getType());
+                        }else if(!p.enforceParams()){
+                            args.add(null);
                         }
                     }
                 }
@@ -209,28 +222,24 @@ public final class Repository<Service> extends ArrayList<Service> {
         if(System.getProperty("ronah.debug")!=null){
             System.out.println(args.size() + " " + method.getParameterCount());
         }
-        //if(args.size()==method.getParameterCount()) {
+
         logger.info("Invoking method: " + method.getName());
         method.invoke(s, args.toArray());
-        sent=true;
-        //}
-        return sent;
     }
 
-    static boolean handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
+    static void handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
     InvocationTargetException, IllegalAccessException{
         method.invoke(s,request);
-        return true;
     }
 
-    static boolean handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
+    static void handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
             InvocationTargetException, IllegalAccessException {
-        boolean sent;
+
         if(g.useBasicAuth()){
             User user;
             if(authenticate(request)==null){
                 request.getResponse().auth(g.basicAuthRealm()).send();
-                return true;
+                return;
             }
         }
         request.getResponse().setContentType(g.response());
@@ -245,23 +254,26 @@ public final class Repository<Service> extends ArrayList<Service> {
                     if(jsonObject==null) {
                         addParameterByClass(args, value, p.getType());
                     }else{
-                        String val = jsonObject.getString(p.getName());
-                        addParameterByClass(args, val, p.getType());
+                        try {
+                            String val = jsonObject.getString(p.getName());
+                            addParameterByClass(args, val, p.getType());
+                        }catch(JSONException ex){
+                            if(!g.enforceParams()) args.add(null);
+                        }
                     }
                 }else {
                     String value = request.getParameter(p.getName().toLowerCase());
                     if (value != null) {
                         addParameterByClass(args, value, p.getType());
+                    }else if(!g.enforceParams()){
+                        args.add(null);
                     }
                 }
             }
         }
-        //if(!args.isEmpty() && method.getParameterCount()>1) {
-            logger.info("Invoking method: " + method.getName());
-            method.invoke(s, args.toArray());
-            sent=true;
-        //}else{
-        return sent;
+
+        logger.info("Invoking method: " + method.getName());
+        method.invoke(s, args.toArray());
     }
 
     static JSONObject getJSONObject(List<Object> args){
@@ -299,7 +311,7 @@ public final class Repository<Service> extends ArrayList<Service> {
     }
 
     /**
-     * Checks if the path of the request matches the annotations path
+     * Checks if the path of the request matches the annotations path.
      * @param request Request HTTP request.
      * @param path String path
      * @return boolean true/false.
@@ -309,11 +321,44 @@ public final class Repository<Service> extends ArrayList<Service> {
         String str1 = request.getPath();
         String str2 = path;
 
+        try {
+            if (path.contains("[")) {
+                parsePathParams(request, str2, str1);
+                str2 = str2.substring(0, str2.indexOf("[")) + "*";
+            }
+        }catch(Exception ex){
+            // Do Nothing;
+        }
+
         if(!ignoreParentPath) str2 = parentPath + str2;
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
 
         return WildcardMatcher.matches(str1,str2);
+    }
+
+    /**
+     * Create parameters of "path" parameters denoted by /person/[name]/[age]
+     *
+     * @param request Request.
+     * @param annotPath String path from annotation.
+     * @param reqPath String path from request.
+     */
+    static void parsePathParams(Request request,String annotPath, String reqPath){
+
+        String[] aSplit = annotPath.split("/");
+        String[] rSplit = reqPath.split("/");
+
+        if(aSplit.length!=rSplit.length) return;
+
+        String parsed;
+        for(int i = 0; i < aSplit.length; i++){
+            String word = aSplit[i];
+            if(word.contains("[")){
+                parsed = word.replace("[","").replace("]","");
+                request.addParameter(parsed,rSplit[i].trim());
+            }
+        }
     }
 
     /**

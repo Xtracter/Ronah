@@ -75,7 +75,6 @@ public class RonahTest extends TestUtils {
     @Test
     void testJson1() throws IOException{
         res = connect("GET /json HTTP/1.1");
-        System.out.println(res.get(res.size()-1));
         assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 500 Internal Server</h3>wrong number of arguments</body></html>",res.get(res.size()-1));
     }
 
@@ -83,7 +82,7 @@ public class RonahTest extends TestUtils {
     public void testOptions() throws IOException {
         DefaultService df = new DefaultService();
         List<String> res = connectOptions("OPTIONS /options?name=test HTTP/1.1", "localhost","http://localhost:8080");
-        res.forEach(System.out::println);
+        //res.forEach(System.out::println);
         Repository.removeService(df);
     }
 
@@ -92,9 +91,15 @@ public class RonahTest extends TestUtils {
         res = connect("GET /api HTTP/1.1");
         assertEquals("</html>",res.get(res.size()-1));
         ronahHttpServer.removeAPIService();
+
         res = connect("GET /api HTTP/1.1");
         assertEquals("<!DOCTYPE html><html><body><h3>HTTP/1.1 404 Not Found</h2>Resource was not found</h3></body></html>",
                 res.get(res.size()-1));
+    }
+
+    @Test
+    void testPath() throws IOException{
+        res = connect("GET /person/Fredrik/710518/3037 HTTP/1.1");
     }
 
     // TODO: More tests...

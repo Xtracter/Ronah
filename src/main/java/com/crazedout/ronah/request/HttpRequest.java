@@ -161,6 +161,15 @@ public class HttpRequest implements Request {
     }
 
     /**
+     * Adds a query String parameter.
+     * @param key String key
+     * @param value String value
+     */
+    public void addParameter(String key, String value){
+        this.queryString+="&" + key + "=" + value;
+    }
+
+    /**
      * Sets the Query String
      * @param queryString String query
      */
@@ -180,7 +189,7 @@ public class HttpRequest implements Request {
                 String[] tokens = queryString.split("&");
                 for (String t : tokens) {
                     String[] pair = t.split("=");
-                    if (key.equals(URLEncoder.encode(pair[0], charset)))
+                    if (key.equalsIgnoreCase(URLEncoder.encode(pair[0], charset)))
                         return URLDecoder.decode(pair[1], charset);
                 }
             }
