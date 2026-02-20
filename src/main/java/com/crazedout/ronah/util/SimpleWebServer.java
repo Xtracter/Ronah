@@ -2,7 +2,6 @@ package com.crazedout.ronah.util;
 
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.HttpRequest;
-import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.service.AutoRegisterService;
 
 import java.io.DataInputStream;
@@ -13,6 +12,7 @@ import java.io.FileInputStream;
  * Class to support implementation of Web Server functionality.
  * Service should inherit this class and use its doGET() or doPOST() functions.
  */
+@SuppressWarnings("unused")
 public abstract class SimpleWebServer extends AutoRegisterService {
 
     private final String basePath;

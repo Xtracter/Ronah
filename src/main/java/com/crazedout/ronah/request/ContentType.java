@@ -55,7 +55,6 @@ public class ContentType {
     public static String getContentType(String fileName, String defaultType){
         String res = null;
         String ext;
-        System.out.println("'" + fileName + "'");
         int i = fileName.lastIndexOf(".");
         if(i!=-1){
             ext = fileName.substring(i+1);

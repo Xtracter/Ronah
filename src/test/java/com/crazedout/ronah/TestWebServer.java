@@ -18,7 +18,6 @@ public class TestWebServer extends SimpleWebServer {
     @API
     @GET(path="/web/*")
     public void testWebServer(Request request){
-        System.out.println("1:" + request.getPath());
         super.doGet((HttpRequest) request);
     }
 
