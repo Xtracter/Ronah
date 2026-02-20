@@ -98,7 +98,6 @@ public final class Ronah {
                 addServices(serv);
             }
         }
-        new APIService();
 
         String vm = System.getProperty("ronah.services");
         if(vm!=null) addServices(vm);
