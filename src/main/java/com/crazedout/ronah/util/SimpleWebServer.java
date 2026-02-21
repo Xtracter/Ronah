@@ -1,6 +1,6 @@
 package com.crazedout.ronah.util;
 
-import com.crazedout.ronah.request.ContentType;
+import com.crazedout.ronah.request.ContentTypes;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.AutoRegisterService;
 
@@ -58,7 +58,7 @@ public abstract class SimpleWebServer extends AutoRegisterService {
             request.getResponse().notFound("File was null").send();
             return;
         }
-        String ct = ContentType.getContentType(new File(systemFile).getName(),"text/text");
+        String ct = ContentTypes.getContentType(new File(systemFile).getName(),"text/text");
         try(DataInputStream in = new DataInputStream(new FileInputStream(systemFile))){
             byte[] buffer = in.readAllBytes();
             request.getResponse().contentType(ct).ok(buffer).send();

@@ -1,6 +1,7 @@
 package com.crazedout.ronah;
 
 import com.crazedout.ronah.request.ContentType;
+import com.crazedout.ronah.request.ContentTypes;
 import com.crazedout.ronah.util.WildcardMatcher;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class FunctionTests {
 
         String[] files = {"index.html","index.html","server.json","document.xml","script.js"};
         for(String ext:files){
-            assertNotEquals("text/text", ContentType.getContentType(ext,"text/text"));
+            assertNotEquals("text/text", ContentTypes.getContentType(ext,"text/text"));
         }
     }
 
