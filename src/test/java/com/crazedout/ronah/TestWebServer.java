@@ -2,9 +2,14 @@ package com.crazedout.ronah;
 
 import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.annotation.GET;
+import com.crazedout.ronah.request.ContentTypes;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.util.SimpleWebServer;
+
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
 import static com.crazedout.ronah.auth.BasicAuthentication.addUser;
 
@@ -18,8 +23,22 @@ public class TestWebServer extends SimpleWebServer {
     @API
     @GET(path="/web/*")
     public void testWebServer(Request request){
-        super.doGet((HttpRequest) request);
+        File file = super.getFile((HttpRequest) request,"/web");
+        if(file!=null) {
+            String ct = ContentTypes.getContentType(file.getName(), "text/text");
+            try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+                byte[] buffer = in.readAllBytes();
+                request.getResponse().contentType(ct).ok(buffer).send();
+            } catch (Exception ex) {
+                request.getResponse().notFound(ex.getMessage()).send();
+            }
+        }else {
+            request.getResponse().notFound().send();
+        }
     }
+
+
+
 
     public static void main(String[] args){
 

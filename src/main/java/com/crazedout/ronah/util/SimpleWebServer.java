@@ -41,9 +41,9 @@ public abstract class SimpleWebServer extends AutoRegisterService {
      * Handle a GET HTTP request
      * @param request HttpRequest request
      */
-    public void doGet(HttpRequest request){
+    public File getFile(HttpRequest request, String path){
 
-        String contextPath = request.getPath().substring("/web".length());
+        String contextPath = request.getPath().substring(path.length());
 
         String file = "";
         int i = contextPath.lastIndexOf("/");
@@ -54,17 +54,8 @@ public abstract class SimpleWebServer extends AutoRegisterService {
         contextPath = contextPath.substring(0,contextPath.length()-file.length());
 
         String systemFile = getRequestedFile(basePath + contextPath, file);
-        if(systemFile==null){
-            request.getResponse().notFound("File was null").send();
-            return;
-        }
-        String ct = ContentTypes.getContentType(new File(systemFile).getName(),"text/text");
-        try(DataInputStream in = new DataInputStream(new FileInputStream(systemFile))){
-            byte[] buffer = in.readAllBytes();
-            request.getResponse().contentType(ct).ok(buffer).send();
-        }catch(Exception ex){
-            request.getResponse().notFound(ex.getMessage()).send();
-        }
+        if(systemFile==null) return null;
+        return new File(systemFile);
     }
 
     private String getRequestedFile(String filePath, String file){
