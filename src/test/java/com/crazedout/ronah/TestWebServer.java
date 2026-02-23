@@ -24,6 +24,10 @@ public class TestWebServer extends SimpleWebServer {
     @GET(path="/web/*")
     public void testWebServer(Request request){
         File file = super.getFile((HttpRequest) request,"/web");
+        sendFile(request,file);
+    }
+
+    void sendFile(Request request, File file){
         if(file!=null) {
             String ct = ContentTypes.getContentType(file.getName(), "text/text");
             try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
@@ -36,7 +40,6 @@ public class TestWebServer extends SimpleWebServer {
             request.getResponse().notFound().send();
         }
     }
-
 
 
 

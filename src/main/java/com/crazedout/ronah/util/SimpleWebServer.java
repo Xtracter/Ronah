@@ -1,12 +1,9 @@
 package com.crazedout.ronah.util;
 
-import com.crazedout.ronah.request.ContentTypes;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.AutoRegisterService;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 
 /**
  * Class to support implementation of Web Server functionality.
