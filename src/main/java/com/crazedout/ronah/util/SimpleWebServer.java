@@ -59,11 +59,11 @@ public abstract class SimpleWebServer extends AutoRegisterService {
         File f;
         if(file.isEmpty()){
             for (String s : defaultPage) {
-                f = new File((filePath + File.separatorChar + s).replace("/", "\\"));
+                f = new File((filePath + File.separatorChar + s).replace('/', File.separatorChar));
                 if (f.exists()) return f.getAbsolutePath();
             }
         }else{
-            f  = new File((filePath + file).replace("/","\\"));
+            f  = new File((filePath + file).replace('/',File.separatorChar));
             if(f.exists()) return f.getAbsolutePath();
         }
         return null;
