@@ -32,6 +32,12 @@ public class TestService extends AutoRegisterService {
         request.getResponse().ok(name+"="+age).send();
     }
 
+    @API
+    @GET(path="/web/*", response = "text/text")
+    public static void testWebPath(Request request) {
+        request.getResponse().ok("OK").send();
+    }
+
     @API(suppressParams = {"name","band"}, name = "Ringos Json")
     @POST(path="/post", response = "text/text", acceptContentType = "application/json", enforceParams = true)
     public static void test3(Request request, @Param JSONObject json, @Param String name, @Param String band) {
