@@ -39,7 +39,8 @@ public final class HttpHandler {
      * Constructor
      * @param s Client socket.
      */
-    public HttpHandler(Socket s) {
+    public HttpHandler(Socket s, RonahHttpServer.ClientCounter counter) {
+        counter.add();
         try {
             parseRequest(s.getInputStream(), s.getOutputStream(), (InetSocketAddress) s.getRemoteSocketAddress());
             s.close();
@@ -48,6 +49,7 @@ public final class HttpHandler {
             RonahHttpServer.logger.warning("Global: " + ex.getMessage());
             if(RonahHttpServer.verbose) ex.printStackTrace(System.err);
         }
+        counter.remove();
     }
 
     /**
@@ -77,13 +79,13 @@ public final class HttpHandler {
                 if(line.toString().contains(":")){
                     StringTokenizer t = new StringTokenizer(line.toString(),":", false);
                     String key = t.nextToken();
-                    String val = "";
+                    StringBuilder val = new StringBuilder();
                     while(t.hasMoreTokens()) {
-                        val+=t.nextToken().trim() + ":";
+                        val.append(t.nextToken().trim()).append(":");
                     }
 
-                    val = val.substring(0,val.length()-1);
-                    request.parseHeader(key, val.trim());
+                    val = new StringBuilder(val.substring(0, val.length() - 1));
+                    request.parseHeader(key, val.toString().trim());
                 }
                 line = new StringBuilder();
             }else {
@@ -109,7 +111,8 @@ public final class HttpHandler {
         }
         try {
             if(request!=null){
-                Repository.serv(request);
+                Repository repo = Repository.getInstance();
+                repo.serv(request);
             }
         }catch(Exception ex){
             if("true".equals(System.getProperty("ronah.debug"))) {

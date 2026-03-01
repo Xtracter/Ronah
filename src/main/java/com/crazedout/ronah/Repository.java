@@ -23,6 +23,7 @@ import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.request.multipart.MultipartPart;
 import com.crazedout.ronah.request.ContentType;
 import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.service.Service;
 import com.crazedout.ronah.util.WildcardMatcher;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,15 +50,15 @@ import static com.crazedout.ronah.auth.BasicAuthentication.authenticate;
  */
 
 @SuppressWarnings("unused")
-public final class Repository<Service> extends ArrayList<Service> {
+public final class Repository extends ArrayList<com.crazedout.ronah.service.Service> {
 
     private final static Logger logger = RonahHttpServer.logger;
-    private static Repository<com.crazedout.ronah.service.Service> instance;
+    private static Repository instance;
 
     private Repository(){}
 
-    private static Repository<com.crazedout.ronah.service.Service> getInstance(){
-        if(instance==null) instance = new Repository<>();
+    public static Repository getInstance(){
+        if(instance==null) instance = new Repository();
         return instance;
     }
 
@@ -69,13 +70,14 @@ public final class Repository<Service> extends ArrayList<Service> {
      * This central function dispatches incoming calls to the correct Service's method.
      * @param request Request request.
      */
-    static void serv(Request request) {
+    void serv(Request request) {
         String errMess;
         boolean sent = false;
         String parentPath = "";
         Method catchAll=null;
         com.crazedout.ronah.service.Service catchService=null;
         for(com.crazedout.ronah.service.Service s : getInstance()){
+            if(!s.isActive()) continue;
             if(s.getClass().getAnnotations().length>0){
                 Parent parent = (Parent)s.getClass().getAnnotations()[0];
                 parentPath = parent.path();
@@ -122,7 +124,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         }
     }
 
-    static boolean allowClientIP(InetSocketAddress sockAddr, Parent p){
+    boolean allowClientIP(InetSocketAddress sockAddr, Parent p){
         if(p.allowClientIP().length==0) return true;
         for(String s:p.allowClientIP()){
             if(WildcardMatcher.matches(sockAddr.toString().substring(1),s)) return true;
@@ -130,7 +132,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         return false;
     }
 
-    static String printToString(Exception ex)  {
+    String printToString(Exception ex)  {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final String utf8 = StandardCharsets.UTF_8.name();
         try (PrintStream ps = new PrintStream(baos, true)) {
@@ -149,17 +151,17 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @throws InvocationTargetException Exception
      * @throws IllegalAccessException Exception
      */
-    static boolean parseMethods( com.crazedout.ronah.service.Service s, Request request, Method method, String parentPath)
+    boolean parseMethods( com.crazedout.ronah.service.Service s, Request request, Method method, String parentPath)
     throws InvocationTargetException, IllegalAccessException {
         boolean sent=false;
          for(Annotation an: method.getDeclaredAnnotations()) {
-             if((an instanceof OPTIONS o) && Repository.pathEquals(request, o.path(), parentPath, o.ignoreParentPath())) {
+             if((an instanceof OPTIONS o) && pathEquals(request, o.path(), parentPath, o.ignoreParentPath())) {
                  handleOptions(s,request,o,method);
                  sent=true;
-             }else if((an instanceof GET g) && Repository.pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
+             }else if((an instanceof GET g) && pathEquals(request, g.path(), parentPath,g.ignoreParentPath())) {
                  handleGET(s,request,g,method);
                  sent = true;
-             }else if((an instanceof POST p) && Repository.pathEquals(request, p.path(), parentPath,
+             }else if((an instanceof POST p) && pathEquals(request, p.path(), parentPath,
                      p.ignoreParentPath())) {
                  handlePOST(s,request,p,method);
                  sent=true;
@@ -169,7 +171,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         return sent;
     }
 
-    static void handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
+    void handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
             throws InvocationTargetException, IllegalAccessException{
 
         if(p.useBasicAuth()){
@@ -227,12 +229,12 @@ public final class Repository<Service> extends ArrayList<Service> {
         method.invoke(s, args.toArray());
     }
 
-    static void handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
+    void handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
     InvocationTargetException, IllegalAccessException{
         method.invoke(s,request);
     }
 
-    static void handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
+    void handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
             InvocationTargetException, IllegalAccessException {
 
         if(g.useBasicAuth()){
@@ -276,7 +278,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         method.invoke(s, args.toArray());
     }
 
-    static JSONObject getJSONObject(List<Object> args){
+    JSONObject getJSONObject(List<Object> args){
         for(Object o:args){
             if(o instanceof JSONObject) return (JSONObject) o;
         }
@@ -289,7 +291,7 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @param value String value as string
      * @param type Class the type of parameter to be set.
      */
-    private static void addParameterByClass(List<Object> args, String value, Class<?> type){
+    private void addParameterByClass(List<Object> args, String value, Class<?> type){
         if(value!=null) {
             if (type == Integer.class) args.add(Integer.parseInt(value));
             else if (type == Double.class) args.add(Double.parseDouble(value));
@@ -316,7 +318,7 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @param path String path
      * @return boolean true/false.
      */
-    private static boolean pathEquals(Request request, String path, String parentPath, boolean ignoreParentPath){
+    private boolean pathEquals(Request request, String path, String parentPath, boolean ignoreParentPath){
 
         String str1 = request.getPath();
         String str2 = path;
@@ -334,7 +336,7 @@ public final class Repository<Service> extends ArrayList<Service> {
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
         boolean res = WildcardMatcher.matches(str1,str2) || (str1+"*/").equals(str2);
-        //System.out.println(request.getPath() + "=" + path + " " + res + " " + (str1+"*/") + " " + str2);
+        System.out.println(request.getPath() + "=" + path + " " + res + " " + (str1+"*/") + " " + str2);
         return res;
     }
 
@@ -345,7 +347,7 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @param annotPath String path from annotation.
      * @param reqPath String path from request.
      */
-    static void parsePathParams(Request request,String annotPath, String reqPath){
+    void parsePathParams(Request request,String annotPath, String reqPath){
 
         String[] aSplit = annotPath.split("/");
         String[] rSplit = reqPath.split("/");
@@ -363,6 +365,18 @@ public final class Repository<Service> extends ArrayList<Service> {
     }
 
     /**
+     * Gets a Service by its name.
+     * @param name String name
+     * @return Service or null if not found.
+     */
+    public Service getServiceByName(String name){
+        for(Service s:this){
+            if(s.getName().replace(" ","_").equals(name.replace(" ","_"))) return s;
+        }
+        return null;
+    }
+
+    /**
      * Gets the number of Services registered.
      * @return int size.
      */
@@ -375,6 +389,7 @@ public final class Repository<Service> extends ArrayList<Service> {
      * @param service Service
      */
     public static void addService(com.crazedout.ronah.service.Service service){
+        System.out.println(service.getClass().getName());
         if(!getInstance().contains(service)) {
             getInstance().add(service);
         }

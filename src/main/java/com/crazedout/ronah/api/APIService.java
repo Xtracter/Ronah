@@ -25,6 +25,11 @@ import com.crazedout.ronah.Repository;
 
 public final class APIService extends AutoRegisterService {
 
+    @Override
+    public String getName(){
+        return "APIService";
+    }
+
     @GET(path="/api", response="text/html")
     public void getAPI(Request request){
         String html = "";

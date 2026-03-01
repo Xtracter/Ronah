@@ -12,16 +12,7 @@ import java.io.File;
 @SuppressWarnings("unused")
 public abstract class SimpleWebServer extends AutoRegisterService {
 
-    private final String basePath;
-
-    /**
-     * Creates a SimpleWebServer with basePath to file www area.
-     * @param basePath String file path
-     */
-    public SimpleWebServer(String basePath){
-        super();
-        this.basePath = basePath;
-    }
+    private String basePath;
 
     /**
      * Creates a SimpleWebServer with basePath to file www area.
@@ -30,6 +21,10 @@ public abstract class SimpleWebServer extends AutoRegisterService {
     public SimpleWebServer(){
         super();
         this.basePath = System.getProperty("user.dir");
+    }
+
+    public void setBasePath(String path){
+        this.basePath = path;
     }
 
     protected String[] defaultPage = {"index.html","index.htm","index.php"};

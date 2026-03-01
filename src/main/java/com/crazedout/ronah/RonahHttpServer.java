@@ -49,7 +49,28 @@ public final class RonahHttpServer {
     private volatile ServerSocketFactory serverSocketFactory;
     private volatile boolean secure;
     private ServerSocket serverSocket;
-    private APIService apiService;
+    private final APIService apiService;
+
+    public static class ClientCounter {
+
+        int max = System.getProperty("ronah.max.clients")!=null?
+                Integer.parseInt(System.getProperty("ronah.max.clients")):100;
+        int current = 0;
+
+        public synchronized boolean add(){
+            if(current+1>=max) return false;
+            else current++;
+            return true;
+        }
+        public synchronized void remove(){
+            current--;
+        }
+
+        public int getCount(){
+            return current;
+        }
+
+    }
 
     /**
      * Create an instance of Ronah on port.
@@ -86,11 +107,13 @@ public final class RonahHttpServer {
 
         logger.info("Starting Ronah REST server on port:" + port);
         try{
+            ClientCounter counter = new ClientCounter();
             serverSocket = secure?createServerSocket(port):new ServerSocket(port);
             while(running) {
                 Socket s = serverSocket.accept();
                 s.setReuseAddress(true);
-                (new Thread(() -> new HttpHandler(s))).start();
+                (new Thread(() -> new HttpHandler(s,counter))).start();
+                System.out.println("Clients:" + counter.current);
             }
         }catch(IOException ex){
             System.err.println(ex.getMessage());

@@ -16,8 +16,14 @@ import static com.crazedout.ronah.auth.BasicAuthentication.addUser;
 public class TestWebServer extends SimpleWebServer {
 
     public TestWebServer(String basePath){
-        super(basePath);
+        super();
+        setBasePath(basePath);
         addUser("falcon","pencil");
+    }
+
+    @Override
+    public String getName(){
+        return "TestWebServer";
     }
 
     @API

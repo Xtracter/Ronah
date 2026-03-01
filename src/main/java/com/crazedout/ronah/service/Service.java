@@ -22,6 +22,18 @@ package com.crazedout.ronah.service;
  * Interface of a Service.
  * In the realm of Ronah a class needs to inherit Service to be considered for HTTP calls.
  */
-public interface Service {
+public abstract class  Service {
+
+    protected boolean active = true;
+
+    public abstract String getName();
+
+    public String getPurpose(){
+        return "Default purpose";
+    }
+
+    public boolean isActive(){
+        return this.active;
+    }
 
 }

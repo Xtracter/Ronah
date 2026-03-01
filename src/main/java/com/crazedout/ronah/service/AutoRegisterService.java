@@ -23,7 +23,9 @@ import com.crazedout.ronah.Repository;
 /**
  * Abstract Service class that automatically register itself to Repository.
  */
-public abstract class AutoRegisterService implements Service {
+public abstract class AutoRegisterService extends Service {
+
+    protected boolean active = true;
 
     /**
      * Creates a AutoRegisterService
@@ -46,4 +48,20 @@ public abstract class AutoRegisterService implements Service {
         }
         return null;
     }
+
+    @Override
+    public String getName(){
+        String clazz = getClass().getName();
+        return clazz.substring(clazz.lastIndexOf(".")+1);
+    }
+
+    public void setActive(boolean active){
+        this.active=active;
+    }
+
+    @Override
+    public String getPurpose(){
+        return "Apply REST service to the world.";
+    }
+
 }

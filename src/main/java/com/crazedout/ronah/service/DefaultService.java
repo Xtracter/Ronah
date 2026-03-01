@@ -29,6 +29,11 @@ public class DefaultService extends AutoRegisterService {
         super();
     }
 
+    @Override
+    public String getName(){
+        return "DefaultService";
+    }
+
     @OPTIONS(path="/options")
     public void options(Request request){
         request.getResponse().applyCORSHeaders(request, "http://localhost:8080");

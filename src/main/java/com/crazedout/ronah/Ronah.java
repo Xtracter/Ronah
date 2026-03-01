@@ -18,7 +18,8 @@ package com.crazedout.ronah;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.api.APIService;
+
+import com.crazedout.ronah.service.AdminService;
 
 import javax.net.ssl.SSLServerSocketFactory;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +59,7 @@ public final class Ronah {
 
     }
 
-    private static void addServices(String serv) throws
+    public void addServices(String serv) throws
             ClassNotFoundException,
             NoSuchMethodException,
             InvocationTargetException,
@@ -68,25 +69,29 @@ public final class Ronah {
         if (serv.contains(",")) {
             Arrays.stream(serv.split(",")).forEach(e -> {
                 try {
-                    Class.forName(e).getDeclaredConstructor().newInstance();
+                    Class.forName(e.trim()).getDeclaredConstructor().newInstance();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             });
-        } else Class.forName(serv).getDeclaredConstructor().newInstance();
+        } else {
+            Class.forName(serv.trim()).getDeclaredConstructor().newInstance();
+        }
     }
 
     /**
      * Application start point.
      * @param args command line arguments (i.e. port).
      */
-    public static void main(String[] args)  throws ClassNotFoundException,
+    public static void main(String[] args) throws ClassNotFoundException,
         NoSuchMethodException,
         InvocationTargetException,
         InstantiationException,
         IllegalAccessException {
 
         System.out.print(marquee());
+
+        Ronah ronah = new Ronah();
         int port = 8080;
         for(String s:args){
             if(s.startsWith("-p:")) port = Integer.parseInt(s.substring(3));
@@ -95,15 +100,17 @@ public final class Ronah {
                 return;
             }else if(s.startsWith("-s:")){
                 String serv = s.substring(3);
-                addServices(serv);
+                ronah.addServices(serv);
             }
         }
 
         String vm = System.getProperty("ronah.services");
-        if(vm!=null) addServices(vm);
+        if(vm!=null) ronah.addServices(vm);
         vm = System.getProperty("ronah.port");
         if(vm!=null) port = Integer.parseInt(vm);
 
+        AdminService a = new AdminService();
+        a.setActive(false);
         RonahHttpServer r = new RonahHttpServer();
         if (System.getProperty("javax.net.ssl.keyStore") != null) {
             r.setServerSocketFactory(SSLServerSocketFactory.getDefault());
