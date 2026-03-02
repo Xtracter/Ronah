@@ -2,7 +2,7 @@ package com.crazedout.ronah;
 
 import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.request.ContentType;
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.request.multipart.MultipartPart;
 import com.crazedout.ronah.service.AutoRegisterService;
 import org.json.JSONException;
@@ -16,31 +16,31 @@ public class TestService extends AutoRegisterService {
 
     @API
     @GET(path="/index/*", response = "text/text")
-    public static void test(Request request){
+    public static void test(HttpRequest request){
         request.getResponse().ok("OK").send();
     }
 
     @API
     @GET(path="/index", response = "text/text")
-    public static void test1(Request request){
+    public static void test1(HttpRequest request){
         request.getResponse().ok("OK").send();
     }
 
     @API
     @GET(path="/param", response = "text/text")
-    public static void test2(Request request, @Param String name, @Param String age) {
+    public static void test2(HttpRequest request, @Param String name, @Param String age) {
         request.getResponse().ok(name+"="+age).send();
     }
 
     @API
     @GET(path="/web/*", response = "text/text")
-    public static void testWebPath(Request request) {
+    public static void testWebPath(HttpRequest request) {
         request.getResponse().ok("OK").send();
     }
 
     @API(suppressParams = {"name","band"}, name = "Ringos Json")
     @POST(path="/post", response = "text/text", acceptContentType = "application/json", enforceParams = true)
-    public static void test3(Request request, @Param JSONObject json, @Param String name, @Param String band) {
+    public static void test3(HttpRequest request, @Param JSONObject json, @Param String name, @Param String band) {
         try {
             request.getResponse().ok(json.getString("name") + " plays in " + json.getString("band")).send();
         }catch(JSONException ex){
@@ -50,14 +50,14 @@ public class TestService extends AutoRegisterService {
 
     @API
     @POST(path="/upload", response="text/text", acceptContentType = ContentType.MULTIPART_FORM_DATA)
-    public void getRest3(Request request, @Param String name, @Param String email)  {
+    public void getRest3(HttpRequest request, @Param String name, @Param String email)  {
         List<MultipartPart> filesPart = request.getMultiParts().stream().filter(MultipartPart::isFile).toList();
         request.getResponse().ok("OK").send();
     }
 
     @API
     @POST(path="/json", acceptContentType="application/json")
-    public void getJson(Request request, @Param JSONObject json){
+    public void getJson(HttpRequest request, @Param JSONObject json){
         try {
             String response = "Hello " + json.toString();
             request.getResponse().ok(response).send();
@@ -68,7 +68,7 @@ public class TestService extends AutoRegisterService {
 
     @API
     @GET(path="/json", acceptContentType="application/json")
-    public void getJson2(Request request, @Param JSONObject json){
+    public void getJson2(HttpRequest request, @Param JSONObject json){
         try {
             String response = "Hello " + json.toString();
             request.getResponse().ok(response).send();
@@ -79,7 +79,7 @@ public class TestService extends AutoRegisterService {
 
     @API
     @GET(path="/person/[name]/[date]/[lastDigits]", response = "text/text")
-    public void getPath(Request request, @Param String name, @Param String date, @Param Integer lastDigits){
+    public void getPath(HttpRequest request, @Param String name, @Param String date, @Param Integer lastDigits){
             String response = "Hello:" + name + " " + date + " " + (lastDigits+1);
             request.getResponse().ok(response).send();
     }

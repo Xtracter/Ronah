@@ -19,7 +19,7 @@ package com.crazedout.ronah.request.multipart;
  * mail: info@crazedout.com
  */
 
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,7 +90,7 @@ public class MultipartPart {
      * @param request Request
      * @return List MultipartPart files uploads.
      */
-    public static List<MultipartPart> getFileParts(Request request){
+    public static List<MultipartPart> getFileParts(HttpRequest request){
         return request.getMultiParts().stream().filter(MultipartPart::isFile).toList();
     }
 

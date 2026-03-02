@@ -37,14 +37,14 @@ import java.util.Map;
  * Class to hold an HTTP request.
  */
 @SuppressWarnings("unused")
-public class HttpRequest implements Request {
+public class HttpRequest  {
 
     private String protocol;
     private String method;
     private String path;
     private String queryString;
     private final Map<String,String> headers;
-    private final Response response;
+    private final HttpResponse response;
     private byte[] postData;
     private List<MultipartPart> multipartParts;
     private BasicAuthentication.BasicUser basicUser;
@@ -64,18 +64,15 @@ public class HttpRequest implements Request {
         this.parse(httpLine);
     }
 
-    @Override
     public InetSocketAddress getSocketAddress(){
         return this.socketAddress;
     }
 
 
-    @Override
     public void setMultiParts(List<MultipartPart> multiParts){
         this.multipartParts=multiParts;
     }
 
-    @Override
     public List<MultipartPart> getMultiParts(){
         return this.multipartParts;
     }
@@ -130,7 +127,6 @@ public class HttpRequest implements Request {
         this.basicUser= (BasicAuthentication.BasicUser) user;
     }
 
-    @Override
     public User getUser(){
         return this.basicUser;
     }
@@ -182,7 +178,6 @@ public class HttpRequest implements Request {
      * @param key name of the parameter.
      * @return value of the parameter.
      */
-    @Override
     public String getParameter(String key){
         try {
             if (queryString != null) {
@@ -209,7 +204,6 @@ public class HttpRequest implements Request {
      * @param charSet Charset
      * @return value of the parameter.
      */
-    @Override
     public String getParameter(String key, Charset charSet){
         if(queryString!=null){
             String[] tokens = queryString.split("&");
@@ -243,7 +237,6 @@ public class HttpRequest implements Request {
      * Set POST data
      * @param data post data
      */
-    @Override
     public void setPostData(byte[] data){
         this.postData=data;
     }
@@ -252,7 +245,6 @@ public class HttpRequest implements Request {
      * Gets the POST data.
      * @return POST data
      */
-    @Override
     public byte[] getPostData(){
         return this.postData;
     }
@@ -261,7 +253,6 @@ public class HttpRequest implements Request {
      * Gets the path of this HTTP request.
      * @return String path of request.
      */
-    @Override
     public String getPath() {
         return this.path;
     }
@@ -270,7 +261,6 @@ public class HttpRequest implements Request {
      * Returns a Map of the HTTP headers from client.
      * @return Map of headers.
      */
-    @Override
     public Map<String, String> getHeaders() {
         return this.headers;
     }
@@ -279,8 +269,7 @@ public class HttpRequest implements Request {
      * Gets the Response object of this HttpRequest.
      * @return Response.
      */
-    @Override
-    public Response getResponse() {
+    public HttpResponse getResponse() {
         return this.response;
     }
 

@@ -4,7 +4,6 @@ import com.crazedout.ronah.annotation.API;
 import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.request.ContentTypes;
 import com.crazedout.ronah.request.HttpRequest;
-import com.crazedout.ronah.request.Request;
 import com.crazedout.ronah.util.SimpleWebServer;
 
 import java.io.DataInputStream;
@@ -28,12 +27,12 @@ public class TestWebServer extends SimpleWebServer {
 
     @API
     @GET(path="/web/*")
-    public void testWebServer(Request request){
-        File file = super.getFile((HttpRequest) request,"/web");
+    public void testWebServer(HttpRequest request){
+        File file = super.getFile(request,"/web");
         sendFile(request,file);
     }
 
-    void sendFile(Request request, File file){
+    void sendFile(HttpRequest request, File file){
         if(file!=null) {
             String ct = ContentTypes.getContentType(file.getName(), "text/text");
             try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {

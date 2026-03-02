@@ -1,6 +1,6 @@
 package com.crazedout.ronah.auth;
 
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -59,7 +59,7 @@ public class BasicAuthentication {
      * @param request Request incoming request
      * @return User if validated else null.
      */
-    public static BasicUser authenticate(Request request){
+    public static BasicUser authenticate(HttpRequest request){
 
         String auth = request.getHeader("Authorization");
         if(auth==null) return null;

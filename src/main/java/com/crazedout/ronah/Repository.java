@@ -22,7 +22,7 @@ import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.auth.User;
 import com.crazedout.ronah.request.multipart.MultipartPart;
 import com.crazedout.ronah.request.ContentType;
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.Service;
 import com.crazedout.ronah.util.WildcardMatcher;
 import org.json.JSONException;
@@ -70,7 +70,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * This central function dispatches incoming calls to the correct Service's method.
      * @param request Request request.
      */
-    void serv(Request request) {
+    void serv(HttpRequest request) {
         String errMess;
         boolean sent = false;
         String parentPath = "";
@@ -152,7 +152,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * @throws InvocationTargetException Exception
      * @throws IllegalAccessException Exception
      */
-    boolean parseMethods( com.crazedout.ronah.service.Service s, Request request, Method method, String parentPath)
+    boolean parseMethods( com.crazedout.ronah.service.Service s, HttpRequest request, Method method, String parentPath)
     throws InvocationTargetException, IllegalAccessException {
         boolean sent=false;
          for(Annotation an: method.getDeclaredAnnotations()) {
@@ -172,7 +172,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         return sent;
     }
 
-    void handlePOST(com.crazedout.ronah.service.Service s,Request request,POST p, Method method)
+    void handlePOST(com.crazedout.ronah.service.Service s,HttpRequest request,POST p, Method method)
             throws InvocationTargetException, IllegalAccessException{
 
         if(p.useBasicAuth()){
@@ -230,12 +230,12 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         method.invoke(s, args.toArray());
     }
 
-    void handleOptions(com.crazedout.ronah.service.Service s, Request request, OPTIONS o, Method method) throws
+    void handleOptions(com.crazedout.ronah.service.Service s, HttpRequest request, OPTIONS o, Method method) throws
     InvocationTargetException, IllegalAccessException{
         method.invoke(s,request);
     }
 
-    void handleGET(com.crazedout.ronah.service.Service s, Request request, GET g, Method method) throws
+    void handleGET(com.crazedout.ronah.service.Service s, HttpRequest request, GET g, Method method) throws
             InvocationTargetException, IllegalAccessException {
 
         if(g.useBasicAuth()){
@@ -308,7 +308,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * @param p Annotation POST
      * @return boolean true/false
      */
-    private boolean allowContentType(Request request, POST p){
+    private boolean allowContentType(HttpRequest request, POST p){
         return "*".equals(p.acceptContentType()) ||
                 request.getHeaders().get("Content-Type").equals(p.acceptContentType());
     }
@@ -319,7 +319,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * @param path String path
      * @return boolean true/false.
      */
-    private boolean pathEquals(Request request, String path, String parentPath, boolean ignoreParentPath){
+    private boolean pathEquals(HttpRequest request, String path, String parentPath, boolean ignoreParentPath){
 
         String str1 = request.getPath();
         String str2 = path;
@@ -347,7 +347,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * @param annotPath String path from annotation.
      * @param reqPath String path from request.
      */
-    void parsePathParams(Request request,String annotPath, String reqPath){
+    void parsePathParams(HttpRequest request,String annotPath, String reqPath){
 
         String[] aSplit = annotPath.split("/");
         String[] rSplit = reqPath.split("/");

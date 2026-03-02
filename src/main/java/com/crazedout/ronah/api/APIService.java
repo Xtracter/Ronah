@@ -19,7 +19,7 @@ package com.crazedout.ronah.api;
  */
 
 import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.*;
 import com.crazedout.ronah.Repository;
 
@@ -31,7 +31,7 @@ public final class APIService extends AutoRegisterService {
     }
 
     @GET(path="/api", response="text/html", enforceParams = false)
-    public void getAPI(Request request){
+    public void getAPI(HttpRequest request){
         String html = "";
         if(request.getParameter("path")!=null){
             Service s = Repository.getInstance().getServiceByPath(request.getParameter("path"));

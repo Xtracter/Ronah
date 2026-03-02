@@ -1,6 +1,6 @@
 package com.crazedout.ronah.request.cors;
 
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class CORS {
      * @param request request http request
      * @param allow List origins allowed.
      */
-    public static void getCORSHeaders(Request request, String... allow) {
+    public static void getCORSHeaders(HttpRequest request, String... allow) {
         String origin = request.getHeader("Origin");
         if (origin != null) {
             for (String s : allow) {

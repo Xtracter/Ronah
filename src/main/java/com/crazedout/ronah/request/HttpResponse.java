@@ -32,7 +32,7 @@ import java.util.*;
  * Class to handle an HTTP response.
  */
 @SuppressWarnings("unused")
-public class HttpResponse implements Response{
+public class HttpResponse  {
 
     private final OutputStream out;
     private final StringBuilder builder;
@@ -58,7 +58,7 @@ public class HttpResponse implements Response{
      * Creates an HTTP 404 response.
      * @return Response
      */
-    public Response notFound(){
+    public HttpResponse notFound(){
         this.builder.append("HTTP/1.1 404 Not Found\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data =
@@ -71,7 +71,7 @@ public class HttpResponse implements Response{
      * @param message String message,
      * @return Response
      */
-    public Response notFound(String message){
+    public HttpResponse notFound(String message){
         this.builder.append("HTTP/1.1 404 Not Found\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data =
@@ -83,7 +83,7 @@ public class HttpResponse implements Response{
      * Creates an HTTP 401 response.
      * @return Response
      */
-    public Response auth(String realm){
+    public HttpResponse auth(String realm){
         userHeaders.put("WWW-Authenticate", String.format("Basic realm=\"%s\"",realm));
         this.builder.append("HTTP/1.1 401 Unauthorized\n");
         this.contentType=ContentType.TEXT_TEXT;
@@ -96,7 +96,7 @@ public class HttpResponse implements Response{
      * Creates an HTTP 500 response.
      * @return Response
      */
-    public Response error(){
+    public HttpResponse error(){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data =
@@ -108,7 +108,7 @@ public class HttpResponse implements Response{
      * Creates an HTTP 500 response.
      * @return Response
      */
-    public Response error(String message){
+    public HttpResponse error(String message){
         this.builder.append("HTTP/1.1 500 Internal Server\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data =
@@ -120,7 +120,7 @@ public class HttpResponse implements Response{
      * Creates an HTTP 404 response.
      * @return Response
      */
-    public Response forbidden(){
+    public HttpResponse forbidden(){
         this.builder.append("HTTP/1.1 403 Forbidden\n");
         this.contentType=ContentType.TEXT_HTML;
         this.data = "<!DOCTYPE html><html><body><h3>HTTP/1.1 403 Forbidden</h3></body></html>\n".getBytes(charset);
@@ -131,7 +131,7 @@ public class HttpResponse implements Response{
      * Sets the char set for this response.
      * @param charset Charset
      */
-    public Response charset(Charset charset){
+    public HttpResponse charset(Charset charset){
         this.charset = charset;
         return this;
     }
@@ -141,7 +141,7 @@ public class HttpResponse implements Response{
      * @param data String response content.
      * @return Response
      */
-    public Response ok(String data){
+    public HttpResponse ok(String data){
         this.builder.append("HTTP/1.1 200 OK\n");
         this.data = data.getBytes(charset);
         return this;
@@ -152,7 +152,7 @@ public class HttpResponse implements Response{
      * @param data byte[] response content.
      * @return Response
      */
-    public Response ok(byte[] data){
+    public HttpResponse ok(byte[] data){
         this.builder.append("HTTP/1.1 200 OK\n");
         this.data = data;
         return this;
@@ -162,7 +162,7 @@ public class HttpResponse implements Response{
      * Adding default CORS headers.
      * @param allow clients to allow.
      */
-    public void applyCORSHeaders(Request request, String... allow){
+    public void applyCORSHeaders(HttpRequest request, String... allow){
         CORS.getCORSHeaders(request,allow);
     }
 
@@ -170,8 +170,7 @@ public class HttpResponse implements Response{
      * @param contentType String Content type.
      * @return Response
      */
-    @Override
-    public Response contentType(String contentType){
+    public HttpResponse contentType(String contentType){
         this.contentType = contentType;
         return this;
     }
@@ -180,7 +179,6 @@ public class HttpResponse implements Response{
      * Gets the Response's output stream,
      * @return OutputStream
      */
-    @Override
     public OutputStream getOutputStream() {
         return this.out;
     }
@@ -244,7 +242,6 @@ public class HttpResponse implements Response{
      * Automatically set by according to @POST or @GET response value.
      * @param contentType String content type.
      */
-    @Override
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
@@ -253,7 +250,6 @@ public class HttpResponse implements Response{
      * Sets the char set for this response.
      * @param charset Charset
      */
-    @Override
     public void setCharset(Charset charset){
         this.charset=charset;
     }
@@ -262,7 +258,6 @@ public class HttpResponse implements Response{
      * Sets the POST data for this response if viable.
      * @param data byte[] data.
      */
-    @Override
     public void setData(byte[] data) {
         this.data = data;
     }
@@ -272,7 +267,6 @@ public class HttpResponse implements Response{
      * @param key header name.
      * @param value header value.
      */
-    @Override
     public void addHeader(String key, String value){
         this.userHeaders.put(key,value);
     }

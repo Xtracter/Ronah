@@ -19,7 +19,7 @@ package com.crazedout.ronah.service;
  */
 
 import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 
 
 @SuppressWarnings("unused")
@@ -35,13 +35,13 @@ public class DefaultService extends AutoRegisterService {
     }
 
     @OPTIONS(path="/options")
-    public void options(Request request){
+    public void options(HttpRequest request){
         request.getResponse().applyCORSHeaders(request, "http://localhost:8080");
         request.getResponse().sendOptions();
     }
 
     @CatchAll
-    public void catchAll(Request request){
+    public void catchAll(HttpRequest request){
         String html = "<!DOCTYPE html><html><body><h1>Hello from Ronah Catch all</h1></body></html>";
         request.getResponse().ok(html).send();
     }

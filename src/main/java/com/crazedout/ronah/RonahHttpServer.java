@@ -123,7 +123,6 @@ public final class RonahHttpServer {
                 Socket s = serverSocket.accept();
                 s.setReuseAddress(true);
                 (new Thread(() -> new HttpHandler(s,counter))).start();
-                System.out.println("Clients:" + counter.current);
             }
         }catch(IOException ex){
             System.err.println(ex.getMessage());

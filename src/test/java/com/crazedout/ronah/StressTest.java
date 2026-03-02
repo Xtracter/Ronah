@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class StressTest implements Runnable{
-
-    long sleep = 0;
+    long sleep;
     StressTest(long sleep){
         this.sleep=sleep;
     }
@@ -20,8 +19,9 @@ public class StressTest implements Runnable{
 
     public void run(){
         try {
+            Thread.sleep(sleep);
             HttpURLConnectionTest.sendGET();
-        }catch(IOException ex){
+        }catch(Exception ex){
             System.out.println(ex.getMessage());
         }
     }

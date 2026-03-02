@@ -3,7 +3,7 @@ package com.crazedout.ronah.service;
 import com.crazedout.ronah.Repository;
 import com.crazedout.ronah.RonahHttpServer;
 import com.crazedout.ronah.annotation.*;
-import com.crazedout.ronah.request.Request;
+import com.crazedout.ronah.request.HttpRequest;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -181,7 +181,7 @@ public class AdminService extends AutoRegisterService {
 
     @API
     @GET(path="/admin", response = "text/html", enforceParams = false, useBasicAuth = true, basicAuthRealm = "admin")
-    public void admin(Request request, @Param String task, @Param String value) {
+    public void admin(HttpRequest request, @Param String task, @Param String value) {
         String response = getDefaultPage(task, value);
         if(task!=null && task.equals("toggleService")){
             Service serv = Objects.requireNonNull(Repository.getInstance().getServiceByName(value));
