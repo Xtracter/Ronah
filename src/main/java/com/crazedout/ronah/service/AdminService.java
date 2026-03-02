@@ -7,8 +7,11 @@ import com.crazedout.ronah.annotation.POST;
 import com.crazedout.ronah.annotation.Param;
 import com.crazedout.ronah.request.Request;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Base64;
 import java.util.Objects;
 
 public class AdminService extends AutoRegisterService {
@@ -183,6 +186,7 @@ public class AdminService extends AutoRegisterService {
         StringBuilder sb = new StringBuilder();
         sb.append(head);
         sb.append("<img width='400' src=\"https://c8soft.se/ronah/gitlogo.png\"/>");
+        sb.append("<img src='data:image/png;base64,"+getIconAsBase64("/icons/restart.png")+"' />\n");
         sb.append("<form><table width='1200'><tr>");
         sb.append("<th>Class</th><th width='100'>Name</th><th width='300'>Purpose</th><th width='160'>Response</th><th>Active</th></tr>");
         StringBuilder divsString = new StringBuilder();
@@ -202,13 +206,13 @@ public class AdminService extends AutoRegisterService {
                         if(a instanceof GET){
                             String p = ((GET)a).path();
                             String res = ((GET)a).response();
-                            sb.append("<tr><td width='60'>GET</td><td colspan=2>").append("<a onMouseOut=\"toggleAnnot(event,'"+(id+n)+"','none')\" onMouseOver=\"toggleAnnot(event,'"+(id+n)+"','block')\" href='"+p+"'>" + p ).append("</a></td><td>" + res + "</td><td></td>");
+                            sb.append("<tr><td width='60'>GET</td><td colspan=2>").append("<a onMouseOut=\"toggleAnnot(event,'"+(id+n)+"','none')\" onMouseOver=\"toggleAnnot(event,'"+(id+n)+"','block')\" href='/api?path="+p+"'>" + p ).append("</a></td><td>" + res + "</td><td></td>");
                             divsString.append(makeDiv(id + n++, a));
                         }
                         else if(a instanceof POST){
                             String p = ((POST)a).path();
                             String res = ((POST)a).response();
-                            sb.append("<tr><td width='60'>POST</td><td colspan=2>").append("<a onMouseOut=\"toggleAnnot(event,'"+(id+n)+"','none')\" onMouseOver=\"toggleAnnot(event,'"+(id+n)+"','block')\" href='"+p+"'>" + p ).append("</a></td><td>" + res + "</td><td></td>");
+                            sb.append("<tr><td width='60'>POST</td><td colspan=2>").append("<a onMouseOut=\"toggleAnnot(event,'"+(id+n)+"','none')\" onMouseOver=\"toggleAnnot(event,'"+(id+n)+"','block')\" href='/api?path="+p+"'>" + p ).append("</a></td><td>" + res + "</td><td></td>");
                             divsString.append(makeDiv(id + n++, a));
                         }
                     }
@@ -249,6 +253,16 @@ public class AdminService extends AutoRegisterService {
         sb.append("</table>");
         sb.append("</div>\n");
         return sb.toString();
+    }
+
+    String getIconAsBase64(String resource){
+        try(DataInputStream in = new DataInputStream(Objects.requireNonNull(getClass().getResourceAsStream(resource)))){
+            byte[] buffer = in.readAllBytes();
+            return new String(Base64.getEncoder().encode(buffer));
+        }catch(IOException ex){
+            ex.printStackTrace(System.out);
+        }
+        return null;
     }
 
 }

@@ -336,7 +336,6 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
         boolean res = WildcardMatcher.matches(str1,str2) || (str1+"*/").equals(str2);
-        System.out.println(request.getPath() + "=" + path + " " + res + " " + (str1+"*/") + " " + str2);
         return res;
     }
 
@@ -362,6 +361,26 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                 request.addParameter(parsed,rSplit[i].trim());
             }
         }
+    }
+
+    /**
+     * Gets a Service by its path.
+     * @param path String path
+     * @return Service or null if not found.
+     */
+    public Service getServiceByPath(String path){
+        for(Service s:this){
+            Method[] methods = s.getClass().getMethods();
+            for(Method m:methods){
+                for(GET g:m.getAnnotationsByType(GET.class)){
+                    if(g.path().equals(path)) return s;
+                }
+                for(POST p:m.getAnnotationsByType(POST.class)){
+                    if(p.path().equals(path)) return s;
+                }
+            }
+        }
+        return null;
     }
 
     /**

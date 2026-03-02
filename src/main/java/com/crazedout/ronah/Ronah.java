@@ -56,7 +56,6 @@ public final class Ronah {
         System.out.println("-Dronah.port=<port> (optional default 8080)");
         System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
         System.out.println("-Djavax.net.ssl.keyStorePassword=<password>");
-
     }
 
     public void addServices(String serv) throws
@@ -110,7 +109,6 @@ public final class Ronah {
         if(vm!=null) port = Integer.parseInt(vm);
 
         AdminService a = new AdminService();
-        a.setActive(false);
         RonahHttpServer r = new RonahHttpServer();
         if (System.getProperty("javax.net.ssl.keyStore") != null) {
             r.setServerSocketFactory(SSLServerSocketFactory.getDefault());

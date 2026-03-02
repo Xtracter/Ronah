@@ -25,15 +25,12 @@ import com.crazedout.ronah.Repository;
  */
 public abstract class AutoRegisterService extends Service {
 
-    protected boolean active = true;
-
     /**
      * Creates a AutoRegisterService
      */
     public AutoRegisterService() {
         Repository.addService(this);
     }
-
 
     /**
      * Registers a new Service to the Repository.

@@ -30,12 +30,18 @@ public final class APIService extends AutoRegisterService {
         return "APIService";
     }
 
-    @GET(path="/api", response="text/html")
+    @GET(path="/api", response="text/html", enforceParams = false)
     public void getAPI(Request request){
         String html = "";
-        for(Service s: Repository.getServices()) {
-            if(s == this) continue;
-            html+= APIFactory.getHTML(s.getClass());
+        if(request.getParameter("path")!=null){
+            Service s = Repository.getInstance().getServiceByPath(request.getParameter("path"));
+            assert s != null;
+            html+= APIFactory.getHTML(s.getClass(),request.getParameter("path"));
+        }else{
+            for(Service s: Repository.getServices()) {
+                if(s == this) continue;
+                html+= APIFactory.getHTML(s.getClass());
+            }
         }
         request.getResponse().ok(APIFactory.getHead(getClass())+html+APIFactory.getTail(getClass())).send();
     }

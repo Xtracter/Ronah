@@ -39,7 +39,10 @@ public class APIFactory {
     private static APIFactory instance;
 
     public static String getHTML(Class s){
-        return getInstance().parse(s);
+        return getHTML(s,null);
+    }
+    public static String getHTML(Class s, String path){
+        return getInstance().parse(s,path);
     }
 
     private static APIFactory getInstance(){
@@ -52,16 +55,26 @@ public class APIFactory {
      * @param service Service
      * @return HTML content
      */
-    public String parse(Class<Service> service){
+    public String parse(Class<Service> service, String path){
         StringBuilder sb = new StringBuilder();
         for(Method method:service.getDeclaredMethods()){
             API api = method.getAnnotation(API.class);
             GET g = method.getAnnotation(GET.class);
             POST p = method.getAnnotation(POST.class);
             if(g!=null && api!=null) {
-                sb.append(getHTML(method.getParameters(), api, "GET", g.acceptContentType(), g.path(), g.response()));
+                if(path!=null && path.equals(g.path())) {
+                    sb.append(getHTML(method.getParameters(), api, "GET", g.acceptContentType(), g.path(), g.response()));
+                    break;
+                }else if(path==null){
+                    sb.append(getHTML(method.getParameters(), api, "GET", g.acceptContentType(), g.path(), g.response()));
+                }
             }else if(p!=null && api!=null){
-                sb.append(getHTML(method.getParameters(), api, "POST", p.acceptContentType(), p.path(), p.response()));
+                if(path!=null && path.equals(p.path())) {
+                    sb.append(getHTML(method.getParameters(), api, "POST", p.acceptContentType(), p.path(), p.response()));
+                    break;
+                }else if(path==null){
+                    sb.append(getHTML(method.getParameters(), api, "POST", p.acceptContentType(), p.path(), p.response()));
+                }
             }
         }
         return sb.toString();
