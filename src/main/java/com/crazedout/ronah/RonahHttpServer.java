@@ -19,6 +19,7 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
+import com.crazedout.ronah.service.AdminService;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
@@ -50,6 +51,7 @@ public final class RonahHttpServer {
     private volatile boolean secure;
     private ServerSocket serverSocket;
     private final APIService apiService;
+    private final AdminService adminService;
 
     public static class ClientCounter {
 
@@ -69,7 +71,6 @@ public final class RonahHttpServer {
         public int getCount(){
             return current;
         }
-
     }
 
     /**
@@ -82,6 +83,15 @@ public final class RonahHttpServer {
         verbose = System.getProperty("ronah.verbose") != null && "true".equals(System.getProperty("ronah.verbose"));
         if(verbose) logger.info("Verbose=true");
         apiService = new APIService();
+        adminService = new AdminService();
+    }
+
+    /**
+     * Removes the APIService for Web API.
+     */
+    public AdminService removeAdminService(){
+        Repository.removeService(adminService);
+        return adminService;
     }
 
     /**

@@ -127,7 +127,8 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
     boolean allowClientIP(InetSocketAddress sockAddr, Parent p){
         if(p.allowClientIP().length==0) return true;
         for(String s:p.allowClientIP()){
-            if(WildcardMatcher.matches(sockAddr.toString().substring(1),s)) return true;
+            String[] split = sockAddr.toString().split(":");
+            if(WildcardMatcher.matches(split[0].substring(1),s)) return true;
         }
         return false;
     }
@@ -408,7 +409,6 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
      * @param service Service
      */
     public static void addService(com.crazedout.ronah.service.Service service){
-        System.out.println(service.getClass().getName());
         if(!getInstance().contains(service)) {
             getInstance().add(service);
         }

@@ -53,7 +53,9 @@ public final class Ronah {
         System.out.println("-p:<port> (optional default 8080)");
         System.out.println("-s:<service> comma separated list of Services.");
         System.out.println("-Dronah.services=<services> comma separated list of Services.");
-        System.out.println("-Dronah.port=<port> (optional default 8080)");
+        System.out.println("-Dronah.admin.user=<user> User for AdminService");
+        System.out.println("-Dronah.admin.passwd=<password> Password for AdminService");
+        System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
         System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
         System.out.println("-Djavax.net.ssl.keyStorePassword=<password>");
     }
@@ -108,7 +110,6 @@ public final class Ronah {
         vm = System.getProperty("ronah.port");
         if(vm!=null) port = Integer.parseInt(vm);
 
-        AdminService a = new AdminService();
         RonahHttpServer r = new RonahHttpServer();
         if (System.getProperty("javax.net.ssl.keyStore") != null) {
             r.setServerSocketFactory(SSLServerSocketFactory.getDefault());

@@ -1,10 +1,8 @@
 package com.crazedout.ronah.service;
 
 import com.crazedout.ronah.Repository;
-import com.crazedout.ronah.annotation.API;
-import com.crazedout.ronah.annotation.GET;
-import com.crazedout.ronah.annotation.POST;
-import com.crazedout.ronah.annotation.Param;
+import com.crazedout.ronah.RonahHttpServer;
+import com.crazedout.ronah.annotation.*;
 import com.crazedout.ronah.request.Request;
 
 import java.io.DataInputStream;
@@ -14,6 +12,9 @@ import java.lang.reflect.Method;
 import java.util.Base64;
 import java.util.Objects;
 
+import static com.crazedout.ronah.auth.BasicAuthentication.addUser;
+
+@Parent(allowClientIP = {"127.0.0.1"})
 public class AdminService extends AutoRegisterService {
 
     String style = """
@@ -166,8 +167,20 @@ public class AdminService extends AutoRegisterService {
     String head = "<!DOCTYPE html><html><head>" + style + "\n\n" + script2 + "</head><body>";
     String tail = "</body></html>";
 
+    public AdminService(){
+        super();
+        String user,passwd;
+        if((user=System.getProperty("ronah.admin.user"))!=null &&
+                (passwd=System.getProperty("ronah.admin.passwd"))!=null){
+            addUser(user,passwd);
+        }else {
+            RonahHttpServer.logger.warning("Using default user and passwd for AdminService.");
+            addUser("admin", "admin");
+        }
+    }
+
     @API
-    @GET(path="/admin", response = "text/html", enforceParams = false)
+    @GET(path="/admin", response = "text/html", enforceParams = false, useBasicAuth = true, basicAuthRealm = "admin")
     public void admin(Request request, @Param String task, @Param String value) {
         String response = getDefaultPage(task, value);
         if(task!=null && task.equals("toggleService")){
