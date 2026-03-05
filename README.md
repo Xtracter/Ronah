@@ -91,6 +91,13 @@ Ronah REST API gives you everything you need for quick, reliable, and secure API
             request.getResponse().ok(response).send();
     }
 
+    @API
+    @GET(path="/person/{name}/{date}/{lastDigits}", response = "text/text")
+    public void getPath(HttpRequest request, @Param String name, @Param String date, @Param Integer lastDigits){
+        String response = "Hello:" + name + " " + date + " " + (lastDigits+1);
+        request.getResponse().ok(response).send();
+    }
+
     public static void main(String[] args){
 
         System.setProperty("ronah.debug","true");
