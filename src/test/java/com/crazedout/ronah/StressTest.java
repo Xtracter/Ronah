@@ -1,6 +1,5 @@
 package com.crazedout.ronah;
 
-import java.io.IOException;
 import java.util.Random;
 
 public class StressTest implements Runnable{

@@ -325,9 +325,9 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         String str2 = path;
 
         try {
-            if (path.contains("[")) {
+            if (path.contains("{")) {
                 parsePathParams(request, str2, str1);
-                str2 = str2.substring(0, str2.indexOf("[")) + "*";
+                str2 = str2.substring(0, str2.indexOf("{")) + "*";
             }
         }catch(Exception ex){
             // Do Nothing;
@@ -357,8 +357,8 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         String parsed;
         for(int i = 0; i < aSplit.length; i++){
             String word = aSplit[i];
-            if(word.contains("[")){
-                parsed = word.replace("[","").replace("]","");
+            if(word.contains("{")){
+                parsed = word.replace("{","").replace("}","");
                 request.addParameter(parsed,rSplit[i].trim());
             }
         }

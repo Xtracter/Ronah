@@ -78,7 +78,7 @@ public class TestService extends AutoRegisterService {
     }
 
     @API
-    @GET(path="/person/[name]/[date]/[lastDigits]", response = "text/text")
+    @GET(path="/person/{name}/{date}/{lastDigits}", response = "text/text")
     public void getPath(HttpRequest request, @Param String name, @Param String date, @Param Integer lastDigits){
             String response = "Hello:" + name + " " + date + " " + (lastDigits+1);
             request.getResponse().ok(response).send();
