@@ -26,7 +26,7 @@ public class TestWebServer extends SimpleWebServer {
     }
 
     @API
-    @GET(path="/web/*")
+    @GET(path="/web/*", response = "text/html")
     public void testWebServer(HttpRequest request){
         File file = super.getFile(request,"/web");
         sendFile(request,file);
