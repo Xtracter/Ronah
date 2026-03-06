@@ -45,5 +45,4 @@ public final class APIService extends AutoRegisterService {
         }
         request.getResponse().ok(APIFactory.getHead(getClass())+html+APIFactory.getTail(getClass())).send();
     }
-
 }

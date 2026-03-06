@@ -101,8 +101,8 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                     }
                     if(parseMethods(s, request, m, parentPath)) {
                         sent = true;
-                        break;
                     }
+                if(sent) break;
                 }catch(IllegalAccessException|InvocationTargetException ex){
                     ex.printStackTrace(System.out);
                     String err = printToString(ex);
@@ -167,6 +167,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                  handlePOST(s,request,p,method);
                  sent=true;
              }
+             if(sent) break;
          }
          // TODO: Really bad pattern with boolean return here. Fix it soon.
         return sent;
@@ -333,10 +334,13 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
             // Do Nothing;
         }
 
+
         if(!ignoreParentPath) str2 = parentPath + str2;
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";
         if(str2.length()>1 && str2.charAt(str2.length()-1)!='/') str2+="/";
         boolean res = WildcardMatcher.matches(str1,str2) || (str1+"*/").equals(str2);
+
+        logger.info("pathEuquals():" + str1 + " " + str2 + " " + res);
         return res;
     }
 
