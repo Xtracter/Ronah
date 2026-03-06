@@ -83,6 +83,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                 parentPath = parent.path();
                 if(parentPath.endsWith("/")) parentPath = parent.path().substring(0,parent.path().length()-1);
                 if(!allowClientIP(request.getSocketAddress(),parent)) {
+                    System.out.println(s.getName());
                     request.getResponse().forbidden().send();
                     return;
                 }
@@ -99,7 +100,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                         catchService = s;
                         logger.info("Catch all: " + s.getClass().getName() + " " + m.getName());
                     }
-                    if(parseMethods(s, request, m, parentPath)) {
+                    if(parseMethods(s, request, m, parentPath) && !sent) {
                         sent = true;
                     }
                 }catch(IllegalAccessException|InvocationTargetException ex){
@@ -112,6 +113,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
                     sent=true;
                 }
             }
+            if(sent) break;
         }
         if(!sent){
             try {
@@ -332,7 +334,6 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
         }catch(Exception ex){
             // Do Nothing;
         }
-
 
         if(!ignoreParentPath) str2 = parentPath + str2;
         if(str1.length()>1 && str1.charAt(str1.length()-1)!='/') str1+="/";

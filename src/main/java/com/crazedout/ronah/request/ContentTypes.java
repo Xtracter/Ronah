@@ -16,11 +16,11 @@ public class ContentTypes {
         init();
     }
 
-    public static String getContentType(File file, String defaultType) {
-        return getContentType(file.getName(),defaultType);
+    public static String getContentType(File file) {
+        return getContentType(file.getName());
     }
 
-    public static String getContentType(String fileName, String defaultType){
+    public static String getContentType(String fileName){
         String ext;
         int i = fileName.lastIndexOf(".");
         if(i!=-1){
@@ -31,7 +31,7 @@ public class ContentTypes {
                 }
             }
         }
-        return defaultType;
+        return "application/octet-stream";
     }
 
     public static void addContentType(String contentType, String... fileExtension){

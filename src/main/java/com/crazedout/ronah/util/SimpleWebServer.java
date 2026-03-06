@@ -36,6 +36,7 @@ public abstract class SimpleWebServer extends AutoRegisterService {
     public File getFile(HttpRequest request, String path){
 
         String contextPath = request.getPath().substring(path.length());
+        if(contextPath.charAt(contextPath.length()-1)!='/') contextPath+="/";
 
         String file = "";
         int i = contextPath.lastIndexOf("/");
@@ -55,10 +56,12 @@ public abstract class SimpleWebServer extends AutoRegisterService {
         if(file.isEmpty()){
             for (String s : defaultPage) {
                 f = new File((filePath + File.separatorChar + s).replace('/', File.separatorChar));
+                System.out.println("1:" + f.getAbsolutePath());
                 if (f.exists()) return f.getAbsolutePath();
             }
         }else{
             f  = new File((filePath + file).replace('/',File.separatorChar));
+            System.out.println("2:" + f.getAbsolutePath());
             if(f.exists()) return f.getAbsolutePath();
         }
         return null;

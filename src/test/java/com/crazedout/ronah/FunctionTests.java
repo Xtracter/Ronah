@@ -13,7 +13,7 @@ public class FunctionTests {
 
         String[] files = {"index.html","index.html","server.json","document.xml","script.js"};
         for(String ext:files){
-            assertNotEquals("text/text", ContentTypes.getContentType(ext,"text/text"));
+            assertNotEquals("text/text", ContentTypes.getContentType(ext));
         }
     }
 

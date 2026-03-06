@@ -5,10 +5,7 @@ import com.crazedout.ronah.annotation.GET;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.util.SimpleWebServer;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class Main extends SimpleWebServer {
 
@@ -19,20 +16,23 @@ public class Main extends SimpleWebServer {
         setBasePath("C:/Users/Admin/Desktop/c8soft/");
     }
 
-    @GET(path="/web/*")
+    @GET(path="/web/*", response = "text/html")
     public void aServer(HttpRequest request){
-        File f = getFile(request,"/web");
+        File f = getFile(request,"");
         if(f!=null && f.exists()){
-            try(DataInputStream din = new DataInputStream(new FileInputStream(f))){
-                byte[] buffer = din.readAllBytes();
-                request.getResponse().ok(buffer).send();
-            }catch(IOException ex){
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
+                String line;
+                while((line=r.readLine())!=null){
+                    sb.append(line).append("\n");
+                }
+            } catch (IOException ex) {
                 request.getResponse().error(ex.getMessage()).send();
             }
+            request.getResponse().ok(sb.toString()).send();
         }else{
             request.getResponse().notFound().send();
         }
-        request.getResponse().ok("OK").send();
     }
 
     @API

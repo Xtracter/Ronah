@@ -215,6 +215,7 @@ public class HttpResponse  {
             this.builder.append("Connection: close\n\n");
             out.write(this.builder.toString().getBytes(charset));
             this.out.write(data);
+            this.out.flush();
         }catch(Exception ex){
             ex.printStackTrace(System.out);
             internalError(ex.getMessage());
