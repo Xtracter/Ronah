@@ -33,7 +33,7 @@ public class TestService extends AutoRegisterService {
     }
 
     @API
-    @GET(path="/web/*", response = "text/text")
+    @GET(path="/web/test/*", response = "text/text")
     public static void testWebPath(HttpRequest request) {
         request.getResponse().ok("OK").send();
     }

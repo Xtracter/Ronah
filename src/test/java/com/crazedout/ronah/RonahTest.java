@@ -105,6 +105,7 @@ public class RonahTest extends TestUtils {
     @Test
     void testPath2() throws IOException{
         res = connect("GET /web/test HTTP/1.1");
+        res.forEach(System.out::println);
         assertEquals("HTTP/1.1 200 OK",res.get(0));
     }
 
@@ -112,10 +113,10 @@ public class RonahTest extends TestUtils {
     void testWebServer() throws IOException {
         TestWebServer s = new TestWebServer("src/test");
         res = connect("GET /web HTTP/1.1");
-        assertEquals("OK",res.get(res.size()-1));
+        assertEquals("</html>",res.get(res.size()-1));
         res = connect("GET /web/index.html HTTP/1.1");
+        assertEquals("</html>",res.get(res.size()-1));
         Repository.removeService(s);
-        assertEquals("OK",res.get(res.size()-1));
     }
 
     // TODO: More tests...
