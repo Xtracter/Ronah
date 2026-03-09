@@ -57,7 +57,7 @@ public final class RonahHttpServer {
 
         int max = System.getProperty("ronah.max.clients")!=null?
                 Integer.parseInt(System.getProperty("ronah.max.clients")):100;
-        int current = 0;
+        volatile int current = 0;
 
         public synchronized boolean add(){
             if(current+1>=max) return false;

@@ -82,6 +82,7 @@ public class HttpRequest  {
      * @param line String first line of an http request.
      */
     protected void parse(String line){
+        System.out.println(line);
         String[] tokens = line.split(" ");
         this.method = tokens[0];
         this.protocol = tokens[2];

@@ -19,7 +19,7 @@ public class TestWebServer extends SimpleWebServer {
         return "TestWebServer";
     }
 
-    @API
+    @API(suppressParams = {"request"})
     @GET(path="/web/*", response = "text/html")
     public void testWebServer(HttpRequest request){
         File file = super.getFile(request);
