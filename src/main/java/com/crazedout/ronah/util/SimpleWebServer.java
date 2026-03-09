@@ -1,9 +1,11 @@
 package com.crazedout.ronah.util;
 
+import com.crazedout.ronah.Ronah;
 import com.crazedout.ronah.request.HttpRequest;
 import com.crazedout.ronah.service.AutoRegisterService;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * Class to support implementation of Web Server functionality.
@@ -12,6 +14,7 @@ import java.io.File;
 @SuppressWarnings("unused")
 public abstract class SimpleWebServer extends AutoRegisterService {
 
+    private final static Logger logger = Logger.getLogger(SimpleWebServer.class.getName());
     private String basePath;
 
     /**
@@ -30,14 +33,18 @@ public abstract class SimpleWebServer extends AutoRegisterService {
     protected String[] defaultPage = {"index.html","index.htm","index.php"};
 
     /**
-     * Handle a GET HTTP request
+     * Handle a GET HTTP request.
+     * Context path is set to Context Path + / + GET(path="{path}")
      * @param request HttpRequest request
      */
-    public File getFile(HttpRequest request, String path){
+    public File getFile(HttpRequest request){
 
-        String contextPath = request.getPath().substring(path.length());
+        String contextPath = request.getPath();
+        if("true".equals(System.getProperty("ronah.debug"))){
+            logger.info("Path:" + contextPath);
+        }
         if(!isFile(contextPath) &&
-                contextPath.charAt(contextPath.length()-1)!='/') contextPath+="/";
+                (contextPath.isEmpty() || contextPath.charAt(contextPath.length()-1)!='/')) contextPath+="/";
 
         String file = "";
         int i = contextPath.lastIndexOf("/");
@@ -53,8 +60,12 @@ public abstract class SimpleWebServer extends AutoRegisterService {
     }
 
     private boolean isFile(String contextPath){
-        String[] tok = contextPath.split("/");
-        return tok[tok.length - 1].contains(".");
+        try {
+            String[] tok = contextPath.split("/");
+            return tok[tok.length - 1].contains(".");
+        }catch(ArrayIndexOutOfBoundsException ex){
+            return false;
+        }
     }
 
     private String getRequestedFile(String filePath, String file){
@@ -64,8 +75,15 @@ public abstract class SimpleWebServer extends AutoRegisterService {
         if(file.isEmpty()){
             for (String s : defaultPage) {
                 f = new File((filePath + File.separatorChar + s).replace('/', File.separatorChar));
-                System.out.println("1:" + f.getAbsolutePath());
-                if (f.exists()) return f.getAbsolutePath();
+                if("true".equals(System.getProperty("ronah.debug"))) {
+                    logger.info(f.getAbsolutePath());
+                }
+                if (f.exists()) {
+                    if("true".equals(System.getProperty("ronah.debug"))) {
+                        logger.info(f.getAbsolutePath());
+                    }
+                    return f.getAbsolutePath();
+                }
             }
         }else{
             f  = new File((filePath + file).replace('/',File.separatorChar));
