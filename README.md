@@ -14,6 +14,21 @@ Secure by default – supports basic authentication and TLS.
 
 Ronah REST API gives you everything you need for quick, reliable, and secure API development.
 
+# Important:
+    You need to compile your project with -parmeters argument for the @Param mapping to work.<br/>
+    Maven:
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+
 # <a href="http://c8soft.se/ronah/javadoc/index.html">Javadoc here..</a>
 
 

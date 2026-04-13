@@ -98,7 +98,13 @@ public class RonahTest extends TestUtils {
 
     @Test
     void testPath() throws IOException{
-        res = connect("GET /person/Fredrik/710518/3037 HTTP/1.1");
+        res = connect("GET /person/Fredrik HTTP/1.1");
+        System.out.println(res);
+    }
+
+    @Test
+    void testDiv() throws IOException{
+        res = connect("GET /xia/divisions/get/12 HTTP/1.1");
         System.out.println(res);
     }
 

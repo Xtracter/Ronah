@@ -228,7 +228,7 @@ public final class Repository extends ArrayList<com.crazedout.ronah.service.Serv
             System.out.println(args.size() + " " + method.getParameterCount());
         }
 
-        logger.info("Invoking method: " + method.getName());
+        logger.info("Invoking method: " + method.getName() + " " + args.size() + " " + method.getParameterCount());
         method.invoke(s, args.toArray());
     }
 

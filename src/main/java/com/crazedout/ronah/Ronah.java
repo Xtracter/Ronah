@@ -55,6 +55,7 @@ public final class Ronah {
         System.out.println("-Dronah.services=<services> comma separated list of Services.");
         System.out.println("-Dronah.admin.user=<user> User for AdminService");
         System.out.println("-Dronah.admin.passwd=<password> Password for AdminService");
+        System.out.println("-Dronah.clients.allowed=<clientip1,clientIp2> (Wildcard matching)");
         System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
         System.out.println("-Djavax.net.ssl.keyStore=<keystore.jks>");
         System.out.println("-Djavax.net.ssl.keyStorePassword=<password>");

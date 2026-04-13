@@ -19,6 +19,7 @@ package com.crazedout.ronah;
  */
 
 import com.crazedout.ronah.api.APIService;
+import com.crazedout.ronah.auth.ClientAccess;
 import com.crazedout.ronah.service.AdminService;
 
 import javax.net.ServerSocketFactory;
@@ -121,8 +122,10 @@ public final class RonahHttpServer {
             serverSocket = secure?createServerSocket(port):new ServerSocket(port);
             while(running) {
                 Socket s = serverSocket.accept();
-                s.setReuseAddress(true);
-                (new Thread(() -> new HttpHandler(s,counter))).start();
+                if(ClientAccess.allowed(s)) {
+                    s.setReuseAddress(true);
+                    (new Thread(() -> new HttpHandler(s, counter))).start();
+                }
             }
         }catch(IOException ex){
             System.err.println(ex.getMessage());

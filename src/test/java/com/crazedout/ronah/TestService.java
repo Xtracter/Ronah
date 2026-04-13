@@ -77,10 +77,19 @@ public class TestService extends AutoRegisterService {
         }
     }
 
+    @API(name="Get Division", description = "Returns Division by ID")
+    @GET(path="/xia/divisions/get/{did}")
+    public void getDivisions(HttpRequest request, @Param String did) {
+        System.out.println("devs");
+        String response = "Hello:" + did;
+        request.getResponse().ok(response).send();
+    }
+
+
     @API
-    @GET(path="/person/{name}/{date}/{lastDigits}", response = "text/text")
-    public void getPath(HttpRequest request, @Param String name, @Param String date, @Param Integer lastDigits){
-            String response = "Hello:" + name + " " + date + " " + (lastDigits+1);
+    @GET(path="/person/{id}", response = "text/text")
+    public void getPath(HttpRequest request, @Param String id){//, @Param String date, @Param Integer lastDigits){
+            String response = "Hello:" + id;// + " " + date + " " + (lastDigits+1);
             request.getResponse().ok(response).send();
     }
     /*@API
