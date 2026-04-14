@@ -61,7 +61,7 @@ public class ClientAccess {
                 return true;
             }
         }
-        logger.info("Ronah Deny:" + ip.substring(1));
+        logger.info("Ronah Deny:" + ip);
         return false;
     }
 
