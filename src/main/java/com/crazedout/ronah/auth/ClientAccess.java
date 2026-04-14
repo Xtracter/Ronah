@@ -52,6 +52,7 @@ public class ClientAccess {
         String ip = s.getInetAddress().toString();
         if(ip.startsWith("/")) ip=ip.substring(1);
         for(String c: getInstance().clients){
+            System.out.println(c + " " + ip);
             if(WildcardMatcher.matches(ip,c)) {
                 if(!getInstance().cached.contains(ip)) {
                     getInstance().cached.add(ip);
